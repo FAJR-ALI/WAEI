@@ -35,6 +35,10 @@ public class TrainingProgramRequest {
     @Pattern(regexp = "^(IN_PERSON|ONLINE|HYBRID)$", message = "Invalid delivery mode")
     private String deliveryMode;
 
+    @NotNull
+    @Positive
+    private Long organizationId;
+
     private Boolean isActive;
 
 }

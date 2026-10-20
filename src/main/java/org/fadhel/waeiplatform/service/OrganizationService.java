@@ -40,7 +40,7 @@ public class OrganizationService {
     }
 
     // GET BY ID
-    public OrganizationDTOOut getOrganizationById(Integer id) {
+    public OrganizationDTOOut getOrganizationById(Long id) {
         Organization organization = organizationRepository.findById(id).orElseThrow(() -> new ApiException("Organization not found"));
         return convertToDTO(organization);
     }
@@ -66,7 +66,7 @@ public class OrganizationService {
     }
 
     // UPDATE
-    public void updateOrganization(Integer id, OrganizationDTOIn dto) {
+    public void updateOrganization(Long id, OrganizationDTOIn dto) {
 
         Organization organization = organizationRepository.findById(id).orElseThrow(() -> new ApiException("Organization not found"));
 
@@ -88,7 +88,7 @@ public class OrganizationService {
     }
 
     // DELETE
-    public void deleteOrganization(Integer id) {
+    public void deleteOrganization(Long id) {
         Organization organization = organizationRepository.findById(id).orElseThrow(() -> new ApiException("Organization not found"));
         organizationRepository.delete(organization);
     }

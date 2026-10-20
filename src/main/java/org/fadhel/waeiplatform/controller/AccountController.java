@@ -39,7 +39,7 @@ public class AccountController {
     // UPDATE ACCOUNT
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateAccount(
-            @PathVariable Integer id,
+            @PathVariable Long id,
             @Valid @RequestBody AccountUpdateDTOIn accountUpdateDTOIn) {
 
         accountService.updateAccount(id, accountUpdateDTOIn);
@@ -51,7 +51,7 @@ public class AccountController {
     // DELETE ACCOUNT
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteAccount(
-            @PathVariable Integer id) {
+            @PathVariable Long id) {
 
         accountService.deleteAccount(id);
 

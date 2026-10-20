@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class AccountDTOOut {
 
-    private Integer id;
+    private Long id;
     private String fullName;
     private String email;
     private String role;

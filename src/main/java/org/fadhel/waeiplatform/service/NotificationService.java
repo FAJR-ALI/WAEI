@@ -45,7 +45,7 @@ public class NotificationService {
     }
 
     // GET BY ID
-    public NotificationDTOOut getNotificationById(Integer id) {
+    public NotificationDTOOut getNotificationById(Long id) {
         Notification notification = notificationRepository.findById(id).orElseThrow(() -> new ApiException("Notification not found"));
 
         return convertToDTO(notification);
@@ -70,7 +70,7 @@ public class NotificationService {
     }
 
     // UPDATE
-    public void updateNotification(Integer id, NotificationDTOIn dto) {
+    public void updateNotification(Long id, NotificationDTOIn dto) {
 
         Notification notification = notificationRepository.findById(id).orElseThrow(() -> new ApiException("Notification not found"));
         if (!notification.getStatus().equals("PENDING")) {
@@ -92,7 +92,7 @@ public class NotificationService {
     }
 
     // DELETE
-    public void deleteNotification(Integer id) {
+    public void deleteNotification(Long id) {
 
         Notification notification = notificationRepository.findById(id).orElseThrow(() -> new ApiException("Notification not found"));
         notificationRepository.delete(notification);

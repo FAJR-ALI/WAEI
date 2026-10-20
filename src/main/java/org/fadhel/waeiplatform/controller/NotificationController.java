@@ -24,7 +24,7 @@ public class NotificationController {
 
     // GET NOTIFICATION BY ID
     @GetMapping("/get/{id}")
-    public ResponseEntity<?> getNotificationById(@PathVariable Integer id) {
+    public ResponseEntity<?> getNotificationById(@PathVariable Long id) {
         return ResponseEntity.status(200).body(notificationService.getNotificationById(id));
     }
 
@@ -37,14 +37,14 @@ public class NotificationController {
 
     // UPDATE NOTIFICATION
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateNotification(@PathVariable Integer id, @Valid @RequestBody NotificationDTOIn dto) {
+    public ResponseEntity<?> updateNotification(@PathVariable Long id, @Valid @RequestBody NotificationDTOIn dto) {
         notificationService.updateNotification(id, dto);
         return ResponseEntity.status(200).body(new ApiResponse("Notification updated successfully"));
     }
 
     // DELETE NOTIFICATION
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteNotification(@PathVariable Integer id) {
+    public ResponseEntity<?> deleteNotification(@PathVariable Long id) {
         notificationService.deleteNotification(id);
         return ResponseEntity.status(200).body(new ApiResponse("Notification deleted successfully"));
     }

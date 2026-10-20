@@ -59,7 +59,7 @@ public class AccountService {
     }
 
     // UPDATE
-    public void updateAccount(Integer id, AccountUpdateDTOIn dto) {
+    public void updateAccount(Long id, AccountUpdateDTOIn dto) {
 
         Account oldAccount = accountRepository.findById(id).orElseThrow(() -> new ApiException("Account not found"));
         Account existingAccount = accountRepository.findAccountByEmail(dto.getEmail());
@@ -75,7 +75,7 @@ public class AccountService {
     }
 
     // DELETE
-    public void deleteAccount(Integer id) {
+    public void deleteAccount(Long id) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new ApiException("Account not found"));
         accountRepository.delete(account);
     }
