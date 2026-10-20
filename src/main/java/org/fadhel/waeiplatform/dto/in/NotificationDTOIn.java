@@ -27,5 +27,5 @@ public class NotificationDTOIn {
     @NotEmpty(message = "Recipient cannot be empty")
     private String recipient;
 
-    private Integer accountId;
+    private Long accountId;
 }

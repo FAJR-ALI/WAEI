@@ -24,6 +24,10 @@ public class TrainingRequestRequest {
 
     @NotNull
     @Positive
+    private Long createdByAccountId;
+
+    @NotNull
+    @Positive
     private Integer participantCount;
 
     @Size(max = 5000)

@@ -22,7 +22,7 @@ public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer Id;
+    private Long Id;
 
     @NotEmpty(message = "please enter your full Name ")
     private String fullName;

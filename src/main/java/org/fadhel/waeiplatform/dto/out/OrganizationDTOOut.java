@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class OrganizationDTOOut {
 
-    private Integer id;
+    private Long id;
     private String name;
     private String type;
     private String sector;

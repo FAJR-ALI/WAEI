@@ -23,7 +23,7 @@ public class OrganizationController {
 
     // GET ORGANIZATION BY ID
     @GetMapping("/get/{id}")
-    public ResponseEntity<?> getOrganizationById(@PathVariable Integer id) {
+    public ResponseEntity<?> getOrganizationById(@PathVariable Long id) {
         return ResponseEntity.status(200).body(organizationService.getOrganizationById(id));
     }
 
@@ -36,14 +36,14 @@ public class OrganizationController {
 
     // UPDATE ORGANIZATION
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateOrganization(@PathVariable Integer id, @Valid @RequestBody OrganizationDTOIn dto) {
+    public ResponseEntity<?> updateOrganization(@PathVariable Long id, @Valid @RequestBody OrganizationDTOIn dto) {
         organizationService.updateOrganization(id, dto);
         return ResponseEntity.status(200).body(new ApiResponse("Organization updated successfully"));
     }
 
     // DELETE ORGANIZATION
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteOrganization(@PathVariable Integer id) {
+    public ResponseEntity<?> deleteOrganization(@PathVariable Long id) {
         organizationService.deleteOrganization(id);
         return ResponseEntity.status(200).body(new ApiResponse("Organization deleted successfully"));
     }

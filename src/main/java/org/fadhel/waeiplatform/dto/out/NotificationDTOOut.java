@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class NotificationDTOOut {
 
-    private Integer id;
+    private Long id;
 
     private String channel;
 
@@ -30,6 +30,6 @@ public class NotificationDTOOut {
 
     private LocalDateTime sentAt;
 
-    private Integer accountId;
+    private Long accountId;
 
 }
