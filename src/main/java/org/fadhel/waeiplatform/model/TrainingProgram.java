@@ -1,6 +1,7 @@
 package org.fadhel.waeiplatform.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -36,6 +37,11 @@ public class TrainingProgram {
 
     @Column(nullable = false)
     private Boolean isActive = true;
+
+    @ManyToOne
+    @JoinColumn
+    @JsonIgnore
+    private Organization organization;
 
     @OneToMany(mappedBy = "trainingProgram")
     private Set<TrainingRequest> requests;

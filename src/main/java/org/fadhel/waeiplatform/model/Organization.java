@@ -8,6 +8,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Setter
@@ -52,6 +53,12 @@ public class Organization {
     }
 
     private String documentReference;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "organization")
+    private Set<TrainingProgram> trainingPrograms;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "organization")
+    private Set<TrainingRequest> trainingRequests;
 
     @OneToMany(mappedBy = "organization")
     private List<Account> account;
