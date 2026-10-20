@@ -2,9 +2,12 @@ package org.fadhel.waeiplatform.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -32,6 +35,11 @@ public class TrainingRequest {
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime requestedAt;
+
+    @NotNull
+    @Positive
+    @Column(nullable = false, precision = 12, scale = 2)
+    private BigDecimal programPrice;
 
     @ManyToOne
     @JoinColumn

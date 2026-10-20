@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -18,6 +19,8 @@ public class TrainingRequestResponse {
     private Long id;
 
     private Integer participantCount;
+
+    private BigDecimal programPrice;
 
     private String notes;
 
