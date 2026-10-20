@@ -30,4 +30,10 @@ public class PaymentResponse {
 
     private Long trainingRequestId;
 
+    private BigDecimal commissionRatePercent;
+
+    private BigDecimal commissionAmount;
+
+    private BigDecimal providerAmount;
+
 }

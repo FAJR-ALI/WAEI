@@ -2,7 +2,7 @@ package org.fadhel.waeiplatform.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -20,14 +20,19 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
+    @Positive
+    @Digits(integer = 10, fraction = 2)
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal amount;
+
 
     @Column(nullable = false, length = 3)
     private String currency = "SAR";
 
+    @NotNull
     @Column(nullable = false, length = 20)
-    @Pattern(regexp = "^(PENDING|PAID|FAILED|CANCELLED|REFUNDED)$", message = "Invalid status")
+    @Pattern(regexp = "^(PENDING|PAID|FAILED|CANCELLED)$", message = "Invalid status")
     private String status;
 
     @Column(unique = true)
@@ -37,6 +42,25 @@ public class Payment {
     private LocalDateTime createdAt;
 
     private LocalDateTime paidAt;
+
+    @NotNull
+    @DecimalMin("0.00")
+    @DecimalMax("100.00")
+    @Digits(integer = 3, fraction = 2)
+    @Column(nullable = false, precision = 5, scale = 2)
+    private BigDecimal commissionRatePercent;
+
+    @NotNull
+    @DecimalMin("0.00")
+    @Digits(integer = 10, fraction = 2)
+    @Column(nullable = false, precision = 12, scale = 2)
+    private BigDecimal commissionAmount;
+
+    @NotNull
+    @DecimalMin("0.00")
+    @Digits(integer = 10, fraction = 2)
+    @Column(nullable = false, precision = 12, scale = 2)
+    private BigDecimal providerAmount;
 
     @ManyToOne
     @JoinColumn
