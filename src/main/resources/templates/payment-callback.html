@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Payment result · WAEI</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --ink: #14212b;
+            --muted: #5c6b78;
+            --line: #dfe6ec;
+            --brand: #0f6b5c;
+            --bg: #f4f7f9;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 24px;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 520px;
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 32px;
+            box-shadow: 0 10px 30px rgba(20, 33, 43, .06);
+        }
+
+        .brand {
+            color: var(--brand);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            font-size: 24px;
+        }
+
+        .muted { color: var(--muted); margin: 0 0 20px; }
+        .small { font-size: 13px; line-height: 1.6; margin-top: 20px; }
+        .error {
+            margin: 0 0 8px;
+            padding: 12px 14px;
+            border-radius: 10px;
+            background: #fdecec;
+            color: #8a1c1c;
+            font-size: 14px;
+        }
+
+        dl { margin: 24px 0 0; display: grid; gap: 14px; }
+
+        dl > div {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        dl > div:last-child { border-bottom: 0; padding-bottom: 0; }
+
+        dt { color: var(--muted); font-size: 14px; }
+        dd { margin: 0; font-weight: 600; text-align: right; }
+        .mono { font-family: Consolas, monospace; font-size: 12px; font-weight: 500; word-break: break-all; }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: .02em;
+        }
+
+        .badge-paid { background: #e2f5ec; color: #0d6b45; }
+        .badge-pending { background: #fff4d6; color: #7a5600; }
+        .badge-failed { background: #fdecec; color: #8a1c1c; }
+        .badge-refunded { background: #e8eefb; color: #27458c; }
+        .badge-cancelled { background: #eceff2; color: #4c5762; }
+    </style>
+</head>
+<body>
+<main class="card">
+    <div class="brand">WAEI Training Platform</div>
+    <h1>Payment result</h1>
+
+    <th:block th:if="${state == 'ok'}">
+        <p class="muted">Moyasar was checked and the status below is current.</p>
+
+        <dl>
+            <div>
+                <dt>Status</dt>
+                <dd>
+                    <span class="badge"
+                          th:classappend="${'badge-' + #strings.toLowerCase(payment.status)}"
+                          th:text="${#strings.capitalize(#strings.toLowerCase(payment.status))}">Paid</span>
+                </dd>
+            </div>
+            <div>
+                <dt>Amount</dt>
+                <dd th:text="${#numbers.formatDecimal(payment.amount, 1, 2) + ' SAR'}">0.00 SAR</dd>
+            </div>
+            <div>
+                <dt>Training request</dt>
+                <dd th:text="${'#' + payment.trainingRequestId}">#0</dd>
+            </div>
+            <div th:if="${payment.moyasarPaymentId != null}">
+                <dt>Payment reference</dt>
+                <dd class="mono" th:text="${payment.moyasarPaymentId}">—</dd>
+            </div>
+        </dl>
+
+        <p class="muted small" th:if="${payment.status == 'PENDING'}">
+            The payment is still being confirmed. The webhook will update it automatically.
+        </p>
+    </th:block>
+
+    <th:block th:if="${state == 'error'}">
+        <p class="error" th:text="${message}">The payment could not be confirmed.</p>
+        <p class="muted small">
+            If you completed the payment, the webhook will update the training request automatically.
+            You can also confirm it later with the payment sync API.
+        </p>
+    </th:block>
+
+    <th:block th:if="${state == 'empty'}">
+        <p class="muted">No payment reference was provided in this link.</p>
+        <p class="muted small">
+            This page is the return address for the Moyasar checkout. It is opened automatically after a payment.
+        </p>
+    </th:block>
+</main>
+</body>
+</html>
