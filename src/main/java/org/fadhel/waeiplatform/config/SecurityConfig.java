@@ -83,6 +83,21 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/payment/callback", "/payment/callback/**").permitAll()
                         .requestMatchers("/api/v1/auth/login", "/api/v1/payment/webhook/moyasar").permitAll()
+                        // Visitor pages (templates) + CSS/JS/images (static) + Spring error page
+                        .requestMatchers(HttpMethod.GET, "/", "/login", "/train", "/programs", "/pricing",
+                                "/kids", "/story", "/call").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/img/**", "/error").permitAll()
+                        // Visitor endpoints: no login needed
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/v1/awareness-service/get-active",
+                                "/api/v1/awareness-service/get/*",
+                                "/api/v1/awareness-calendar/upcoming",
+                                "/api/v1/awareness-session/quiz/*",
+                                "/api/v1/kids/**",
+                                "/api/v1/training-program/get-active").permitAll()
+                        .requestMatchers(HttpMethod.POST,
+                                "/api/v1/awareness-session/evaluate/*",
+                                "/api/v1/awareness-session/quiz/submit/*").permitAll()
                         .requestMatchers(HttpMethod.POST,
                                 "/api/v1/organization/register",
                                 "/api/v1/organization/*/resubmit").permitAll()

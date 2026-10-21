@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-en="Waei — Story">واعي — قصة</title>
+    <link rel="icon" href="/img/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/kids.css">
+    <script src="/js/i18n.js"></script>
+    <style>
+        .story-scene { display: flex; flex-direction: column; gap: 18px; padding: 32px; border-radius: 36px; background: #FEF3C7; }
+        .story-scene h1 { font-size: 40px; font-weight: 800; line-height: 1.35; }
+        .story-scene p { font-size: 26px; line-height: 1.8; font-weight: 600; }
+        .lesson { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 30px; border-radius: 36px; background: var(--k-purple); color: #FFFFFF; text-align: center; }
+        .lesson h2 { font-size: 34px; font-weight: 800; }
+        .lesson p { font-size: 23px; line-height: 1.7; color: #EDE9FE; }
+        @media (max-width: 720px) {
+            .story-scene { padding: 22px; }
+            .story-scene h1 { font-size: 30px; }
+            .story-scene p { font-size: 21px; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="k-header">
+    <a href="/kids#stories" class="k-back">
+        <svg aria-hidden="true" class="flip-ltr" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        <span data-en="Back to stories">رجوع للقصص</span>
+    </a>
+    <div class="k-tools">
+        <button type="button" class="lang-toggle">English</button>
+    <button type="button" class="k-sound" id="speakStory" aria-label="اسمع القصة" data-en-aria="Listen to the story">
+        <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.5 8.5a5 5 0 0 1 0 7"></path><path d="M19 5a10 10 0 0 1 0 14"></path></svg>
+    </button>
+    </div>
+</header>
+
+<main class="k-main" id="storyBox">
+    <div class="k-loading" data-en="Loading the story...">نجيب القصة...</div>
+</main>
+
+<script src="/js/api.js"></script>
+<script th:inline="none">
+    let story = null;
+
+    function speak(text) {
+        if (!("speechSynthesis" in window)) return;
+        window.speechSynthesis.cancel();
+        const voice = new SpeechSynthesisUtterance(text);
+        voice.lang = "ar-SA";
+        voice.rate = 0.85;
+        window.speechSynthesis.speak(voice);
+    }
+
+    document.getElementById("speakStory").addEventListener("click", function () {
+        if (story) {
+            speak(story.title + ". " + story.content + ". " + (story.lesson || ""));
+        }
+    });
+
+    async function loadStory() {
+        const box = document.getElementById("storyBox");
+        const id = getQueryParam("id");
+        if (!id) {
+            box.innerHTML = '<div class="k-empty">' + tr('اختر قصة من <a href="/kids#stories">قصص الأبطال</a>.', 'Choose a story from <a href="/kids#stories">hero stories</a>.') + '</div>';
+            return;
+        }
+        try {
+            story = await apiGet("/kids/stories/" + encodeURIComponent(id));
+            document.title = tr("واعي — ", "Waei — ") + story.title;
+
+            // Each line of the story becomes a paragraph
+            let paragraphs = "";
+            for (const line of story.content.split("\n")) {
+                if (line.trim() !== "") {
+                    paragraphs += "<p>" + escapeHtml(line) + "</p>";
+                }
+            }
+
+            let lesson = "";
+            if (story.lesson) {
+                lesson = '<section class="lesson" lang="ar" dir="rtl" aria-label="' + tr("الدرس", "Lesson") + '">'
+                    + '<div aria-hidden="true" style="color: #FCD34D; display: flex; gap: 6px">'
+                    + '<svg width="44" height="44" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"></path></svg>'
+                    + '<svg width="44" height="44" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"></path></svg>'
+                    + '<svg width="44" height="44" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"></path></svg>'
+                    + "</div>"
+                    + "<h2>" + tr("تذكّر يا بطل", "Remember, hero") + "</h2>"
+                    + "<p>" + escapeHtml(story.lesson) + "</p></section>";
+            }
+
+            // The story itself is always in Arabic
+            box.innerHTML = '<article class="story-scene" lang="ar" dir="rtl">'
+                + "<h1>" + escapeHtml(story.title) + "</h1>"
+                + paragraphs
+                + "</article>"
+                + lesson
+                + '<div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center">'
+                + '<a href="/kids#stories" class="k-btn k-btn-purple">' + tr("قصة ثانية", "Another story") + '</a>'
+                + '<a href="/kids#whatIf" class="k-btn">' + tr("العب لعبة", "Play a game") + '</a>'
+                + "</div>"
+                + '<p class="k-note" style="text-align: center">' + tr("كتب القصة الذكاء الاصطناعي وراجعها مختص قبل النشر.", "This story was written by AI and reviewed by a specialist before publishing.") + '</p>';
+        } catch (e) {
+            box.innerHTML = '<div class="k-empty">' + tr('ما لقينا القصة. <a href="/kids#stories">ارجع للقصص</a>', 'Story not found. <a href="/kids#stories">Back to stories</a>') + '</div>';
+        }
+    }
+
+    loadStory();
+</script>
+</body>
+</html>
