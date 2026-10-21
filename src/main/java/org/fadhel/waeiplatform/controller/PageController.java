@@ -41,7 +41,6 @@ public class PageController {
 
     // Visitor pages (no login needed)
 
-    // Example: /train?id=1
     @GetMapping("/train")
     public String train() {
         return "visitor/train";
@@ -71,5 +70,16 @@ public class PageController {
     @GetMapping("/call")
     public String call() {
         return "visitor/call";
+    }
+
+    // Emergency guide
+    @GetMapping("/guide")
+    public String guide() {
+        return "visitor/guide";
+    }
+
+    @GetMapping("/guide/detail")
+    public String guideDetail() {
+        return "visitor/guide-detail";
     }
 }

@@ -26,6 +26,12 @@ const ARABIC_MESSAGES = {
     "Your organization is not verified yet. Please contact the platform administrator.": "جهتك غير موثقة بعد، تواصل مع إدارة المنصة",
     "The organization must be verified before it can perform this action": "لازم تكون الجهة موثقة قبل تنفيذ هذا الإجراء",
     "Authentication required": "لازم تسجّل دخول",
+    "Emergency case not found": "الحالة غير موجودة",
+    "The emergency guide is empty right now": "دليل الطوارئ فاضي حاليًا",
+    "Smart search is not available right now, please browse the cases": "البحث الذكي غير متاح الحين، تصفح الحالات تحت",
+    "Your organization registration is awaiting platform administrator verification.": "طلب تسجيل جهتك قيد المراجعة من إدارة المنصة",
+    "Your organization is not verified yet. Please contact the platform administrator.": "جهتك ما توثقت بعد، تواصل مع إدارة المنصة",
+    "Access denied": "ما عندك صلاحية
     "Access denied": "ما عندك صلاحية",
     "Organization email already exists": "بريد الجهة مسجل من قبل",
     "Organization administrator email already exists": "بريد مدير الجهة مسجل من قبل",
