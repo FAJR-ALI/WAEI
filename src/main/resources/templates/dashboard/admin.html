@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-en="Waei — Platform admin">واعي — لوحة إدارة المنصة</title>
+    <link rel="icon" href="/img/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/app.css">
+    <script src="/js/i18n.js"></script>
+</head>
+<body class="app-body">
+
+<div id="appShell" class="app-shell hidden">
+    <div id="appOverlay" class="app-overlay"></div>
+
+    <aside class="app-sidebar">
+        <a href="/" class="app-brand">
+            <img src="/img/logo-dark.png" alt="شعار واعي" data-en-alt="Waei logo">
+            <span><span data-en="Waei">واعي</span><small data-en="Platform administration">إدارة المنصة</small></span>
+        </a>
+        <nav id="appNav" class="app-nav" aria-label="أقسام لوحة التحكم" data-en-aria="Dashboard sections"></nav>
+        <div class="app-sidebar-footer">
+            <span class="sidebar-org" data-org-name></span>
+            <a href="/" class="sidebar-link">
+                <svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9.5V21h14V9.5"></path><path d="M9 21v-6h6v6"></path></svg>
+                <span data-en="Back to website">العودة للموقع</span>
+            </a>
+            <div id="sidebarExtra"></div>
+        </div>
+    </aside>
+
+    <div class="app-content">
+        <header class="app-topbar">
+            <button type="button" id="menuToggle" class="icon-btn menu-toggle" aria-label="فتح القائمة" data-en-aria="Open menu">
+                <svg aria-hidden="true" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+            <div class="topbar-title">
+                <h1 data-en="Platform administration">لوحة إدارة المنصة</h1>
+                <p data-en="Review organizations and follow platform activity">راجع طلبات الجهات وتابع نشاط المنصة</p>
+            </div>
+            <div class="topbar-actions">
+                <span class="org-pill" data-org-name></span>
+                <div class="user-chip">
+                    <span class="avatar" data-user-initials>و</span>
+                    <span class="user-meta">
+                        <strong data-user-name></strong>
+                        <small data-user-email></small>
+                    </span>
+                </div>
+                <button type="button" class="lang-toggle">English</button>
+                <button type="button" class="icon-btn" data-logout aria-label="تسجيل الخروج" data-en-aria="Log out">
+                    <svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><path d="m16 17 5-5-5-5M21 12H9"></path></svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="app-main">
+            <section class="app-section" data-panel="overview">
+                <div class="page-intro">
+                    <div>
+                        <h2 data-en="Overview">نظرة عامة</h2>
+                        <p data-en="A live summary of organizations and platform activity.">ملخص مباشر للجهات ونشاط المنصة.</p>
+                    </div>
+                    <button type="button" class="btn btn-outline btn-sm" data-refresh data-en="Refresh">تحديث</button>
+                </div>
+
+                <div class="kpi-grid">
+                    <article class="kpi-card">
+                        <span class="kpi-icon warn">
+                            <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"></rect><path d="M9 4.5V3h6v1.5M9 10h6M9 14h6M9 18h4"></path></svg>
+                        </span>
+                        <span class="kpi-body"><span class="kpi-label" data-en="Pending review">قيد المراجعة</span><strong class="kpi-value" id="kpiPending">0</strong><span class="kpi-hint" data-en="Organization applications">طلبات جهات</span></span>
+                    </article>
+                    <article class="kpi-card">
+                        <span class="kpi-icon ok">
+                            <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+                        </span>
+                        <span class="kpi-body"><span class="kpi-label" data-en="Verified organizations">جهات موثقة</span><strong class="kpi-value" id="kpiVerified">0</strong><span class="kpi-hint" data-en="Ready to use the platform">جاهزة للاستخدام</span></span>
+                    </article>
+                    <article class="kpi-card">
+                        <span class="kpi-icon">
+                            <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V5a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v16"></path><path d="M9 7h3M9 11h3M9 15h3M16 21v-8h3v8"></path></svg>
+                        </span>
+                        <span class="kpi-body"><span class="kpi-label" data-en="All organizations">إجمالي الجهات</span><strong class="kpi-value" id="kpiOrgs">0</strong><span class="kpi-hint" data-en="Registered on the platform">مسجلة في المنصة</span></span>
+                    </article>
+                    <article class="kpi-card">
+                        <span class="kpi-icon">
+                            <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                        </span>
+                        <span class="kpi-body"><span class="kpi-label" data-en="Active programs">برامج نشطة</span><strong class="kpi-value" id="kpiPrograms">0</strong><span class="kpi-hint" data-en="Published by providers">منشورة من مقدمي الخدمة</span></span>
+                    </article>
+                    <article class="kpi-card">
+                        <span class="kpi-icon">
+                            <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg>
+                        </span>
+                        <span class="kpi-body"><span class="kpi-label" data-en="Training requests">طلبات التدريب</span><strong class="kpi-value" id="kpiRequests">0</strong><span class="kpi-hint" data-en="Across all organizations">عبر جميع الجهات</span></span>
+                    </article>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-head">
+                        <div>
+                            <h2 data-en="Latest pending applications">أحدث طلبات التسجيل المعلقة</h2>
+                            <p data-en="Organizations waiting for document review.">جهات بانتظار مراجعة المستند.</p>
+                        </div>
+                        <button type="button" class="btn btn-ghost btn-sm" data-goto="registrations" data-en="View all">عرض الكل</button>
+                    </div>
+                    <div id="overviewPending" class="panel-state"></div>
+                </div>
+            </section>
+
+            <section class="app-section hidden" data-panel="registrations">
+                <div class="page-intro">
+                    <div>
+                        <h2 data-en="Organization applications">طلبات تسجيل الجهات</h2>
+                        <p data-en="Review the supporting document, then verify or reject the organization.">راجع المستند الداعم ثم وثّق الجهة أو ارفض الطلب.</p>
+                    </div>
+                    <button type="button" class="btn btn-outline btn-sm" data-refresh data-en="Refresh">تحديث</button>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-head">
+                        <div class="toolbar">
+                            <button type="button" class="filter-chip" data-reg-status="PENDING" aria-pressed="true" data-en="Pending">قيد المراجعة</button>
+                            <button type="button" class="filter-chip" data-reg-status="VERIFIED" aria-pressed="false" data-en="Verified">موثقة</button>
+                            <button type="button" class="filter-chip" data-reg-status="REJECTED" aria-pressed="false" data-en="Rejected">مرفوضة</button>
+                        </div>
+                        <div class="search-box">
+                            <svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+                            <input id="registrationSearch" class="input" type="search" placeholder="ابحث باسم الجهة أو بريدها" data-en-placeholder="Search by organization or email">
+                        </div>
+                    </div>
+                    <div id="registrationsList" class="panel-state"></div>
+                </div>
+            </section>
+
+            <section class="app-section hidden" data-panel="organizations">
+                <div class="page-intro">
+                    <div>
+                        <h2 data-en="All organizations">جميع الجهات</h2>
+                        <p data-en="A directory of beneficiary and provider organizations.">دليل الجهات المستفيدة ومقدمي الخدمة.</p>
+                    </div>
+                    <button type="button" class="btn btn-outline btn-sm" data-refresh data-en="Refresh">تحديث</button>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-head">
+                        <div class="toolbar">
+                            <button type="button" class="filter-chip" data-org-type="ALL" aria-pressed="true" data-en="All">الكل</button>
+                            <button type="button" class="filter-chip" data-org-type="BENEFICIARY" aria-pressed="false" data-en="Beneficiary">مستفيدة</button>
+                            <button type="button" class="filter-chip" data-org-type="PROVIDER" aria-pressed="false" data-en="Provider">مقدمة خدمة</button>
+                        </div>
+                        <div class="search-box">
+                            <svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+                            <input id="organizationSearch" class="input" type="search" placeholder="ابحث باسم الجهة أو بريدها" data-en-placeholder="Search by organization or email">
+                        </div>
+                    </div>
+                    <div id="organizationsList" class="panel-state"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+</div>
+
+<dialog id="registrationDialog" class="app-dialog wide">
+    <div class="dialog-head">
+        <div>
+            <h2 data-en="Organization application">طلب تسجيل جهة</h2>
+            <p data-en="Review the submitted information and supporting document.">راجع البيانات المرسلة والمستند الداعم.</p>
+        </div>
+        <button type="button" class="dialog-close" data-close-dialog aria-label="إغلاق" data-en-aria="Close">
+            <svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+        </button>
+    </div>
+    <div id="registrationDetails" class="dialog-body"></div>
+    <div class="dialog-footer">
+        <button type="button" id="dialogDownload" class="btn btn-outline btn-sm" data-en="Download document">تحميل المستند</button>
+        <button type="button" id="dialogReject" class="btn btn-danger btn-sm" data-en="Reject">رفض</button>
+        <button type="button" id="dialogVerify" class="btn btn-primary btn-sm" data-en="Verify organization">توثيق الجهة</button>
+    </div>
+</dialog>
+
+<dialog id="rejectDialog" class="app-dialog">
+    <form id="rejectForm">
+        <div class="dialog-head">
+            <div>
+                <h2 data-en="Reject application">رفض الطلب</h2>
+                <p data-en="The reason will be shown to the organization when it tries to log in.">سيظهر السبب للجهة عند محاولة تسجيل الدخول.</p>
+            </div>
+            <button type="button" class="dialog-close" data-close-dialog aria-label="إغلاق" data-en-aria="Close">
+                <svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        <div class="dialog-body">
+            <div id="rejectError"></div>
+            <div class="field">
+                <label for="rejectionReason" data-en="Rejection reason">سبب الرفض</label>
+                <textarea id="rejectionReason" class="input" maxlength="1000" rows="4" required></textarea>
+            </div>
+        </div>
+        <div class="dialog-footer">
+            <button type="button" class="btn btn-outline btn-sm" data-close-dialog data-en="Cancel">إلغاء</button>
+            <button type="submit" id="rejectSubmit" class="btn btn-danger btn-sm" data-en="Confirm rejection">تأكيد الرفض</button>
+        </div>
+    </form>
+</dialog>
+
+<script src="/js/api.js"></script>
+<script src="/js/dashboard.js"></script>
+<script th:inline="none">
+    let registrations = [];
+    let organizations = [];
+    let programs = [];
+    let requests = [];
+    let registrationStatus = "PENDING";
+    let organizationType = "ALL";
+    let selectedRegistration = null;
+    let dashboardUser = null;
+
+    function sortByDate(items, field) {
+        return items.slice().sort(function (a, b) {
+            return new Date(b[field] || 0) - new Date(a[field] || 0);
+        });
+    }
+
+    function setStats() {
+        const pending = registrations.filter(function (item) { return item.verificationStatus === "PENDING"; });
+        const verified = organizations.filter(function (item) { return item.verificationStatus === "VERIFIED"; });
+        document.getElementById("kpiPending").textContent = WaeiDashboard.formatNumber(pending.length);
+        document.getElementById("kpiVerified").textContent = WaeiDashboard.formatNumber(verified.length);
+        document.getElementById("kpiOrgs").textContent = WaeiDashboard.formatNumber(organizations.length);
+        document.getElementById("kpiPrograms").textContent = WaeiDashboard.formatNumber(
+            programs.filter(function (program) { return program.isActive; }).length);
+        document.getElementById("kpiRequests").textContent = WaeiDashboard.formatNumber(requests.length);
+        WaeiDashboard.setNavBadge("registrations", pending.length);
+    }
+
+    function matchesSearch(item, query) {
+        if (!query) {
+            return true;
+        }
+        const haystack = [
+            item.name, item.email, item.sector, item.phoneNumber,
+            item.adminFullName, item.adminEmail
+        ].join(" ").toLowerCase();
+        return haystack.indexOf(query.toLowerCase()) !== -1;
+    }
+
+    function registrationRows() {
+        const query = document.getElementById("registrationSearch").value.trim();
+        return registrations.filter(function (item) {
+            return item.verificationStatus === registrationStatus && matchesSearch(item, query);
+        });
+    }
+
+    function renderRegistrations() {
+        const target = document.getElementById("registrationsList");
+        const rows = registrationRows();
+        if (!rows.length) {
+            showEmpty(target, tr("ما فيه طلبات مطابقة.", "No matching applications."));
+            return;
+        }
+        let html = '<div class="table-wrap"><table class="data-table"><thead><tr>'
+            + '<th>' + tr("الجهة", "Organization") + '</th>'
+            + '<th>' + tr("النوع", "Type") + '</th>'
+            + '<th>' + tr("مدير الجهة", "Administrator") + '</th>'
+            + '<th>' + tr("تاريخ التقديم", "Submitted") + '</th>'
+            + '<th>' + tr("الحالة", "Status") + '</th>'
+            + '<th>' + tr("الإجراءات", "Actions") + '</th>'
+            + '</tr></thead><tbody>';
+        rows.forEach(function (item) {
+            html += '<tr>'
+                + '<td><strong>' + escapeHtml(item.name) + '</strong><small>' + escapeHtml(item.email) + '</small></td>'
+                + '<td>' + escapeHtml(WaeiDashboard.typeLabel(item.type)) + '</td>'
+                + '<td><strong>' + escapeHtml(item.adminFullName || "—") + '</strong><small>' + escapeHtml(item.adminEmail || "—") + '</small></td>'
+                + '<td class="nowrap">' + WaeiDashboard.formatDate(item.submittedAt || item.createdAt) + '</td>'
+                + '<td>' + WaeiDashboard.statusBadge("organization", item.verificationStatus) + '</td>'
+                + '<td><div class="cell-actions">'
+                + '<button type="button" class="btn btn-outline btn-sm" data-view-registration="' + item.id + '">' + tr("عرض", "View") + '</button>'
+                + (item.verificationStatus === "PENDING"
+                    ? '<button type="button" class="btn btn-primary btn-sm" data-verify-registration="' + item.id + '">' + tr("توثيق", "Verify") + '</button>'
+                    + '<button type="button" class="btn btn-danger btn-sm" data-reject-registration="' + item.id + '">' + tr("رفض", "Reject") + '</button>'
+                    : "")
+                + '</div></td></tr>';
+        });
+        html += '</tbody></table></div>';
+        target.innerHTML = html;
+        bindRegistrationActions(target);
+    }
+
+    function bindRegistrationActions(root) {
+        root.querySelectorAll("[data-view-registration]").forEach(function (button) {
+            button.addEventListener("click", function () {
+                openRegistration(Number(button.dataset.viewRegistration));
+            });
+        });
+        root.querySelectorAll("[data-verify-registration]").forEach(function (button) {
+            button.addEventListener("click", function () {
+                verifyRegistration(Number(button.dataset.verifyRegistration));
+            });
+        });
+        root.querySelectorAll("[data-reject-registration]").forEach(function (button) {
+            button.addEventListener("click", function () {
+                openRejectDialog(Number(button.dataset.rejectRegistration));
+            });
+        });
+    }
+
+    function renderOverviewPending() {
+        const target = document.getElementById("overviewPending");
+        const pending = sortByDate(registrations.filter(function (item) {
+            return item.verificationStatus === "PENDING";
+        }), "submittedAt").slice(0, 5);
+        if (!pending.length) {
+            showEmpty(target, tr("ما فيه طلبات بانتظار المراجعة.", "No applications waiting for review."));
+            return;
+        }
+        let html = '<div class="table-wrap"><table class="data-table"><thead><tr>'
+            + '<th>' + tr("الجهة", "Organization") + '</th>'
+            + '<th>' + tr("النوع", "Type") + '</th>'
+            + '<th>' + tr("تاريخ التقديم", "Submitted") + '</th>'
+            + '<th>' + tr("الإجراءات", "Actions") + '</th>'
+            + '</tr></thead><tbody>';
+        pending.forEach(function (item) {
+            html += '<tr>'
+                + '<td><strong>' + escapeHtml(item.name) + '</strong><small>' + escapeHtml(item.email) + '</small></td>'
+                + '<td>' + escapeHtml(WaeiDashboard.typeLabel(item.type)) + '</td>'
+                + '<td class="nowrap">' + WaeiDashboard.formatDate(item.submittedAt || item.createdAt) + '</td>'
+                + '<td><button type="button" class="btn btn-outline btn-sm" data-view-registration="' + item.id + '">' + tr("مراجعة", "Review") + '</button></td>'
+                + '</tr>';
+        });
+        html += '</tbody></table></div>';
+        target.innerHTML = html;
+        bindRegistrationActions(target);
+    }
+
+    function registrationDetailsHtml(item) {
+        return '<div class="detail-grid">'
+            + detailRow(tr("اسم الجهة", "Organization"), item.name)
+            + detailRow(tr("نوع الجهة", "Type"), WaeiDashboard.typeLabel(item.type))
+            + detailRow(tr("القطاع", "Sector"), item.sector)
+            + detailRow(tr("بريد الجهة", "Organization email"), item.email)
+            + detailRow(tr("الجوال", "Mobile"), item.phoneNumber)
+            + detailRow(tr("مرجع المستند", "Document reference"), item.documentReference || "—")
+            + detailRow(tr("مدير الجهة", "Administrator"), item.adminFullName || "—")
+            + detailRow(tr("بريد المدير", "Administrator email"), item.adminEmail || "—")
+            + detailRow(tr("حالة حساب المدير", "Administrator account"), item.adminAccountStatus || "—")
+            + detailRow(tr("تاريخ التقديم", "Submitted"), WaeiDashboard.formatDateTime(item.submittedAt || item.createdAt))
+            + detailRow(tr("الحالة", "Status"), WaeiDashboard.statusLabel("organization", item.verificationStatus))
+            + detailRow(tr("المستند", "Document"), item.documentAvailable
+                ? (item.documentOriginalName || "—") + " • " + WaeiDashboard.formatFileSize(item.documentSize)
+                : tr("غير متوفر", "Not available"))
+            + (item.rejectionReason
+                ? '<div class="detail-row" style="grid-column: 1 / -1"><span>' + tr("سبب الرفض", "Rejection reason") + '</span><span>' + escapeHtml(item.rejectionReason) + '</span></div>'
+                : "")
+            + '</div>';
+    }
+
+    function detailRow(label, value) {
+        return '<div class="detail-row"><span>' + escapeHtml(label) + '</span><span>' + escapeHtml(value || "—") + '</span></div>';
+    }
+
+    function openRegistration(id) {
+        selectedRegistration = registrations.find(function (item) { return item.id === id; });
+        if (!selectedRegistration) {
+            return;
+        }
+        document.getElementById("registrationDetails").innerHTML = registrationDetailsHtml(selectedRegistration);
+        const pending = selectedRegistration.verificationStatus === "PENDING";
+        document.getElementById("dialogVerify").classList.toggle("hidden", !pending);
+        document.getElementById("dialogReject").classList.toggle("hidden", !pending);
+        document.getElementById("dialogDownload").disabled = !selectedRegistration.documentAvailable;
+        WaeiDashboard.openDialog("registrationDialog");
+    }
+
+    async function verifyRegistration(id) {
+        const item = registrations.find(function (row) { return row.id === id; });
+        if (!item) {
+            return;
+        }
+        if (!WaeiDashboard.confirmAction(
+            "توثيق الجهة وتفعيل حساب مديرها؟",
+            "Verify this organization and activate its administrator account?"
+        )) {
+            return;
+        }
+        try {
+            await apiPut("/organization/" + id + "/verify");
+            WaeiDashboard.closeDialog("registrationDialog");
+            WaeiDashboard.notify(tr("تم توثيق الجهة وتفعيل حسابها.", "Organization verified and account activated."), "ok");
+            await loadData();
+        } catch (e) {
+            WaeiDashboard.notify(e.message, "error");
+        }
+    }
+
+    function openRejectDialog(id) {
+        selectedRegistration = registrations.find(function (item) { return item.id === id; });
+        if (!selectedRegistration) {
+            return;
+        }
+        document.getElementById("rejectionReason").value = "";
+        document.getElementById("rejectError").innerHTML = "";
+        WaeiDashboard.openDialog("rejectDialog");
+        document.getElementById("rejectionReason").focus();
+    }
+
+    async function downloadSelectedDocument() {
+        if (!selectedRegistration || !selectedRegistration.documentAvailable) {
+            return;
+        }
+        try {
+            await apiDownload("/organization/" + selectedRegistration.id + "/document",
+                selectedRegistration.documentOriginalName || "organization-document");
+        } catch (e) {
+            WaeiDashboard.notify(e.message, "error");
+        }
+    }
+
+    function renderOrganizations() {
+        const target = document.getElementById("organizationsList");
+        const query = document.getElementById("organizationSearch").value.trim();
+        const rows = organizations.filter(function (item) {
+            return (organizationType === "ALL" || item.type === organizationType) && matchesSearch(item, query);
+        });
+        if (!rows.length) {
+            showEmpty(target, tr("ما فيه جهات مطابقة.", "No matching organizations."));
+            return;
+        }
+        let html = '<div class="table-wrap"><table class="data-table"><thead><tr>'
+            + '<th>' + tr("الجهة", "Organization") + '</th>'
+            + '<th>' + tr("النوع", "Type") + '</th>'
+            + '<th>' + tr("التواصل", "Contact") + '</th>'
+            + '<th>' + tr("الحالة", "Status") + '</th>'
+            + '<th>' + tr("تاريخ التوثيق", "Verified") + '</th>'
+            + '<th>' + tr("الإجراءات", "Actions") + '</th>'
+            + '</tr></thead><tbody>';
+        rows.forEach(function (item) {
+            html += '<tr>'
+                + '<td><strong>' + escapeHtml(item.name) + '</strong><small>' + escapeHtml(item.sector || "—") + '</small></td>'
+                + '<td>' + escapeHtml(WaeiDashboard.typeLabel(item.type)) + '</td>'
+                + '<td><strong>' + escapeHtml(item.email || "—") + '</strong><small>' + escapeHtml(item.phoneNumber || "—") + '</small></td>'
+                + '<td>' + WaeiDashboard.statusBadge("organization", item.verificationStatus) + '</td>'
+                + '<td class="nowrap">' + WaeiDashboard.formatDate(item.verifiedAt) + '</td>'
+                + '<td><button type="button" class="btn btn-outline btn-sm" data-view-registration="' + item.id + '">' + tr("عرض", "View") + '</button></td>'
+                + '</tr>';
+        });
+        html += '</tbody></table></div>';
+        target.innerHTML = html;
+        bindRegistrationActions(target);
+    }
+
+    async function loadData() {
+        const pendingRoot = document.getElementById("registrationsList");
+        if (pendingRoot) {
+            showLoading(pendingRoot, tr("نجيب بيانات المنصة...", "Loading platform data..."));
+        }
+        try {
+            const results = await Promise.all([
+                apiGet("/organization/registrations?status=PENDING"),
+                apiGet("/organization/registrations?status=VERIFIED"),
+                apiGet("/organization/registrations?status=REJECTED"),
+                apiGet("/organization/get"),
+                apiGet("/training-program/get"),
+                apiGet("/training-request/get")
+            ]);
+            registrations = results[0].concat(results[1]).concat(results[2]);
+            organizations = results[3];
+            programs = results[4];
+            requests = results[5];
+            setStats();
+            renderOverviewPending();
+            renderRegistrations();
+            renderOrganizations();
+        } catch (e) {
+            showError(pendingRoot, e.message);
+            WaeiDashboard.notify(e.message, "error");
+        }
+    }
+
+    document.querySelectorAll("[data-reg-status]").forEach(function (button) {
+        button.addEventListener("click", function () {
+            registrationStatus = button.dataset.regStatus;
+            document.querySelectorAll("[data-reg-status]").forEach(function (chip) {
+                chip.setAttribute("aria-pressed", chip === button ? "true" : "false");
+            });
+            renderRegistrations();
+        });
+    });
+
+    document.querySelectorAll("[data-org-type]").forEach(function (button) {
+        button.addEventListener("click", function () {
+            organizationType = button.dataset.orgType;
+            document.querySelectorAll("[data-org-type]").forEach(function (chip) {
+                chip.setAttribute("aria-pressed", chip === button ? "true" : "false");
+            });
+            renderOrganizations();
+        });
+    });
+
+    document.getElementById("registrationSearch").addEventListener("input", renderRegistrations);
+    document.getElementById("organizationSearch").addEventListener("input", renderOrganizations);
+    document.querySelectorAll("[data-refresh]").forEach(function (button) {
+        button.addEventListener("click", loadData);
+    });
+    document.querySelectorAll("[data-goto]").forEach(function (button) {
+        button.addEventListener("click", function () {
+            WaeiDashboard.setPanel(button.dataset.goto);
+        });
+    });
+
+    document.getElementById("dialogDownload").addEventListener("click", downloadSelectedDocument);
+
+    document.getElementById("dialogVerify").addEventListener("click", function () {
+        if (selectedRegistration) {
+            verifyRegistration(selectedRegistration.id);
+        }
+    });
+
+    document.getElementById("dialogReject").addEventListener("click", function () {
+        if (selectedRegistration) {
+            WaeiDashboard.closeDialog("registrationDialog");
+            openRejectDialog(selectedRegistration.id);
+        }
+    });
+
+    document.getElementById("rejectForm").addEventListener("submit", async function (event) {
+        event.preventDefault();
+        const reason = document.getElementById("rejectionReason").value.trim();
+        const errorRoot = document.getElementById("rejectError");
+        errorRoot.innerHTML = "";
+        if (!reason) {
+            errorRoot.innerHTML = '<div class="alert alert-error" role="alert">' + tr("اكتب سبب الرفض.", "Enter a rejection reason.") + "</div>";
+            return;
+        }
+        if (!selectedRegistration) {
+            return;
+        }
+        const button = document.getElementById("rejectSubmit");
+        button.disabled = true;
+        try {
+            await apiPut("/organization/" + selectedRegistration.id + "/reject", { reason: reason });
+            WaeiDashboard.closeDialog("rejectDialog");
+            WaeiDashboard.notify(tr("تم رفض الطلب.", "Application rejected."), "ok");
+            await loadData();
+        } catch (e) {
+            errorRoot.innerHTML = '<div class="alert alert-error" role="alert">' + escapeHtml(e.message) + "</div>";
+        } finally {
+            button.disabled = false;
+        }
+    });
+
+    WaeiDashboard.init({
+        role: "PLATFORM_ADMIN",
+        nav: [
+            { id: "overview", ar: "نظرة عامة", en: "Overview", icon: "grid" },
+            { id: "registrations", ar: "طلبات التسجيل", en: "Applications", icon: "clipboard", badge: true },
+            { id: "organizations", ar: "الجهات", en: "Organizations", icon: "building" }
+        ]
+    }).then(function (user) {
+        if (!user) {
+            return;
+        }
+        dashboardUser = user;
+        loadData();
+    });
+</script>
+</body>
+</html>

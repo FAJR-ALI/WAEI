@@ -18,6 +18,27 @@ public class PageController {
         return "login";
     }
 
+    @GetMapping("/register")
+    public String register() {
+        return "register";
+    }
+
+    // Organization and platform dashboards (the JWT is validated by the REST API)
+    @GetMapping("/dashboard/admin")
+    public String adminDashboard() {
+        return "dashboard/admin";
+    }
+
+    @GetMapping("/dashboard/beneficiary")
+    public String beneficiaryDashboard() {
+        return "dashboard/beneficiary";
+    }
+
+    @GetMapping("/dashboard/provider")
+    public String providerDashboard() {
+        return "dashboard/provider";
+    }
+
     // Visitor pages (no login needed)
 
     @GetMapping("/train")
