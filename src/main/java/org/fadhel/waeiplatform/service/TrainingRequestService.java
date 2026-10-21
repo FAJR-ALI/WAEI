@@ -175,6 +175,7 @@ public class TrainingRequestService {
         if (!accessControl.isProviderOrganization(program.getOrganization())) {
             throw new ApiException("This training program does not belong to a training provider");
         }
+        accessControl.requireVerifiedOrganization(program.getOrganization());
 
         assertSlotAvailable(program.getId(), request.getScheduledStart(), request.getScheduledEnd(), -1L);
 
@@ -359,6 +360,8 @@ public class TrainingRequestService {
         if (!accessControl.isBeneficiaryOrganization(organization)) {
             throw new ApiException("Training requests can only be created by a beneficiary organization");
         }
+
+        accessControl.requireVerifiedOrganization(organization);
 
         return organization;
     }

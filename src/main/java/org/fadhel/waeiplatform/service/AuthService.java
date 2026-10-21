@@ -5,6 +5,8 @@ import org.fadhel.waeiplatform.api.ApiException;
 import org.fadhel.waeiplatform.dto.in.LoginRequest;
 import org.fadhel.waeiplatform.dto.out.AuthResponse;
 import org.fadhel.waeiplatform.model.Account;
+import org.fadhel.waeiplatform.model.Organization;
+import org.fadhel.waeiplatform.model.OrganizationVerificationStatus;
 import org.fadhel.waeiplatform.repository.AccountRepository;
 import org.fadhel.waeiplatform.security.CurrentUser;
 import org.fadhel.waeiplatform.security.JwtService;
@@ -29,8 +31,26 @@ public class AuthService {
             throw new ApiException("Invalid email or password");
         }
 
+        Organization organization = account.getOrganization();
+        OrganizationVerificationStatus organizationStatus =
+                organization != null ? organization.getVerificationStatus() : null;
+
+        if (organizationStatus == OrganizationVerificationStatus.REJECTED) {
+            String reason = organization.getRejectionReason();
+            throw new ApiException("Your organization registration was rejected"
+                    + (reason != null && !reason.isBlank() ? ": " + reason : "")
+                    + ". Please update your registration and resubmit it.");
+        }
+
         if (!"ACTIVE".equals(account.getStatus())) {
+            if (organizationStatus == OrganizationVerificationStatus.PENDING || organizationStatus == null) {
+                throw new ApiException("Your organization registration is awaiting platform administrator verification.");
+            }
             throw new ApiException("This account is not active yet. Please contact the platform administrator.");
+        }
+
+        if (organization != null && organizationStatus != OrganizationVerificationStatus.VERIFIED) {
+            throw new ApiException("Your organization is not verified yet. Please contact the platform administrator.");
         }
 
         return toResponse(account, jwtService.generateToken(account));

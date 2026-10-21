@@ -2,6 +2,8 @@
 
 A marketplace connecting **beneficiary organizations** with **training providers**. Providers publish programs; beneficiaries request a session, pay through **Moyasar**, and follow the request through delivery.
 
+Organizations register themselves and upload a supporting document. A platform administrator reviews the document and verifies or rejects the registration; only verified organizations can sign in.
+
 ## Stack
 
 - **Backend:** Spring Boot 4.1.1, Java 17+, Spring Security (JWT), Spring Data JPA
@@ -46,7 +48,7 @@ curl -X POST http://localhost:8080/api/v1/auth/login \
   -d '{"email":"admin@waei.sa","password":"Admin@12345"}'
 ```
 
-Send the returned token as `Authorization: Bearer <token>` on every other request.
+Send the returned token as `Authorization: Bearer <token>` on every protected request.
 
 After a Moyasar payment the browser returns to the backend-rendered page at
 `http://localhost:8080/payment/callback/{paymentId}`, which pulls the current status from Moyasar.
@@ -58,6 +60,7 @@ After a Moyasar payment the browser returns to the backend-rendered page at
 | `DB_URL`, `DB_USERNAME`, `DB_PASSWORD` | MySQL connection |
 | `JWT_SECRET` | HMAC key for JWTs (at least 32 characters) |
 | `ADMIN_EMAIL`, `ADMIN_PASSWORD` | Bootstrap platform administrator |
+| `UPLOAD_DIR` | Directory for organization registration documents (default `uploads/organization-documents`) |
 | `CORS_ORIGINS` | Comma-separated allowed origins; empty by default (set it for browser clients) |
 | `MOYASAR_SECRET_KEY` | Moyasar `sk_test_...` or `sk_live_...` key |
 | `MOYASAR_WEBHOOK_SECRET` | Secret token configured on the Moyasar webhook |
@@ -66,11 +69,60 @@ After a Moyasar payment the browser returns to the backend-rendered page at
 
 ## Roles and scoping
 
-- `PLATFORM_ADMIN` — manages organizations, accounts, and sees all payments/requests.
+- `PLATFORM_ADMIN` — reviews organization registrations, verifies or rejects them, manages accounts, and sees all payments/requests.
 - `ORG_ADMIN` of a `PROVIDER` organization — manages its programs and accepts/starts/completes requests.
 - `ORG_ADMIN` of a `BENEFICIARY` organization — creates requests and pays for them.
 
-All write operations are scoped using the organization stored in the JWT, not values supplied by the client. New accounts start as `PENDING` and must be activated by a platform administrator before they can sign in.
+All write operations are scoped using the organization stored in the JWT, not values supplied by the client. Organizations register themselves; the platform administrator does not create them. A registration creates the organization as `PENDING` and its `ORG_ADMIN` account as `PENDING`. Verification activates the account, so the organization can sign in.
+
+## Organization registration and verification
+
+```
+register ──► PENDING ──► VERIFIED   (ORG_ADMIN account becomes ACTIVE)
+                 │
+                 └────► REJECTED ──► resubmit ──► PENDING
+```
+
+Registration is public and takes a `multipart/form-data` body: organization details, the organization administrator credentials, and one supporting document. Documents must be PDF, JPEG or PNG and are stored privately; only the platform administrator can download them.
+
+```bash
+# Self-registration (no token required)
+curl -X POST http://localhost:8080/api/v1/organization/register \
+  -F "name=Helping Hands Organization" \
+  -F "type=BENEFICIARY" \
+  -F "sector=Education" \
+  -F "email=contact@helpinghands.sa" \
+  -F "phoneNumber=0512345678" \
+  -F "documentReference=CR-123456" \
+  -F "adminFullName=Organization Administrator" \
+  -F "adminEmail=admin@helpinghands.sa" \
+  -F "adminPassword=Password@123" \
+  -F "document=@commercial-registration.pdf"
+
+# Platform admin: review queue, document, verify, reject
+curl -H "Authorization: Bearer <token>" \
+  "http://localhost:8080/api/v1/organization/registrations?status=PENDING"
+curl -H "Authorization: Bearer <token>" -o document.pdf \
+  http://localhost:8080/api/v1/organization/1/document
+curl -X PUT -H "Authorization: Bearer <token>" \
+  http://localhost:8080/api/v1/organization/1/verify
+curl -X PUT -H "Authorization: Bearer <token>" -H "Content-Type: application/json" \
+  -d '{"reason":"The document is not readable"}' \
+  http://localhost:8080/api/v1/organization/1/reject
+
+# Rejected organization: fix the data and resubmit (credentials verify the applicant)
+curl -X POST http://localhost:8080/api/v1/organization/1/resubmit \
+  -F "name=Helping Hands Organization" \
+  -F "type=BENEFICIARY" \
+  -F "sector=Healthcare" \
+  -F "email=contact@helpinghands.sa" \
+  -F "phoneNumber=0512345678" \
+  -F "adminEmail=admin@helpinghands.sa" \
+  -F "password=Password@123" \
+  -F "document=@updated-registration.pdf"
+```
+
+Sign in only works once the organization is `VERIFIED` and its account is `ACTIVE`. A rejected organization is told the rejection reason when it tries to sign in.
 
 ## Training request lifecycle
 
@@ -113,7 +165,9 @@ The webhook verifies `secret_token`, checks the amount and currency, and is idem
 | Area | Endpoints |
 |---|---|
 | Auth | `POST /api/v1/auth/login`, `GET /api/v1/auth/me` |
-| Organizations | `GET/POST/PUT/DELETE /api/v1/organization/...` (platform admin writes) |
+| Registration | `POST /api/v1/organization/register`, `POST /api/v1/organization/{id}/resubmit` (public) |
+| Verification | `GET /api/v1/organization/registrations`, `GET /api/v1/organization/{id}/document`, `PUT /api/v1/organization/{id}/verify`, `PUT /api/v1/organization/{id}/reject` (platform admin) |
+| Organizations | `GET /api/v1/organization/get...`, `PUT /api/v1/organization/update/{id}`, `DELETE /api/v1/organization/delete/{id}` (platform admin writes) |
 | Accounts | `GET/POST/PUT/DELETE /api/v1/account/...`, `PUT /api/v1/account/status/{id}` |
 | Programs | `GET /api/v1/training-program/...`, `POST /add`, `PUT /update/{id}`, `PUT /change-status/{id}` |
 | Requests | `GET /api/v1/training-request/...`, `POST /add`, `POST /{id}/accept`, `/reject`, `/start`, `/complete`, `/cancel` |

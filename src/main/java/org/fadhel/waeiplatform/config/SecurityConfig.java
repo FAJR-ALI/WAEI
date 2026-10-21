@@ -98,6 +98,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST,
                                 "/api/v1/awareness-session/evaluate/*",
                                 "/api/v1/awareness-session/quiz/submit/*").permitAll()
+                        .requestMatchers(HttpMethod.POST,
+                                "/api/v1/organization/register",
+                                "/api/v1/organization/*/resubmit").permitAll()
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/v1/organization/registrations",
+                                "/api/v1/organization/*/document").hasRole("PLATFORM_ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/v1/organization/**").hasRole("PLATFORM_ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/v1/organization/**").hasRole("PLATFORM_ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/organization/**").hasRole("PLATFORM_ADMIN")
