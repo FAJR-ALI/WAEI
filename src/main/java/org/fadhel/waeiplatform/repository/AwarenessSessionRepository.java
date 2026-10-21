@@ -17,4 +17,7 @@ public interface AwarenessSessionRepository extends JpaRepository<AwarenessSessi
 
     @Query("select avg(s.score) from AwarenessSession s where s.awarenessService.id = ?1")
     Double getAverageScore(Long awarenessServiceId);
+
+    @Query("select avg(s.quizScore) from AwarenessSession s where s.awarenessService.id = ?1 and s.quizScore is not null")
+    Double getAverageQuizScore(Long awarenessServiceId);
 }

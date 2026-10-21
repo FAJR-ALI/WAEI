@@ -19,6 +19,8 @@ public class ServiceStatsResponse {
 
     private Double averageScore;
 
+    // Average of correct quiz answers out of 3
+    private Double averageQuizScore;
+
     private String message;
 }
-

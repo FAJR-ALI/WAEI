@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -40,8 +41,8 @@ public class AwarenessSession {
     @Column(columnDefinition = "text")
     private String recommendations;
 
-    @Column(columnDefinition = "varchar(255)")
-    private String videoFileReference;
+    // Quiz result: how many of the 3 questions were answered correctly (null = not taken yet)
+    private Integer quizScore;
 
     @NotNull(message = "Consent must be specified")
     @Column(columnDefinition = "boolean not null")
@@ -51,6 +52,11 @@ public class AwarenessSession {
     @JoinColumn(name = "awareness_service_id", referencedColumnName = "id", nullable = false)
     @JsonIgnore
     private AwarenessService awarenessService;
+
+    // 1 session -> 3 quiz questions about the trainee's own mistakes
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "awarenessSession")
+    @JsonIgnore
+    private Set<SessionQuizQuestion> quizQuestions;
 
     @PrePersist
     public void onCreate() {

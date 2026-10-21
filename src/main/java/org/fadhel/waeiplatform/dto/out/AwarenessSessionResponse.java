@@ -1,6 +1,5 @@
 package org.fadhel.waeiplatform.dto.out;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+// No personal data here: only the evaluation result
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,8 +30,7 @@ public class AwarenessSessionResponse {
 
     private String recommendations;
 
-    private String videoFileReference;
+    private Integer quizScore;
 
     private Boolean consentGiven;
 }
-
