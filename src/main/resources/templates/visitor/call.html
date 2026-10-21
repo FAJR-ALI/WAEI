@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-en="Waei — What do I say when I call?">واعي — وش أقول لما أتصل؟</title>
+    <link rel="icon" href="/img/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/kids.css">
+    <script src="/js/i18n.js"></script>
+    <style>
+        .call-box { display: flex; flex-direction: column; gap: 12px; padding: 24px; border-radius: 32px; background: #FFFFFF; }
+        .call-title { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 800; color: #15803D; }
+        .said { display: flex; align-items: center; gap: 12px; padding: 14px 18px; border-radius: 20px; background: #DCFCE7; font-size: 22px; font-weight: 700; }
+        .said .n { flex: 0 0 auto; width: 40px; height: 40px; border-radius: 50%; background: #16A34A; color: #FFFFFF; display: flex; align-items: center; justify-content: center; }
+        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+        .line-card {
+            min-height: 110px; padding: 18px; border-radius: 28px; border: 4px solid var(--k-line); background: #FFFFFF;
+            color: var(--k-ink); font-family: inherit; font-size: 23px; font-weight: 800; line-height: 1.4; cursor: pointer;
+        }
+        .line-card:hover { border-color: #16A34A; }
+    </style>
+</head>
+<body>
+
+<header class="k-header">
+    <a href="/kids" class="k-back">
+        <svg aria-hidden="true" class="flip-ltr" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        <span data-en="Back to games">رجوع للألعاب</span>
+    </a>
+    <div class="k-tools">
+        <button type="button" class="lang-toggle">English</button>
+    <button type="button" class="k-sound" id="speakIntro" aria-label="اسمع التعليمات" data-en-aria="Listen to the instructions">
+        <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.5 8.5a5 5 0 0 1 0 7"></path><path d="M19 5a10 10 0 0 1 0 14"></path></svg>
+    </button>
+    </div>
+</header>
+
+<main class="k-main">
+    <section class="k-hero" style="background: #15803D">
+        <div class="k-hero-text">
+            <h1 data-en="Your grandma fell and is not answering you!">جدتك طاحت وما ترد عليك!</h1>
+            <p data-en="You called 997. Put your words in order: tap the sentences in the right order.">اتصلت على 997. رتّب كلامك: اضغط الجمل بالترتيب الصح.</p>
+        </div>
+    </section>
+
+    <section class="call-box" aria-label="المكالمة" data-en-aria="The call">
+        <div class="call-title">
+            <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"></path></svg>
+            <span data-en="Your call with the ambulance">مكالمتك مع الإسعاف</span>
+        </div>
+        <div id="saidList" style="display: flex; flex-direction: column; gap: 10px"></div>
+    </section>
+
+    <div id="hintBox" role="status"></div>
+    <div id="cardsBox" class="cards"></div>
+
+    <section id="doneBox" class="k-hero hidden" role="status" style="flex-direction: column; text-align: center; justify-content: center">
+        <h2 style="font-size: 34px; font-weight: 800" data-en="Hero! A perfect call">بطل! مكالمة مثالية</h2>
+        <p style="font-size: 22px; color: #EDE9FE" data-en="The ambulance knows what happened and where to come. The most important thing: your address.">الإسعاف عرف وش صار ووين يجون. أهم شي: عنوانك.</p>
+        <button type="button" id="restartBtn" class="k-btn" data-en="Play again">العب مرة ثانية</button>
+    </section>
+
+    <p class="k-note" data-en="&lt;strong&gt;For parents:&lt;/strong&gt; Teach your child your home address, neighborhood name and a nearby landmark. We never ask the child to type their address here."><strong>للأهل:</strong> علّموا طفلكم عنوان البيت واسم الحي ومعلَم قريب منه. ما نطلب من الطفل يكتب عنوانه هنا.</p>
+</main>
+
+<script th:inline="none">
+    const LINES = tr([
+        "السلام عليكم، أبي إسعاف",
+        "جدتي طاحت وما ترد علي",
+        "عنوان بيتنا: اسم الحي، والشارع، وجنب وش",
+        "أبقى على الخط وأسوي اللي تقولونه"
+    ], [
+        "Hello, I need an ambulance",
+        "My grandma fell and she is not answering me",
+        "Our address: the neighborhood, the street, and what is next to it",
+        "I will stay on the line and do what you tell me"
+    ]);
+    const HINTS = tr([
+        "قربت! أول شي سلّم وقل إنك تبي إسعاف.",
+        "قربت! قل لهم وش صار.",
+        "قربت! الحين عنوانك، عشان يعرفون وين يجون.",
+        "قربت! آخر شي: لا تسكّر، اسمع كلامهم."
+    ], [
+        "Almost! First say hello and that you need an ambulance.",
+        "Almost! Tell them what happened.",
+        "Almost! Now your address, so they know where to come.",
+        "Almost! Last thing: don't hang up, listen to them."
+    ]);
+    // The cards are shown mixed up
+    const SHOW_ORDER = [2, 0, 3, 1];
+
+    let next = 0;
+
+    function render(hint) {
+        let said = "";
+        for (let i = 0; i < next; i++) {
+            said += '<div class="said"><span class="n">' + (i + 1) + "</span>" + LINES[i] + "</div>";
+        }
+        if (next === 0) {
+            said = '<span style="font-size: 19px; color: #6B7280">' + tr("اضغط أول جملة تقولها...", "Tap the first thing you say...") + '</span>';
+        }
+        document.getElementById("saidList").innerHTML = said;
+
+        document.getElementById("hintBox").innerHTML = hint
+            ? '<div class="k-feedback almost">' + hint + "</div>"
+            : "";
+
+        const done = next >= LINES.length;
+        document.getElementById("doneBox").classList.toggle("hidden", !done);
+        document.getElementById("cardsBox").classList.toggle("hidden", done);
+
+        let cards = "";
+        for (const i of SHOW_ORDER) {
+            if (i >= next) {
+                cards += '<button type="button" class="line-card" data-line="' + i + '">' + LINES[i] + "</button>";
+            }
+        }
+        document.getElementById("cardsBox").innerHTML = cards;
+
+        document.querySelectorAll(".line-card").forEach(function (card) {
+            card.addEventListener("click", function () {
+                const line = Number(card.dataset.line);
+                if (line === next) {
+                    next++;
+                    render("");
+                } else {
+                    render(HINTS[next]);
+                }
+            });
+        });
+    }
+
+    document.getElementById("restartBtn").addEventListener("click", function () {
+        next = 0;
+        render("");
+    });
+
+    document.getElementById("speakIntro").addEventListener("click", function () {
+        if (!("speechSynthesis" in window)) return;
+        window.speechSynthesis.cancel();
+        const voice = new SpeechSynthesisUtterance(tr(
+            "جدتك طاحت وما ترد عليك! اتصلت على تسعة تسعة سبعة. رتّب كلامك: اضغط الجمل بالترتيب الصح.",
+            "Your grandma fell and is not answering you! You called 997. Put your words in order: tap the sentences in the right order."));
+        voice.lang = tr("ar-SA", "en-US");
+        voice.rate = 0.9;
+        window.speechSynthesis.speak(voice);
+    });
+
+    render("");
+</script>
+</body>
+</html>

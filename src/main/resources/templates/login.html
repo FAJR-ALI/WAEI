@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-en="Waei — Login">واعي — تسجيل الدخول</title>
+    <link rel="icon" href="/img/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/i18n.js"></script>
+    <style>
+        .login-layout { min-height: 100vh; display: flex; flex-wrap: wrap; }
+
+        /* Brand panel */
+        .brand-panel {
+            flex: 1 1 420px; min-width: 0; min-height: 320px; padding: 48px;
+            background: var(--ink); color: #FFFFFF;
+            display: flex; flex-direction: column; justify-content: space-between; gap: 32px;
+        }
+        .brand-panel .brand { color: #FFFFFF; gap: 12px; }
+        .brand-panel .brand img { width: 52px; height: 52px; border-radius: 14px; object-fit: cover; }
+        .brand-panel .brand span { font-size: 28px; }
+        .brand-panel h1 { font-size: 38px; line-height: 1.35; }
+        .brand-panel p { font-size: 18px; line-height: 1.8; color: var(--line-strong); margin-top: 14px; }
+        .brand-panel .tagline { font-size: 16px; color: #A5B4FC; }
+
+        /* Form side */
+        .form-side { flex: 1 1 480px; min-width: 0; padding: 32px 24px 48px; display: flex; flex-direction: column; }
+        .form-top { display: flex; justify-content: flex-end; }
+        .form-center { flex: 1; display: flex; align-items: center; justify-content: center; padding-top: 24px; }
+        .login-form { width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 18px; }
+        .login-form h2 { font-size: 30px; }
+        .login-form .sub { font-size: 16px; color: var(--muted); margin-top: 6px; }
+        .login-form .input { min-height: 52px; border-radius: 14px; padding: 0 16px; }
+        [dir="rtl"] #email { text-align: right; }
+        .pw-wrap { position: relative; display: flex; }
+        .pw-wrap .input { padding-inline-end: 56px; }
+        .pw-toggle {
+            position: absolute; inset-inline-end: 4px; top: 4px; width: 44px; height: 44px; border-radius: 10px;
+            border: none; background: transparent; color: var(--muted); cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .pw-toggle:hover { background: var(--tint); color: var(--ink); }
+        .login-form .btn { min-height: 54px; font-size: 17px; }
+        .center-text { text-align: center; font-size: 15px; color: var(--muted); }
+
+        /* Logged in */
+        .info-row { display: flex; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid #EEF0FF; font-size: 15px; }
+        .info-row span:first-child { color: var(--soft); }
+        .info-row span:last-child { font-weight: 600; overflow-wrap: anywhere; text-align: end; }
+
+        @media (max-width: 720px) {
+            .brand-panel { padding: 28px 20px; min-height: 0; }
+            .brand-panel h1 { font-size: 28px; }
+            .form-side { padding: 20px 16px 40px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-layout">
+
+    <!-- Brand panel -->
+    <aside class="brand-panel">
+        <a href="/" class="brand">
+            <img src="/img/logo-dark.png" alt="شعار واعي" data-en-alt="Waei logo">
+            <span data-en="Waei">واعي</span>
+        </a>
+        <div>
+            <h1 data-en="Your team's readiness,<br>in one place">جاهزية فريقك،<br>في مكان واحد</h1>
+            <p data-en="Request in-person courses, follow your employees' and students' training, and pay your subscription easily.">اطلب الدورات الحضورية، وتابع تدريب موظفينك وطلابك، وادفع اشتراكك بسهولة.</p>
+        </div>
+        <span class="tagline" data-en="Because awareness.. saves lives">لأن الوعي.. ينقذ حياة</span>
+    </aside>
+
+    <!-- Form side -->
+    <main class="form-side">
+        <div class="form-top">
+            <button type="button" class="lang-toggle">English</button>
+        </div>
+
+        <div class="form-center">
+            <!-- Login form -->
+            <form id="loginForm" class="login-form hidden" novalidate>
+                <div>
+                    <h2 data-en="Log in">تسجيل الدخول</h2>
+                    <p class="sub" data-en="For organization accounts and platform admins">لحسابات الجهات وإدارة المنصة</p>
+                </div>
+
+                <div class="field">
+                    <label for="email" data-en="Email">البريد الإلكتروني</label>
+                    <input id="email" class="input" type="email" autocomplete="email" placeholder="name@organization.sa" dir="ltr" required>
+                </div>
+
+                <div class="field">
+                    <label for="password" data-en="Password">كلمة المرور</label>
+                    <div class="pw-wrap">
+                        <input id="password" class="input" type="password" autocomplete="current-password" dir="ltr" required>
+                        <button type="button" id="togglePw" class="pw-toggle" aria-label="إظهار كلمة المرور" data-en-aria="Show password">
+                            <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="loginError"></div>
+
+                <button type="submit" id="loginBtn" class="btn btn-primary btn-block">دخول</button>
+
+                <p class="center-text" data-en="Organization not registered? Accounts are created by the Waei team.">جهتك مو مسجلة؟ حسابات الجهات تنشئها إدارة واعي.</p>
+                <p class="center-text" style="font-size: 14px; color: var(--soft)" data-en="Just want to train? <a href=&quot;/#trainings&quot;>Training is open without an account</a>">تبي تتدرب بس؟ <a href="/#trainings">التدريب مفتوح بدون حساب</a></p>
+            </form>
+
+            <!-- Already logged in -->
+            <section id="loggedIn" class="login-form hidden" aria-live="polite">
+                <div>
+                    <h2><span data-en="Hello">هلا</span> <span id="userName"></span></h2>
+                    <p class="sub" data-en="You are logged in">سجّلت دخولك بنجاح</p>
+                </div>
+                <div>
+                    <div class="info-row"><span data-en="Email">البريد</span><span id="userEmail" dir="ltr"></span></div>
+                    <div class="info-row"><span data-en="Account type">نوع الحساب</span><span id="userRole"></span></div>
+                    <div class="info-row" id="orgRow"><span data-en="Organization">الجهة</span><span id="userOrg"></span></div>
+                </div>
+                <a href="/" class="btn btn-primary btn-block" data-en="Home page">الصفحة الرئيسية</a>
+                <button type="button" id="logoutBtn" class="btn btn-outline btn-block" data-en="Log out">تسجيل خروج</button>
+            </section>
+        </div>
+    </main>
+</div>
+
+<script src="/js/api.js"></script>
+<script th:inline="none">
+    const ROLE_LABELS = {
+        PLATFORM_ADMIN: tr("إدارة المنصة", "Platform admin"),
+        ORG_ADMIN: tr("مسؤول جهة", "Organization admin")
+    };
+    const LOGIN_TEXT = tr("دخول", "Log in");
+
+    document.getElementById("loginBtn").textContent = LOGIN_TEXT;
+
+    function showLoggedIn(user) {
+        document.getElementById("loginForm").classList.add("hidden");
+        document.getElementById("loggedIn").classList.remove("hidden");
+        document.getElementById("userName").textContent = user.fullName || "";
+        document.getElementById("userEmail").textContent = user.email || "";
+        document.getElementById("userRole").textContent = ROLE_LABELS[user.role] || user.role || "";
+        if (user.organizationName) {
+            document.getElementById("userOrg").textContent = user.organizationName;
+        } else {
+            document.getElementById("orgRow").classList.add("hidden");
+        }
+    }
+
+    function showForm() {
+        document.getElementById("loggedIn").classList.add("hidden");
+        document.getElementById("loginForm").classList.remove("hidden");
+        document.getElementById("email").focus();
+    }
+
+    // Show / hide the password
+    document.getElementById("togglePw").addEventListener("click", function () {
+        const input = document.getElementById("password");
+        const show = input.type === "password";
+        input.type = show ? "text" : "password";
+        this.setAttribute("aria-label", show
+            ? tr("إخفاء كلمة المرور", "Hide password")
+            : tr("إظهار كلمة المرور", "Show password"));
+    });
+
+    document.getElementById("loginForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
+        const errorBox = document.getElementById("loginError");
+        const button = document.getElementById("loginBtn");
+        errorBox.innerHTML = "";
+
+        if (!email || !password) {
+            errorBox.innerHTML = '<div class="alert alert-error" role="alert">'
+                + tr("اكتب البريد وكلمة المرور.", "Enter your email and password.") + "</div>";
+            return;
+        }
+
+        button.disabled = true;
+        button.textContent = tr("جاري الدخول...", "Logging in...");
+        try {
+            const auth = await apiPost("/auth/login", { email: email, password: password });
+            saveLogin(auth);
+            showLoggedIn(auth);
+        } catch (err) {
+            errorBox.innerHTML = '<div class="alert alert-error" role="alert">' + escapeHtml(err.message) + "</div>";
+        } finally {
+            button.disabled = false;
+            button.textContent = LOGIN_TEXT;
+        }
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", logout);
+
+    // Already logged in? check the token is still valid with /auth/me
+    async function start() {
+        if (!getToken()) {
+            showForm();
+            return;
+        }
+        try {
+            const me = await apiGet("/auth/me");
+            showLoggedIn(me);
+        } catch (e) {
+            // Token expired
+            try {
+                localStorage.removeItem("waeiToken");
+                localStorage.removeItem("waeiUser");
+            } catch (ignore) {}
+            showForm();
+        }
+    }
+
+    start();
+</script>
+</body>
+</html>

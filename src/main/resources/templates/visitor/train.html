@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-en="Waei — Video training">واعي — تدريب بالفيديو</title>
+    <link rel="icon" href="/img/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/i18n.js"></script>
+    <style>
+        .train-main { padding: 36px 0 64px; }
+        .train-main .container { display: flex; flex-direction: column; gap: 26px; }
+        .two-cols { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+        .col-main { flex: 999 1 540px; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+        .col-side { flex: 1 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+
+        /* Upload */
+        .drop {
+            position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+            min-height: 240px; padding: 24px; border-radius: 18px; border: 2px dashed #A5B4FC; background: var(--tint-2);
+            cursor: pointer; text-align: center;
+        }
+        .drop.dragging { border-color: var(--primary); background: var(--tint); }
+        .drop input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+        .drop-icon { width: 64px; height: 64px; border-radius: 50%; background: var(--line); color: var(--primary); display: flex; align-items: center; justify-content: center; }
+        .file-row { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px; background: var(--bg); border: 1px solid var(--line); }
+        .file-row .icon { width: 44px; height: 44px; border-radius: 10px; background: var(--ink); color: #FFFFFF; display: flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+        .icon-btn { width: 44px; height: 44px; border-radius: 10px; border: none; background: transparent; color: var(--soft); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .icon-btn:hover { background: var(--tint); color: var(--ink); }
+        .tip { display: flex; gap: 12px; align-items: flex-start; font-size: 15px; line-height: 1.7; color: var(--text); }
+        .tip-check { width: 28px; height: 28px; border-radius: 8px; background: var(--line); color: var(--primary); display: flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+        .steps-text { white-space: pre-line; font-size: 15px; line-height: 1.9; color: var(--text); }
+
+        /* Analyzing */
+        .center-box { max-width: 640px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 26px; text-align: center; padding: 30px 0; }
+        .ring { width: 140px; height: 140px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .ring-inner { width: 112px; height: 112px; border-radius: 50%; background: #FFFFFF; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .stages { list-style: none; margin: 0; padding: 22px; width: 100%; border-radius: 22px; background: #FFFFFF; border: 1px solid var(--line); display: flex; flex-direction: column; gap: 14px; text-align: start; }
+        .stages li { display: flex; align-items: center; gap: 12px; font-size: 16px; color: var(--soft); }
+        .stages li .dot { flex: 0 0 auto; width: 28px; height: 28px; border-radius: 50%; background: var(--line-strong); color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; }
+        .stages li.current { color: var(--ink); font-weight: 700; }
+        .stages li.current .dot { background: var(--primary); }
+        .stages li.done { color: var(--ink); }
+        .stages li.done .dot { background: #16A34A; }
+
+        /* Result */
+        .summary { display: flex; flex-wrap: wrap; gap: 28px; align-items: center; }
+        .score-ring { flex: 0 0 auto; width: 148px; height: 148px; }
+        .score-ring .ring-inner { width: 116px; height: 116px; }
+        .score-num { font-size: 40px; font-weight: 700; color: var(--primary); line-height: 1; }
+        .verdict { padding: 6px 14px; border-radius: 999px; font-weight: 700; font-size: 14px; }
+        .safety { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 14px; background: var(--tint); font-size: 15px; line-height: 1.7; color: #312E81; }
+        .step-item { display: flex; gap: 14px; align-items: flex-start; padding: 16px 18px; border-radius: 18px; background: #FFFFFF; border: 1.5px solid var(--line); }
+        .step-item.wrong { border-color: #FCA5A5; }
+        .time-btn {
+            flex: 0 0 auto; min-width: 60px; min-height: 40px; padding: 0 8px; border-radius: 10px; border: 1.5px solid var(--line-strong);
+            background: var(--tint-2); font-family: ui-monospace, Menlo, monospace; font-weight: 700; font-size: 15px; color: var(--ink); cursor: pointer;
+        }
+        .time-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .badge { padding: 3px 10px; border-radius: 999px; font-size: 13px; font-weight: 700; }
+        .badge-ok { background: var(--ok-bg); color: var(--ok); }
+        .badge-bad { background: var(--bad-bg); color: var(--bad); }
+        .video-box { position: relative; aspect-ratio: 16 / 9; border-radius: 16px; background: var(--ink); overflow: hidden; }
+        .video-box video, .video-box iframe { width: 100%; height: 100%; border: 0; display: block; background: #000; }
+        .cta-box { display: flex; flex-direction: column; justify-content: center; gap: 14px; padding: 24px; border-radius: 24px; background: var(--primary); color: #FFFFFF; }
+
+        /* Quiz */
+        .question { margin: 0; padding: 24px; border-radius: 22px; background: #FFFFFF; border: 1px solid var(--line); display: flex; flex-direction: column; gap: 14px; }
+        .question legend { padding: 0; float: inline-start; width: 100%; display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+        .options { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; clear: both; }
+        .option {
+            display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 10px 14px; border-radius: 14px;
+            border: 2px solid var(--line); background: #FFFFFF; color: var(--ink); font-family: inherit; font-size: 16px; text-align: start; cursor: pointer;
+        }
+        .option .letter { flex: 0 0 auto; width: 32px; height: 32px; border-radius: 10px; background: var(--tint); color: var(--primary-dark); display: flex; align-items: center; justify-content: center; font-weight: 700; }
+        .option .opt-text { flex: 1 1 auto; line-height: 1.5; }
+        .option .opt-tag { flex: 0 0 auto; font-size: 13px; font-weight: 700; }
+        .option[aria-pressed="true"] { background: var(--tint); border-color: var(--primary); }
+        .option[aria-pressed="true"] .letter { background: var(--primary); color: #FFFFFF; }
+        .option.correct { background: #F0FDF4; border-color: #16A34A; }
+        .option.correct .letter { background: var(--ok); color: #FFFFFF; }
+        .option.correct .opt-tag { color: var(--ok); }
+        .option.wrong { background: #FEF2F2; border-color: #DC2626; }
+        .option.wrong .letter { background: var(--bad); color: #FFFFFF; }
+        .option.wrong .opt-tag { color: var(--bad); }
+        .option:disabled { cursor: default; }
+        .explain { padding: 12px 14px; border-radius: 14px; background: var(--tint); font-size: 15px; line-height: 1.7; color: #312E81; }
+        .quiz-score { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 18px; padding: 24px; border-radius: 22px; background: var(--primary); color: #FFFFFF; }
+    </style>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="container">
+        <a href="/" class="brand">
+            <img src="/img/logo.png" alt="شعار واعي" data-en-alt="Waei logo">
+            <span data-en="Waei">واعي</span>
+        </a>
+        <div class="header-actions" style="align-items: center; gap: 16px">
+            <a href="/#trainings" style="font-size: 15px; font-weight: 600; text-decoration: none" data-en="Back to trainings">رجوع للتدريبات</a>
+            <button type="button" class="lang-toggle">English</button>
+        </div>
+    </div>
+</header>
+
+<main class="train-main">
+    <div class="container">
+
+        <ol class="progress" aria-label="مراحل التدريب" data-en-aria="Training steps">
+            <li id="progress1" class="current" data-en="1. Upload video">1. ارفع الفيديو</li>
+            <li id="progress2" data-en="2. Result">2. النتيجة</li>
+            <li id="progress3" data-en="3. Quiz">3. الاختبار</li>
+        </ol>
+
+        <div id="pageMessage"></div>
+
+        <!-- ===== Step 1: Upload ===== -->
+        <section id="uploadView" class="hidden">
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px">
+                <span id="trainingCategory" style="font-size: 14px; font-weight: 600; color: var(--primary)"></span>
+                <h1 id="trainingTitle" style="font-size: 36px; line-height: 1.35"></h1>
+                <p style="font-size: 17px; line-height: 1.8; color: var(--muted)" data-en="Film yourself doing the training on a mannequin or with a person, as if it were real. The AI will rate every step.">صوّر نفسك وأنت تطبّق التدريب على دمية أو مع شخص كأنه موقف حقيقي. الذكاء الاصطناعي بيقيّم كل خطوة.</p>
+            </div>
+
+            <div class="two-cols">
+                <form id="uploadForm" class="card col-main" aria-label="رفع الفيديو" data-en-aria="Upload video">
+                    <label for="videoInput" id="dropZone" class="drop">
+                        <span class="drop-icon">
+                            <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                        </span>
+                        <span style="font-size: 19px; font-weight: 700" data-en="Drag the video here or click to choose">اسحب الفيديو هنا أو اضغط للاختيار</span>
+                        <span style="font-size: 14px; color: var(--soft)" data-en="mp4 or mov — under 20MB — ideally under a minute">mp4 أو mov — أقل من 20MB — يفضّل أقل من دقيقة</span>
+                        <input id="videoInput" type="file" accept="video/*">
+                    </label>
+
+                    <div id="fileRow" class="file-row hidden">
+                        <span class="icon">
+                            <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>
+                        </span>
+                        <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0; flex-grow: 1">
+                            <span id="fileName" style="font-size: 15px; font-weight: 600; overflow-wrap: anywhere"></span>
+                            <span id="fileInfo" style="font-size: 13px; color: var(--soft)"></span>
+                        </div>
+                        <button type="button" id="removeFile" class="icon-btn" aria-label="حذف الفيديو" data-en-aria="Remove video">
+                            <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        </button>
+                    </div>
+
+                    <label class="check">
+                        <input type="checkbox" id="ageCheck">
+                        <span data-en="I am 18 or older. &lt;span style=&quot;color: var(--muted)&quot;&gt;For children we have &lt;a href=&quot;/kids&quot;&gt;kids mode&lt;/a&gt;.&lt;/span&gt;">عمري 18 سنة أو أكثر. <span style="color: var(--muted)">للأطفال عندنا <a href="/kids">وضع الأطفال</a>.</span></span>
+                    </label>
+
+                    <label class="check">
+                        <input type="checkbox" id="consentCheck">
+                        <span data-en="I agree to send the video to Google Gemini for analysis. &lt;strong&gt;The video is not saved on Waei&lt;/strong&gt;; only the evaluation is saved, with no data about you.">أوافق على إرسال الفيديو لخدمة Google Gemini لتحليله. <strong>الفيديو ما ينحفظ في واعي</strong>، ينحفظ بس التقييم بدون أي بيانات عنك.</span>
+                    </label>
+
+                    <div id="uploadError"></div>
+
+                    <button type="submit" id="analyzeBtn" class="btn btn-primary btn-lg btn-block" disabled>…</button>
+                </form>
+
+                <aside class="card col-side" aria-label="نصائح وخطوات" data-en-aria="Tips and steps">
+                    <h2 style="font-size: 20px" data-en="For an accurate evaluation">عشان يطلع التقييم دقيق</h2>
+                    <div class="tip"><span class="tip-check"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span><span data-en="Your face doesn't need to show; your hands and the mannequin are enough.">ما يلزم يبان وجهك، يكفي يديك والدمية.</span></div>
+                    <div class="tip"><span class="tip-check"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span><span data-en="Film in a well-lit place.">صوّر في مكان فيه إضاءة واضحة.</span></div>
+                    <div class="tip"><span class="tip-check"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span><span data-en="Keep your whole body and the mannequin in the frame.">خل جسمك كامل والدمية داخل الكادر.</span></div>
+                    <div class="tip"><span class="tip-check"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span><span data-en="Speak out loud, like when you call for help or dial 997.">تكلّم بصوت مسموع، مثل لما تنادي أو تتصل على 997.</span></div>
+                    <details style="margin-top: 6px">
+                        <summary style="cursor: pointer; font-weight: 700; color: var(--primary)" data-en="Correct steps for this training">الخطوات الصحيحة لهذا التدريب</summary>
+                        <p id="trainingSteps" class="steps-text" style="margin-top: 10px"></p>
+                    </details>
+                </aside>
+            </div>
+        </section>
+
+        <!-- ===== Analyzing ===== -->
+        <section id="analyzingView" class="hidden" aria-live="polite">
+            <div class="center-box">
+                <div id="analyzeRing" class="ring">
+                    <div class="ring-inner"><img src="/img/logo.png" alt="" style="width: 60px; height: 56px; object-fit: contain"></div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 8px">
+                    <h1 style="font-size: 32px" data-en="Analyzing your video...">نحلل الفيديو حقك...</h1>
+                    <p style="font-size: 17px; line-height: 1.8; color: var(--muted)" data-en="Analysis usually takes less than a minute. Don&#x27;t close the page.">التحليل ياخذ عادة أقل من دقيقة. لا تسكّر الصفحة.</p>
+                </div>
+                <ol id="stagesList" class="stages" aria-label="مراحل التحليل" data-en-aria="Analysis steps"></ol>
+            </div>
+        </section>
+
+        <!-- ===== Video rejected ===== -->
+        <section id="rejectedView" class="hidden">
+            <div class="center-box">
+                <span style="width: 96px; height: 96px; border-radius: 50%; background: var(--warn-bg); color: var(--warn); display: flex; align-items: center; justify-content: center">
+                    <svg aria-hidden="true" width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 16v1a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2m5.7 0H14a2 2 0 0 1 2 2v3.3l1 1L23 7v10"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                </span>
+                <div style="display: flex; flex-direction: column; gap: 10px">
+                    <h1 style="font-size: 32px" data-en="We couldn&#x27;t see the training in the video">ما قدرنا نشوف التدريب في الفيديو</h1>
+                    <p id="rejectReason" style="font-size: 17px; line-height: 1.8; color: var(--muted)"></p>
+                    <p style="font-size: 15px; color: var(--soft)" data-en="No attempt was saved, and you can upload another video now.">ما حفظنا أي محاولة، وتقدر ترفع فيديو ثاني الحين.</p>
+                </div>
+                <div class="card" style="width: 100%; text-align: start; display: flex; flex-direction: column; gap: 10px">
+                    <h2 style="font-size: 18px" data-en="Common reasons">أسباب شائعة</h2>
+                    <span data-en="• The lighting is weak or the video is dark.">• الإضاءة ضعيفة أو الفيديو مظلم.</span>
+                    <span data-en="• Your body or the mannequin is out of the frame.">• جسمك أو الدمية طالعة برا الكادر.</span>
+                    <span data-en="• The video is for a different training.">• الفيديو لتدريب ثاني غير اللي اخترته.</span>
+                    <span data-en="• The video is too short to show the steps.">• الفيديو قصير جدًا وما يبيّن الخطوات.</span>
+                </div>
+                <div class="hero-actions" style="justify-content: center">
+                    <button type="button" id="tryAgainBtn" class="btn btn-primary btn-lg" data-en="Upload another video">ارفع فيديو ثاني</button>
+                    <a href="/#trainings" class="btn btn-outline btn-lg" data-en="Choose another training">اختر تدريب ثاني</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Step 2: Result ===== -->
+        <section id="resultView" class="hidden" style="flex-direction: column; gap: 24px">
+            <div class="card summary" aria-label="ملخص النتيجة" data-en-aria="Result summary">
+                <div id="scoreRing" class="ring score-ring">
+                    <div class="ring-inner">
+                        <span id="scoreNum" class="score-num"></span>
+                        <span style="font-size: 13px; color: var(--soft)" data-en="out of 100">من 100</span>
+                    </div>
+                </div>
+                <div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 10px">
+                    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+                        <h1 id="resultTitle" style="font-size: 30px"></h1>
+                        <span id="verdictBadge" class="verdict"></span>
+                    </div>
+                    <p id="resultSummary" style="font-size: 17px; line-height: 1.8; color: var(--text)"></p>
+                    <div id="safetyNote" class="safety hidden">
+                        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex: 0 0 auto; margin-top: 3px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                        <span><strong data-en="Safety reminder:">تذكير سلامة:</strong> <span id="safetyText"></span></span>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 8px; flex: 0 0 auto">
+                    <span style="font-size: 14px; color: var(--soft)" data-en="Steps">الخطوات</span>
+                    <span style="font-size: 15px"><strong id="okCount" style="color: var(--ok)"></strong> <span data-en="correct">صح</span> · <strong id="badCount" style="color: var(--bad)"></strong> <span data-en="wrong">غلط</span></span>
+                </div>
+            </div>
+
+            <div class="two-cols">
+                <section class="col-main" aria-label="تقييم الخطوات" data-en-aria="Step evaluation">
+                    <h2 style="font-size: 22px" data-en="Step by step">خطوة بخطوة</h2>
+                    <p style="font-size: 14px; color: var(--soft)" data-en="Click a time to see that moment in your video.">اضغط على الوقت عشان تشوف اللحظة في الفيديو حقك.</p>
+                    <div id="stepsList" style="display: flex; flex-direction: column; gap: 12px"></div>
+                </section>
+
+                <aside class="col-side">
+                    <div class="card" style="display: flex; flex-direction: column; gap: 12px">
+                        <h2 style="font-size: 20px" data-en="Your video">الفيديو حقك</h2>
+                        <div class="video-box"><video id="myVideo" controls playsinline></video></div>
+                        <span style="font-size: 13px; color: var(--soft)" data-en="The video is only on your device; it was not saved on Waei.">الفيديو في جهازك بس، ما انحفظ في واعي.</span>
+                    </div>
+                    <div class="card" style="display: flex; flex-direction: column; gap: 12px">
+                        <h2 style="font-size: 20px" data-en="The correct way">الطريقة الصحيحة</h2>
+                        <div id="officialVideo"></div>
+                    </div>
+                </aside>
+            </div>
+
+            <section class="two-cols" style="align-items: stretch">
+                <div class="card col-main">
+                    <h2 style="font-size: 20px" data-en="Tips for next time">نصايح للمرة الجاية</h2>
+                    <ol id="recommendations" style="margin: 0; padding-inline-start: 22px; display: flex; flex-direction: column; gap: 8px; font-size: 16px; line-height: 1.7; color: var(--text)"></ol>
+                </div>
+                <div class="cta-box col-side">
+                    <span style="font-size: 22px; font-weight: 700" data-en="Lock in what you learned">ثبّت اللي تعلمته</span>
+                    <span style="font-size: 16px; line-height: 1.7; color: var(--line)" data-en="Three quick questions on your own mistakes.">ثلاثة أسئلة سريعة على أخطائك أنت.</span>
+                    <button type="button" id="startQuizBtn" class="btn btn-white btn-lg" style="align-self: flex-start" data-en="Start the quiz">ابدأ الاختبار</button>
+                </div>
+            </section>
+        </section>
+
+        <!-- ===== Step 3: Quiz ===== -->
+        <section id="quizView" class="hidden" style="flex-direction: column; gap: 22px">
+            <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px">
+                <div>
+                    <h1 style="font-size: 34px" data-en="Test yourself">اختبر نفسك</h1>
+                    <p style="font-size: 17px; color: var(--muted)" data-en="Questions on the mistakes that showed up in your video.">أسئلة على الأخطاء اللي ظهرت في الفيديو حقك.</p>
+                </div>
+                <button type="button" id="backToResult" class="btn btn-outline" data-en="Back to result">رجوع للنتيجة</button>
+            </div>
+            <div id="quizScore"></div>
+            <div id="questionsList" style="display: flex; flex-direction: column; gap: 22px"></div>
+            <div id="quizError"></div>
+            <button type="button" id="submitQuiz" class="btn btn-primary btn-lg btn-block" disabled>…</button>
+        </section>
+    </div>
+</main>
+
+<script src="/js/api.js"></script>
+<script th:inline="none">
+    const MAX_SIZE = 20 * 1024 * 1024;
+
+    let training = null;      // the awareness service from the backend
+    let selectedFile = null;  // the video in the browser (never saved on our server)
+    let videoUrl = null;      // local link to play the video in this page
+    let evaluation = null;    // the result from /evaluate
+    let answers = [];         // quiz answers: "A", "B" or "C"
+    let quizSubmitted = false;
+    let stageTimer = null;
+
+    const views = ["uploadView", "analyzingView", "rejectedView", "resultView", "quizView"];
+
+    function showView(id) {
+        for (const v of views) {
+            const el = document.getElementById(v);
+            el.classList.add("hidden");
+            el.style.display = "";
+        }
+        const view = document.getElementById(id);
+        view.classList.remove("hidden");
+        if (id === "resultView" || id === "quizView") {
+            view.style.display = "flex";
+        }
+
+        let step = 1;
+        if (id === "resultView") step = 2;
+        if (id === "quizView") step = 3;
+        for (let i = 1; i <= 3; i++) {
+            document.getElementById("progress" + i).classList.toggle("current", i === step);
+        }
+        window.scrollTo(0, 0);
+    }
+
+    // ===== Load the training =====
+    async function loadTraining() {
+        const id = getQueryParam("id");
+        const message = document.getElementById("pageMessage");
+        if (!id) {
+            message.innerHTML = '<div class="error-state">' + tr('اختر تدريب من <a href="/#trainings">صفحة التدريبات</a>.', 'Choose a training from the <a href="/#trainings">trainings page</a>.') + '</div>';
+            return;
+        }
+        showLoading(message, tr("نجيب التدريب...", "Loading the training..."));
+        try {
+            training = await apiGet("/awareness-service/get/" + encodeURIComponent(id));
+            message.innerHTML = "";
+            document.title = tr("واعي — ", "Waei — ") + training.title;
+            document.getElementById("trainingCategory").textContent = training.category;
+            document.getElementById("trainingTitle").textContent = training.title;
+            document.getElementById("trainingSteps").textContent = training.description;
+            if (!training.isActive) {
+                message.innerHTML = '<div class="error-state">' + tr('هذا التدريب غير متاح حاليًا. <a href="/#trainings" data-en="Choose another training">اختر تدريب ثاني</a>.', 'This training is not available right now. <a href="/#trainings">Choose another training</a>.') + '</div>';
+                return;
+            }
+            showView("uploadView");
+        } catch (e) {
+            showError(message, e.message);
+        }
+    }
+
+    // ===== Choosing the video =====
+    const videoInput = document.getElementById("videoInput");
+    const dropZone = document.getElementById("dropZone");
+
+    videoInput.addEventListener("change", function () {
+        if (videoInput.files.length > 0) {
+            setFile(videoInput.files[0]);
+        }
+    });
+
+    dropZone.addEventListener("dragover", function (e) {
+        e.preventDefault();
+        dropZone.classList.add("dragging");
+    });
+    dropZone.addEventListener("dragleave", function () {
+        dropZone.classList.remove("dragging");
+    });
+    dropZone.addEventListener("drop", function (e) {
+        e.preventDefault();
+        dropZone.classList.remove("dragging");
+        if (e.dataTransfer.files.length > 0) {
+            setFile(e.dataTransfer.files[0]);
+        }
+    });
+
+    function setFile(file) {
+        const errorBox = document.getElementById("uploadError");
+        errorBox.innerHTML = "";
+        if (!file.type.startsWith("video/")) {
+            errorBox.innerHTML = '<div class="alert alert-error">' + tr("الملف لازم يكون فيديو.", "The file must be a video.") + '</div>';
+            return;
+        }
+        if (file.size > MAX_SIZE) {
+            errorBox.innerHTML = '<div class="alert alert-error">' + tr("الفيديو أكبر من 20 ميجابايت، قصّه أو صوّره بجودة أقل.", "The video is larger than 20 MB, trim it or film in lower quality.") + '</div>';
+            return;
+        }
+        selectedFile = file;
+        if (videoUrl) {
+            URL.revokeObjectURL(videoUrl);
+        }
+        videoUrl = URL.createObjectURL(file);
+
+        document.getElementById("fileName").textContent = file.name;
+        document.getElementById("fileInfo").textContent = (file.size / 1024 / 1024).toFixed(1) + "MB";
+        document.getElementById("fileRow").classList.remove("hidden");
+        dropZone.classList.add("hidden");
+
+        // Read the duration to show it next to the size
+        const probe = document.createElement("video");
+        probe.preload = "metadata";
+        probe.onloadedmetadata = function () {
+            document.getElementById("fileInfo").textContent += " · " + formatTime(probe.duration);
+        };
+        probe.src = videoUrl;
+
+        updateButton();
+    }
+
+    document.getElementById("removeFile").addEventListener("click", function () {
+        selectedFile = null;
+        videoInput.value = "";
+        document.getElementById("fileRow").classList.add("hidden");
+        dropZone.classList.remove("hidden");
+        updateButton();
+    });
+
+    document.getElementById("ageCheck").addEventListener("change", updateButton);
+    document.getElementById("consentCheck").addEventListener("change", updateButton);
+
+    function updateButton() {
+        const button = document.getElementById("analyzeBtn");
+        const age = document.getElementById("ageCheck").checked;
+        const consent = document.getElementById("consentCheck").checked;
+        if (!selectedFile) {
+            button.disabled = true;
+            button.textContent = tr("اختر الفيديو أول", "Choose a video first");
+        } else if (!age || !consent) {
+            button.disabled = true;
+            button.textContent = tr("أكّد عمرك ووافق عشان نحلل الفيديو", "Confirm your age and agree so we can analyze the video");
+        } else {
+            button.disabled = false;
+            button.textContent = tr("حلّل الفيديو", "Analyze the video");
+        }
+    }
+
+    // ===== Sending the video =====
+    document.getElementById("uploadForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        if (!selectedFile) return;
+
+        const formData = new FormData();
+        formData.append("video", selectedFile);
+        formData.append("consentGiven", document.getElementById("consentCheck").checked);
+        formData.append("ageConfirmed", document.getElementById("ageCheck").checked);
+
+        showView("analyzingView");
+        startStages();
+
+        try {
+            evaluation = await apiPostForm("/awareness-session/evaluate/" + training.id, formData);
+            stopStages();
+            showResult();
+        } catch (err) {
+            stopStages();
+            // The backend adds this sentence when the AI says the video does not show the training
+            const isRejected = err.message.includes(" - please upload a clear video");
+            if (isRejected) {
+                document.getElementById("rejectReason").textContent = err.message.split(" - please upload")[0];
+                showView("rejectedView");
+            } else {
+                showView("uploadView");
+                document.getElementById("uploadError").innerHTML = '<div class="alert alert-error" role="alert">' + escapeHtml(err.message) + "</div>";
+            }
+        }
+    });
+
+    document.getElementById("tryAgainBtn").addEventListener("click", function () {
+        document.getElementById("removeFile").click();
+        showView("uploadView");
+    });
+
+    // Analyzing animation (the real work happens on the server)
+    const STAGES = tr(
+        ["نرفع الفيديو", "الذكاء الاصطناعي يشوف حركاتك", "نقارن خطواتك بالخطوات الصحيحة", "نجهز لك الأسئلة"],
+        ["Uploading the video", "The AI is watching your moves", "Comparing your steps with the correct ones", "Preparing your questions"]
+    );
+
+    function renderStages(stage) {
+        let html = "";
+        for (let i = 0; i < STAGES.length; i++) {
+            let cls = "";
+            let mark = String(i + 1);
+            if (i < stage) { cls = "done"; mark = "✓"; }
+            else if (i === stage) { cls = "current"; }
+            html += '<li class="' + cls + '"><span class="dot">' + mark + "</span>" + STAGES[i] + "</li>";
+        }
+        document.getElementById("stagesList").innerHTML = html;
+        const pct = Math.min(95, stage * 25 + 10);
+        document.getElementById("analyzeRing").style.background = "conic-gradient(#4F46E5 0 " + pct + "%, #E0E7FF " + pct + "% 100%)";
+    }
+
+    function startStages() {
+        let stage = 0;
+        renderStages(stage);
+        stageTimer = setInterval(function () {
+            // Stay on the last stage until the server answers
+            if (stage < STAGES.length - 1) {
+                stage++;
+                renderStages(stage);
+            }
+        }, 4000);
+    }
+
+    function stopStages() {
+        clearInterval(stageTimer);
+    }
+
+    // ===== Result =====
+    const VERDICTS = {
+        CORRECT: { text: tr("صح", "Correct"), bg: "#DCFCE7", fg: "#166534" },
+        PARTIALLY_CORRECT: { text: tr("صح جزئيًا", "Partly correct"), bg: "#FEF3C7", fg: "#78350F" },
+        INCORRECT: { text: tr("يحتاج تدريب", "Needs practice"), bg: "#FEE2E2", fg: "#991B1B" }
+    };
+
+    function showResult() {
+        const r = evaluation;
+        const score = Math.round(r.score);
+        document.getElementById("scoreNum").textContent = score;
+        document.getElementById("scoreRing").style.background = "conic-gradient(#4F46E5 0 " + score + "%, #E0E7FF " + score + "% 100%)";
+        document.getElementById("resultTitle").textContent = r.awarenessServiceTitle;
+
+        const verdict = VERDICTS[r.verdict] || VERDICTS.INCORRECT;
+        const badge = document.getElementById("verdictBadge");
+        badge.textContent = verdict.text;
+        badge.style.background = verdict.bg;
+        badge.style.color = verdict.fg;
+
+        document.getElementById("resultSummary").textContent = r.summary || "";
+        if (r.safetyNote) {
+            document.getElementById("safetyText").textContent = r.safetyNote;
+            document.getElementById("safetyNote").classList.remove("hidden");
+        }
+
+        // Right and wrong steps together, ordered by time in the video
+        const correct = r.correctSteps || [];
+        const mistakes = r.mistakes || [];
+        document.getElementById("okCount").textContent = correct.length;
+        document.getElementById("badCount").textContent = mistakes.length;
+
+        const steps = [];
+        for (const s of correct) steps.push({ second: s.second, time: s.time, description: s.description, ok: true });
+        for (const s of mistakes) steps.push({ second: s.second, time: s.time, description: s.description, ok: false });
+        steps.sort(function (a, b) { return (a.second || 0) - (b.second || 0); });
+
+        let html = "";
+        for (const s of steps) {
+            const time = s.time || formatTime(s.second || 0);
+            html += '<div class="step-item' + (s.ok ? "" : " wrong") + '">'
+                + '<button type="button" class="time-btn" data-second="' + (s.second || 0) + '" aria-label="' + tr("شغّل الفيديو من ", "Play the video from ") + escapeHtml(time) + '">' + escapeHtml(time) + "</button>"
+                + '<div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">'
+                + '<span class="badge ' + (s.ok ? "badge-ok" : "badge-bad") + '" style="align-self: flex-start">' + (s.ok ? tr("صح", "Correct") : tr("غلط", "Wrong")) + "</span>"
+                + '<span style="font-size: 16px; line-height: 1.7">' + escapeHtml(s.description) + "</span>"
+                + "</div></div>";
+        }
+        if (steps.length === 0) {
+            html = '<div class="empty-state">' + tr("ما فيه تفاصيل خطوات لهذي المحاولة.", "No step details for this attempt.") + '</div>';
+        }
+        document.getElementById("stepsList").innerHTML = html;
+
+        const myVideo = document.getElementById("myVideo");
+        myVideo.src = videoUrl;
+        document.querySelectorAll(".time-btn").forEach(function (button) {
+            button.addEventListener("click", function () {
+                myVideo.currentTime = Number(button.dataset.second);
+                myVideo.play();
+                myVideo.scrollIntoView({ behavior: "smooth", block: "center" });
+            });
+        });
+
+        renderOfficialVideo(r.officialVideoUrl);
+
+        let recs = "";
+        for (const rec of (r.recommendations || [])) {
+            recs += "<li>" + escapeHtml(rec) + "</li>";
+        }
+        document.getElementById("recommendations").innerHTML = recs || "<li>" + tr("استمر على نفس المستوى!", "Keep it up!") + "</li>";
+
+        const hasQuiz = r.quiz && r.quiz.length > 0;
+        document.getElementById("startQuizBtn").parentElement.classList.toggle("hidden", !hasQuiz);
+
+        showView("resultView");
+    }
+
+    // YouTube links become an embedded player, other links open in a new tab
+    function renderOfficialVideo(url) {
+        const box = document.getElementById("officialVideo");
+        if (!url) {
+            box.innerHTML = '<p style="font-size: 15px; color: var(--muted)">' + tr("ما فيه فيديو رسمي لهذا التدريب للحين. راجع الخطوات الصحيحة تحت.", "There is no official video for this training yet. Check the correct steps below.") + '</p>'
+                + '<p class="steps-text" style="margin-top: 8px">' + escapeHtml(training.description) + "</p>";
+            return;
+        }
+        const youtubeId = getYoutubeId(url);
+        if (youtubeId) {
+            box.innerHTML = '<div class="video-box"><iframe src="https://www.youtube-nocookie.com/embed/' + youtubeId
+                + '" title="' + tr("فيديو الطريقة الصحيحة", "Video of the correct way") + '" allow="encrypted-media; picture-in-picture" allowfullscreen></iframe></div>';
+        } else {
+            box.innerHTML = '<a class="btn btn-outline" href="' + escapeHtml(url) + '" target="_blank" rel="noopener">' + tr("افتح الفيديو الرسمي", "Open the official video") + '</a>';
+        }
+    }
+
+    function getYoutubeId(url) {
+        const match = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+        return match ? match[1] : null;
+    }
+
+    function formatTime(seconds) {
+        seconds = Math.round(seconds);
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return m + ":" + (s < 10 ? "0" : "") + s;
+    }
+
+    // ===== Quiz =====
+    document.getElementById("startQuizBtn").addEventListener("click", function () {
+        answers = new Array(evaluation.quiz.length).fill(null);
+        renderQuiz(null);
+        showView("quizView");
+    });
+
+    document.getElementById("backToResult").addEventListener("click", function () {
+        showView("resultView");
+    });
+
+    function renderQuiz(result) {
+        const questions = evaluation.quiz;
+        let html = "";
+        questions.forEach(function (q, qi) {
+            const options = [ ["A", q.optionA], ["B", q.optionB], ["C", q.optionC] ];
+            let optionsHtml = "";
+            for (const [letter, text] of options) {
+                let cls = "option";
+                let tag = "";
+                if (result) {
+                    const r = result.answers[qi];
+                    if (letter === r.correctAnswer) { cls += " correct"; tag = tr("الصحيح", "Correct"); }
+                    else if (letter === r.yourAnswer) { cls += " wrong"; tag = tr("إجابتك", "Your answer"); }
+                }
+                optionsHtml += '<button type="button" class="' + cls + '" data-q="' + qi + '" data-letter="' + letter + '"'
+                    + ' aria-pressed="' + (answers[qi] === letter) + '"' + (result ? " disabled" : "") + ">"
+                    + '<span class="letter">' + letter + "</span>"
+                    + '<span class="opt-text">' + escapeHtml(text) + "</span>"
+                    + '<span class="opt-tag">' + tag + "</span></button>";
+            }
+            let explain = "";
+            if (result && result.answers[qi].explanation) {
+                explain = '<div class="explain">' + escapeHtml(result.answers[qi].explanation) + "</div>";
+            }
+            html += '<fieldset class="question"><legend>'
+                + '<span style="font-size: 14px; font-weight: 600; color: var(--primary)">' + tr("سؤال ", "Question ") + (qi + 1) + tr(" من ", " of ") + questions.length + "</span>"
+                + '<span style="font-size: 20px; font-weight: 700; line-height: 1.6">' + escapeHtml(q.question) + "</span>"
+                + '</legend><div class="options">' + optionsHtml + "</div>" + explain + "</fieldset>";
+        });
+        document.getElementById("questionsList").innerHTML = html;
+
+        if (!result) {
+            document.querySelectorAll(".option").forEach(function (button) {
+                button.addEventListener("click", function () {
+                    answers[Number(button.dataset.q)] = button.dataset.letter;
+                    renderQuiz(null);
+                });
+            });
+        }
+        updateSubmit();
+    }
+
+    function updateSubmit() {
+        const button = document.getElementById("submitQuiz");
+        if (quizSubmitted) {
+            button.classList.add("hidden");
+            return;
+        }
+        const answered = answers.filter(function (a) { return a !== null; }).length;
+        button.disabled = answered !== answers.length;
+        button.textContent = button.disabled
+            ? tr("جاوب على كل الأسئلة", "Answer all questions") + " (" + answered + "/" + answers.length + ")"
+            : tr("أرسل الإجابات", "Submit answers");
+    }
+
+    document.getElementById("submitQuiz").addEventListener("click", async function () {
+        const button = this;
+        const errorBox = document.getElementById("quizError");
+        errorBox.innerHTML = "";
+        button.disabled = true;
+        button.textContent = tr("نصحح...", "Checking...");
+        try {
+            const result = await apiPost("/awareness-session/quiz/submit/" + evaluation.sessionId, { answers: answers });
+            quizSubmitted = true;
+            renderQuiz(result);
+            document.getElementById("quizScore").innerHTML = '<section class="quiz-score" aria-label="' + tr("نتيجة الاختبار", "Quiz result") + '">'
+                + '<div style="display: flex; flex-direction: column; gap: 4px">'
+                + '<span style="font-size: 15px; color: var(--line)">' + tr("نتيجتك", "Your score") + '</span>'
+                + '<span style="font-size: 40px; font-weight: 700">' + result.correctCount + tr(" من ", " / ") + result.totalQuestions + "</span>"
+                + "</div>"
+                + '<div class="hero-actions">'
+                + '<button type="button" class="btn btn-white" onclick="location.reload()">' + tr("تدرّب مرة ثانية", "Practice again") + '</button>'
+                + '<a href="/#trainings" class="btn" style="border-color: var(--line-strong); color: #FFFFFF">' + tr("تدريب جديد", "New training") + '</a>'
+                + "</div></section>";
+            window.scrollTo(0, 0);
+        } catch (e) {
+            errorBox.innerHTML = '<div class="alert alert-error" role="alert">' + escapeHtml(e.message) + "</div>";
+            updateSubmit();
+        }
+    });
+
+    updateButton();
+    loadTraining();
+</script>
+</body>
+</html>

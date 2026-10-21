@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-en="Waei — Practice first aid with AI">واعي — تدرّب على الإسعافات بالذكاء الاصطناعي</title>
+    <link rel="icon" href="/img/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/i18n.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="container">
+        <a href="/" class="brand">
+            <img src="/img/logo.png" alt="شعار واعي" data-en-alt="Waei logo">
+            <span data-en="Waei">واعي</span>
+        </a>
+        <nav class="nav" aria-label="القائمة الرئيسية" data-en-aria="Main menu">
+            <a href="#trainings" data-en="Trainings">التدريبات</a>
+            <a href="#numbers" data-en="Emergency numbers">أرقام الطوارئ</a>
+            <a href="#calendar" data-en="Awareness calendar">التقويم التوعوي</a>
+            <a href="/programs" data-en="In-person courses">الدورات الحضورية</a>
+            <a href="/pricing" data-en="Plans">الباقات</a>
+        </nav>
+        <div class="header-actions">
+            <a href="/kids" class="pill pill-kids">
+                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M8.5 14.5c1 1.2 2.2 1.8 3.5 1.8s2.5-.6 3.5-1.8"></path><path d="M9 9.5h.01M15 9.5h.01"></path></svg>
+                <span data-en="Kids mode">وضع الأطفال</span>
+            </a>
+            <a href="/login" id="headerLogin" class="pill pill-outline" data-en="Organization login">دخول الجهات</a>
+            <button type="button" class="lang-toggle">English</button>
+        </div>
+    </div>
+</header>
+
+<main>
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-text">
+                <span class="tag" style="font-size: 14px; padding: 6px 14px" data-en="No sign-up — try it now">بدون تسجيل — جرّب الحين</span>
+                <h1 data-en="Film yourself giving first aid,<br>and AI tells you where you went wrong, to the second">صوّر نفسك وأنت تسعف،<br>والذكاء الاصطناعي يقول لك وين أخطأت بالثانية</h1>
+                <p data-en="Upload a video of yourself practicing on a mannequin or with a person. Waei analyzes every step, shows you the correct way from an official video, and tests you with three questions on your mistakes.">ارفع فيديو تدريبك على دمية أو مع شخص، وواعي يحلل كل خطوة، ويوريك الطريقة الصحيحة من فيديو رسمي، ويختبرك في ثلاثة أسئلة على أخطائك.</p>
+                <div class="hero-actions">
+                    <a href="#trainings" class="btn btn-primary btn-lg">
+                        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"></path><rect x="1" y="5" width="15" height="14" rx="2"></rect></svg>
+                        <span data-en="Start training">ابدأ تدريبك</span>
+                    </a>
+                    <a href="#how" class="btn btn-outline btn-lg" data-en="How does it work?">كيف يشتغل؟</a>
+                </div>
+            </div>
+
+            <!-- Example of a result (illustration only) -->
+            <div class="hero-preview" aria-hidden="true">
+                <div class="preview-card">
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+                        <div style="display: flex; flex-direction: column; gap: 4px">
+                            <span style="font-size: 13px; color: var(--soft)" data-en="Example result">مثال على النتيجة</span>
+                            <span style="font-size: 18px; font-weight: 700" data-en="CPR">الإنعاش القلبي الرئوي</span>
+                        </div>
+                        <div class="mini-ring">68</div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 10px">
+                        <div class="preview-row" style="background: #F0FDF4; color: var(--ok)">
+                            <span class="time">0:09</span><span style="color: var(--ink)" data-en="Checked response">تحقق من الاستجابة</span><span class="status" data-en="Correct">صح</span>
+                        </div>
+                        <div class="preview-row" style="background: #FEF2F2; color: var(--bad)">
+                            <span class="time">0:22</span><span style="color: var(--ink)" data-en="Hand position">مكان اليدين</span><span class="status" data-en="Wrong">غلط</span>
+                        </div>
+                        <div class="preview-row" style="background: #FFFBEB; color: var(--warn)">
+                            <span class="time">0:30</span><span style="color: var(--ink)" data-en="Calling 997">الاتصال على 997</span><span class="status" data-en="Missed">فاتتك</span>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px; color: var(--primary); font-weight: 600; font-size: 14px">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flip-ltr"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>
+                        <span data-en="See the correct way from an official video">شوف الطريقة الصحيحة من فيديو رسمي</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it works -->
+    <section id="how" class="section section-white">
+        <div class="container stack">
+            <h2 class="section-title" data-en="How does it work?">كيف يشتغل؟</h2>
+            <div class="grid grid-4">
+                <div class="step-card">
+                    <span class="step-num">1</span>
+                    <strong data-en="Film yourself">صوّر نفسك</strong>
+                    <span data-en="Pick a training and film yourself doing it on a mannequin or with a person.">اختر تدريب وصوّر نفسك وأنت تطبقه على دمية أو مع شخص.</span>
+                </div>
+                <div class="step-card">
+                    <span class="step-num">2</span>
+                    <strong data-en="AI analyzes">الذكاء الاصطناعي يحلل</strong>
+                    <span data-en="It rates every step and marks the second where each right or wrong move happened.">يقيّم كل خطوة ويحدد الثانية اللي صار فيها الصح والغلط.</span>
+                </div>
+                <div class="step-card">
+                    <span class="step-num">3</span>
+                    <strong data-en="See the correct way">شوف الطريقة الصحيحة</strong>
+                    <span data-en="See your mistakes in your own video, and the correct way from an official video.">تشوف أخطاءك في الفيديو حقك، والطريقة الصحيحة من فيديو رسمي.</span>
+                </div>
+                <div class="step-card">
+                    <span class="step-num">4</span>
+                    <strong data-en="Test yourself">اختبر نفسك</strong>
+                    <span data-en="Three questions on your own mistakes, so the lesson sticks.">ثلاثة أسئلة على أخطائك أنت، عشان تثبت المعلومة.</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trainings (from the backend) -->
+    <section id="trainings" class="section">
+        <div class="container stack">
+            <div class="row-between">
+                <div>
+                    <h2 class="section-title" data-en="Choose your training">اختر تدريبك</h2>
+                    <p class="section-sub" data-en="Every training has correct steps written by a specialist, and the AI rates you against them.">كل تدريب له خطوات صحيحة كتبها مختص، والذكاء الاصطناعي يقيّمك عليها.</p>
+                </div>
+                <div id="categoryFilters" class="filters" role="group" aria-label="تصفية التدريبات" data-en-aria="Filter trainings"></div>
+            </div>
+            <div id="trainingsList" class="grid grid-cards"></div>
+        </div>
+    </section>
+
+    <!-- Emergency numbers -->
+    <section id="numbers" class="section numbers">
+        <div class="container stack">
+            <div>
+                <h2 class="section-title" data-en="Emergency numbers in Saudi Arabia">أرقام الطوارئ في السعودية</h2>
+                <p class="section-sub" data-en="Save them now, there is no time to search during an emergency.">احفظها الحين، وقت الطوارئ ما فيه وقت تدوّر.</p>
+            </div>
+            <div class="grid grid-4">
+                <a href="tel:911" class="number-card"><span class="num">911</span><span class="label" data-en="Unified emergency number">الرقم الموحد للطوارئ</span><span class="note" data-en="In regions where it is active">في المناطق المفعّل فيها</span></a>
+                <a href="tel:997" class="number-card"><span class="num">997</span><span class="label" data-en="Red Crescent (ambulance)">الهلال الأحمر (الإسعاف)</span><span class="note" data-en="Medical emergencies and injuries">حالات إسعافية وإصابات</span></a>
+                <a href="tel:998" class="number-card"><span class="num">998</span><span class="label" data-en="Civil Defense">الدفاع المدني</span><span class="note" data-en="Fires and rescue">الحرائق والإنقاذ</span></a>
+                <a href="tel:999" class="number-card"><span class="num">999</span><span class="label" data-en="Police">الشرطة</span><span class="note" data-en="Security reports">البلاغات الأمنية</span></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Awareness calendar (from the backend) -->
+    <section id="calendar" class="section">
+        <div class="container stack">
+            <div>
+                <h2 class="section-title" data-en="Awareness calendar">التقويم التوعوي</h2>
+                <p class="section-sub" data-en="Upcoming awareness days, each with a training that fits it.">الأيام التوعوية الجاية، وكل يوم معه تدريب يناسبه.</p>
+            </div>
+            <div id="eventsList" class="grid grid-3"></div>
+        </div>
+    </section>
+
+    <!-- Kids promo -->
+    <section class="container" style="padding-bottom: 64px">
+        <div class="banner banner-kids">
+            <div class="banner-text">
+                <h2 data-en="Have kids? Try kids mode">عندك أطفال؟ جرّبوا وضع الأطفال</h2>
+                <p data-en="Short stories and games that teach children what to do in danger. No video, and no data about the child.">قصص قصيرة وألعاب تعلّم الطفل وش يسوي وقت الخطر. بدون فيديو، وبدون أي بيانات عن الطفل.</p>
+            </div>
+            <a href="/kids" class="btn btn-lg" data-en="Open kids mode">افتح وضع الأطفال</a>
+        </div>
+    </section>
+
+    <!-- Organizations -->
+    <section class="section-white">
+        <div class="container banner">
+            <div class="banner-text">
+                <h2 data-en="A school or a company?">مدرسة أو شركة؟</h2>
+                <p style="color: var(--muted)" data-en="Book in-person courses with certified trainers, and follow your team's readiness.">احجز دورات حضورية مع مدربين معتمدين، وتابع جاهزية فريقك.</p>
+            </div>
+            <div class="hero-actions">
+                <a href="/programs" class="btn btn-primary" data-en="In-person courses">الدورات الحضورية</a>
+                <a href="/pricing" class="btn btn-outline" data-en="Plans and prices">الباقات والأسعار</a>
+                <a href="/login" class="btn btn-outline" data-en="Organization login">دخول الجهات</a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-brand">
+            <img src="/img/logo-dark.png" alt="">
+            <span data-en="Because awareness.. saves lives">لأن الوعي.. ينقذ حياة</span>
+        </div>
+        <span style="font-size: 14px" data-en="© Waei">© واعي</span>
+    </div>
+</footer>
+
+<script src="/js/api.js"></script>
+<script th:inline="none">
+    const MONTHS = tr(
+        ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"],
+        ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    );
+
+    let allTrainings = [];
+    let selectedCategory = "ALL";
+
+    // ===== Trainings =====
+    async function loadTrainings() {
+        const list = document.getElementById("trainingsList");
+        showLoading(list, tr("نجيب التدريبات...", "Loading trainings..."));
+        try {
+            allTrainings = await apiGet("/awareness-service/get-active");
+            renderFilters();
+            renderTrainings();
+        } catch (e) {
+            showError(list, e.message);
+        }
+    }
+
+    function renderFilters() {
+        const box = document.getElementById("categoryFilters");
+        const categories = [];
+        for (const t of allTrainings) {
+            if (!categories.includes(t.category)) {
+                categories.push(t.category);
+            }
+        }
+        if (categories.length < 2) {
+            box.innerHTML = "";
+            return;
+        }
+        let html = '<button type="button" class="chip" data-category="ALL" aria-pressed="' + (selectedCategory === "ALL") + '">' + tr("الكل", "All") + "</button>";
+        for (const c of categories) {
+            html += '<button type="button" class="chip" data-category="' + escapeHtml(c) + '" aria-pressed="' + (selectedCategory === c) + '">' + escapeHtml(c) + "</button>";
+        }
+        box.innerHTML = html;
+        box.querySelectorAll(".chip").forEach(function (button) {
+            button.addEventListener("click", function () {
+                selectedCategory = button.dataset.category;
+                renderFilters();
+                renderTrainings();
+            });
+        });
+    }
+
+    function renderTrainings() {
+        const list = document.getElementById("trainingsList");
+        let trainings = allTrainings;
+        if (selectedCategory !== "ALL") {
+            trainings = allTrainings.filter(function (t) { return t.category === selectedCategory; });
+        }
+        if (trainings.length === 0) {
+            showEmpty(list, tr("ما فيه تدريبات متاحة حاليًا.", "No trainings available right now."));
+            return;
+        }
+        let html = "";
+        for (const t of trainings) {
+            const meta = t.officialVideoUrl
+                ? tr("معه فيديو رسمي", "Has an official video")
+                : tr("فيديو حتى دقيقة", "Video up to 1 minute");
+            html += '<article class="training-card">'
+                + '<span class="tag">' + escapeHtml(t.category) + "</span>"
+                + "<h3>" + escapeHtml(t.title) + "</h3>"
+                + "<p>" + escapeHtml(t.description) + "</p>"
+                + '<div class="card-footer">'
+                + '<span class="meta">' + meta + "</span>"
+                + '<a class="btn btn-primary" style="min-height: 44px; font-size: 15px" href="/train?id=' + t.id + '">' + tr("ابدأ", "Start") + "</a>"
+                + "</div></article>";
+        }
+        list.innerHTML = html;
+    }
+
+    // ===== Awareness calendar =====
+    async function loadEvents() {
+        const list = document.getElementById("eventsList");
+        showLoading(list, tr("نجيب الأيام التوعوية...", "Loading awareness days..."));
+        try {
+            const events = await apiGet("/awareness-calendar/upcoming?limit=6");
+            if (events.length === 0) {
+                showEmpty(list, tr("ما فيه أيام توعوية قريبة.", "No upcoming awareness days."));
+                return;
+            }
+            let html = "";
+            for (const e of events) {
+                // nextDate comes as "2026-11-14"
+                const parts = e.nextDate.split("-");
+                const day = Number(parts[2]);
+                const month = MONTHS[Number(parts[1]) - 1];
+
+                let left = "";
+                if (e.daysLeft === 0) {
+                    left = tr("اليوم", "Today");
+                } else if (e.daysLeft === 1) {
+                    left = tr("بكرة", "Tomorrow");
+                } else {
+                    left = tr("باقي " + e.daysLeft + " يوم", "In " + e.daysLeft + " days");
+                }
+
+                let trainingLink = "";
+                if (e.awarenessServiceId) {
+                    trainingLink = '<a href="/train?id=' + e.awarenessServiceId + '" style="font-size: 14px; font-weight: 600">'
+                        + tr("تدرّب: ", "Train: ") + escapeHtml(e.awarenessServiceTitle) + "</a>";
+                }
+
+                html += '<div class="event-card">'
+                    + '<div class="event-date"><span class="day">' + day + '</span><span class="month">' + month + "</span></div>"
+                    + '<div class="event-body">'
+                    + '<span class="event-left">' + left + "</span>"
+                    + "<strong>" + escapeHtml(e.title) + "</strong>"
+                    + (e.description ? "<span>" + escapeHtml(e.description) + "</span>" : "")
+                    + trainingLink
+                    + "</div></div>";
+            }
+            list.innerHTML = html;
+        } catch (e) {
+            showError(list, e.message);
+        }
+    }
+
+    loadTrainings();
+    loadEvents();
+</script>
+</body>
+</html>

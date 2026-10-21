@@ -82,6 +82,21 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/v1/auth/login", "/api/v1/payment/webhook/moyasar").permitAll()
+                        // Visitor pages (templates) + CSS/JS/images (static) + Spring error page
+                        .requestMatchers(HttpMethod.GET, "/", "/login", "/train", "/programs", "/pricing",
+                                "/kids", "/story", "/call").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/img/**", "/error").permitAll()
+                        // Visitor endpoints: no login needed
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/v1/awareness-service/get-active",
+                                "/api/v1/awareness-service/get/*",
+                                "/api/v1/awareness-calendar/upcoming",
+                                "/api/v1/awareness-session/quiz/*",
+                                "/api/v1/kids/**",
+                                "/api/v1/training-program/get-active").permitAll()
+                        .requestMatchers(HttpMethod.POST,
+                                "/api/v1/awareness-session/evaluate/*",
+                                "/api/v1/awareness-session/quiz/submit/*").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/organization/**").hasRole("PLATFORM_ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/v1/organization/**").hasRole("PLATFORM_ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/organization/**").hasRole("PLATFORM_ADMIN")
