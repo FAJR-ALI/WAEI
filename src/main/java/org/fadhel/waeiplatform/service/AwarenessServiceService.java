@@ -6,8 +6,10 @@ import org.fadhel.waeiplatform.dto.in.AwarenessServiceRequest;
 import org.fadhel.waeiplatform.dto.out.AwarenessServiceResponse;
 import org.fadhel.waeiplatform.model.AwarenessCalendarEvent;
 import org.fadhel.waeiplatform.model.AwarenessService;
+import org.fadhel.waeiplatform.model.EmergencyGuide;
 import org.fadhel.waeiplatform.repository.AwarenessCalendarEventRepository;
 import org.fadhel.waeiplatform.repository.AwarenessServiceRepository;
+import org.fadhel.waeiplatform.repository.EmergencyGuideRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,6 +21,7 @@ public class AwarenessServiceService {
 
     private final AwarenessServiceRepository awarenessServiceRepository;
     private final AwarenessCalendarEventRepository awarenessCalendarEventRepository;
+    private final EmergencyGuideRepository emergencyGuideRepository;
 
     public List<AwarenessServiceResponse> getAllServices() {
         List<AwarenessService> services = awarenessServiceRepository.findAll();
@@ -119,6 +122,13 @@ public class AwarenessServiceService {
         for (AwarenessCalendarEvent event : events) {
             event.setAwarenessService(null);
             awarenessCalendarEventRepository.save(event);
+        }
+
+        // Emergency guide cases stay too, they just lose the "practice it" button
+        List<EmergencyGuide> guides = emergencyGuideRepository.findEmergencyGuidesByAwarenessService(service);
+        for (EmergencyGuide guide : guides) {
+            guide.setAwarenessService(null);
+            emergencyGuideRepository.save(guide);
         }
 
         awarenessServiceRepository.delete(service);

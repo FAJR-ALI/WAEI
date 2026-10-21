@@ -23,6 +23,11 @@ const ARABIC_MESSAGES = {
     "Invalid email or password": "البريد أو كلمة المرور غير صحيحة",
     "This account is not active yet. Please contact the platform administrator.": "الحساب غير مفعّل بعد، تواصل مع إدارة المنصة",
     "Authentication required": "لازم تسجّل دخول",
+    "Emergency case not found": "الحالة غير موجودة",
+    "The emergency guide is empty right now": "دليل الطوارئ فاضي حاليًا",
+    "Smart search is not available right now, please browse the cases": "البحث الذكي غير متاح الحين، تصفح الحالات تحت",
+    "Your organization registration is awaiting platform administrator verification.": "طلب تسجيل جهتك قيد المراجعة من إدارة المنصة",
+    "Your organization is not verified yet. Please contact the platform administrator.": "جهتك ما توثقت بعد، تواصل مع إدارة المنصة",
     "Access denied": "ما عندك صلاحية"
 };
 
