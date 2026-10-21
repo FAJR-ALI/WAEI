@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.fadhel.waeiplatform.api.ApiException;
 import org.fadhel.waeiplatform.model.Organization;
 import org.fadhel.waeiplatform.model.OrganizationType;
+import org.fadhel.waeiplatform.model.OrganizationVerificationStatus;
 import org.fadhel.waeiplatform.model.Payment;
 import org.fadhel.waeiplatform.model.TrainingProgram;
 import org.fadhel.waeiplatform.model.TrainingRequest;
@@ -76,6 +77,13 @@ public class AccessControl {
     public void requireCanManageProgram(TrainingProgram program) {
         if (!canManageProgram(program)) {
             throw new ApiException("Only the provider organization that owns this program can manage it");
+        }
+    }
+
+    public void requireVerifiedOrganization(Organization organization) {
+        if (organization == null
+                || organization.getVerificationStatus() != OrganizationVerificationStatus.VERIFIED) {
+            throw new ApiException("The organization must be verified before it can perform this action");
         }
     }
 

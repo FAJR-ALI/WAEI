@@ -1,9 +1,6 @@
 package org.fadhel.waeiplatform.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -39,16 +36,45 @@ public class Organization {
 
     private String phoneNumber;
 
-    private String verificationStatus;
+    @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
+    @Column(length = 20)
+    private OrganizationVerificationStatus verificationStatus;
+
+    @Column(length = 1000)
+    private String rejectionReason;
+
+    private LocalDateTime verifiedAt;
+
+    private Long verifiedByAccountId;
 
     private LocalDateTime createdAt;
 
-    @PrePersist
-    public void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
+    private LocalDateTime submittedAt;
 
     private String documentReference;
+
+    private String documentOriginalName;
+
+    private String documentStoredName;
+
+    private String documentContentType;
+
+    private Long documentSize;
+
+    @PrePersist
+    public void onCreate() {
+        LocalDateTime now = LocalDateTime.now();
+        if (createdAt == null) {
+            createdAt = now;
+        }
+        if (submittedAt == null) {
+            submittedAt = now;
+        }
+        if (verificationStatus == null) {
+            verificationStatus = OrganizationVerificationStatus.PENDING;
+        }
+    }
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "organization")
     private Set<TrainingProgram> trainingPrograms;

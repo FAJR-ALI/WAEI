@@ -113,6 +113,8 @@ public class TrainingProgramService {
             organization = program.getOrganization();
         }
 
+        accessControl.requireVerifiedOrganization(organization);
+
         TrainingProgram existing = trainingProgramRepository
                 .findTrainingProgramByTitleAndOrganization_Id(request.getTitle(), organization.getId());
         if (existing != null && !existing.getId().equals(id)) {
@@ -167,6 +169,8 @@ public class TrainingProgramService {
         if (!accessControl.isProviderOrganization(organization)) {
             throw new ApiException("Training programs can only be created by a provider organization");
         }
+
+        accessControl.requireVerifiedOrganization(organization);
 
         return organization;
     }

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.fadhel.waeiplatform.model.OrganizationType;
+import org.fadhel.waeiplatform.model.OrganizationVerificationStatus;
 
 import java.time.LocalDateTime;
 
@@ -20,8 +21,16 @@ public class OrganizationDTOOut {
     private String sector;
     private String email;
     private String phoneNumber;
-    private String verificationStatus;
+    private OrganizationVerificationStatus verificationStatus;
+    private String rejectionReason;
     private LocalDateTime createdAt;
+    private LocalDateTime submittedAt;
+    private LocalDateTime verifiedAt;
     private String documentReference;
+    private String documentOriginalName;
+    private String documentContentType;
+    private Long documentSize;
+    private boolean documentAvailable;
+    private String documentDownloadUrl;
 
 }
