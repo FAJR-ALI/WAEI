@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-en="Waei — Training provider">واعي — لوحة مقدم الخدمة</title>
+    <link rel="icon" href="/img/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/app.css">
+    <script src="/js/i18n.js"></script>
+</head>
+<body class="app-body">
+
+<div id="appShell" class="app-shell hidden">
+    <div id="appOverlay" class="app-overlay"></div>
+
+    <aside class="app-sidebar">
+        <a href="/" class="app-brand">
+            <img src="/img/logo-dark.png" alt="شعار واعي" data-en-alt="Waei logo">
+            <span><span data-en="Waei">واعي</span><small data-en="Training provider">مقدم خدمة</small></span>
+        </a>
+        <nav id="appNav" class="app-nav" aria-label="أقسام لوحة التحكم" data-en-aria="Dashboard sections"></nav>
+        <div class="app-sidebar-footer">
+            <span class="sidebar-org" data-org-name></span>
+            <a href="/" class="sidebar-link">
+                <svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9.5V21h14V9.5"></path><path d="M9 21v-6h6v6"></path></svg>
+                <span data-en="Back to website">العودة للموقع</span>
+            </a>
+            <div id="sidebarExtra"></div>
+        </div>
+    </aside>
+
+    <div class="app-content">
+        <header class="app-topbar">
+            <button type="button" id="menuToggle" class="icon-btn menu-toggle" aria-label="فتح القائمة" data-en-aria="Open menu">
+                <svg aria-hidden="true" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+            <div class="topbar-title">
+                <h1 data-en="Training provider">لوحة مقدم الخدمة</h1>
+                <p data-en="Manage courses and incoming training requests">أدر دوراتك وطلبات التدريب الواردة</p>
+            </div>
+            <div class="topbar-actions">
+                <span class="org-pill" data-org-name></span>
+                <div class="user-chip">
+                    <span class="avatar" data-user-initials>و</span>
+                    <span class="user-meta">
+                        <strong data-user-name></strong>
+                        <small data-user-email></small>
+                    </span>
+                </div>
+                <button type="button" class="lang-toggle">English</button>
+                <button type="button" class="icon-btn" data-logout aria-label="تسجيل الخروج" data-en-aria="Log out">
+                    <svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><path d="m16 17 5-5-5-5M21 12H9"></path></svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="app-main">
+            <section class="app-section" data-panel="overview">
+                <div class="page-intro">
+                    <div>
+                        <h2 data-en="Overview">نظرة عامة</h2>
+                        <p data-en="Your programs and incoming requests at a glance.">ملخص برامجك والطلبات الواردة.</p>
+                    </div>
+                    <div class="toolbar">
+                        <button type="button" class="btn btn-outline btn-sm" data-refresh data-en="Refresh">تحديث</button>
+                        <button type="button" class="btn btn-primary btn-sm" data-new-program data-en="Add program">أضف برنامجًا</button>
+                    </div>
+                </div>
+
+                <div class="kpi-grid">
+                    <article class="kpi-card">
+                        <span class="kpi-icon"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg></span>
+                        <span class="kpi-body"><span class="kpi-label" data-en="All programs">إجمالي البرامج</span><strong class="kpi-value" id="kpiPrograms">0</strong><span class="kpi-hint" id="kpiActivePrograms">0</span></span>
+                    </article>
+                    <article class="kpi-card">
+                        <span class="kpi-icon warn"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span>
+                        <span class="kpi-body"><span class="kpi-label" data-en="Pending requests">طلبات جديدة</span><strong class="kpi-value" id="kpiPending">0</strong><span class="kpi-hint" data-en="Waiting for your response">بانتظار ردك</span></span>
+                    </article>
+                    <article class="kpi-card">
+                        <span class="kpi-icon"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"></path><rect x="1" y="5" width="15" height="14" rx="2"></rect></svg></span>
+                        <span class="kpi-body"><span class="kpi-label" data-en="In progress">قيد التنفيذ</span><strong class="kpi-value" id="kpiInProgress">0</strong><span class="kpi-hint" data-en="Started trainings">تدريبات بدأت</span></span>
+                    </article>
+                    <article class="kpi-card">
+                        <span class="kpi-icon ok"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+                        <span class="kpi-body"><span class="kpi-label" data-en="Completed">مكتملة</span><strong class="kpi-value" id="kpiCompleted">0</strong><span class="kpi-hint" data-en="Delivered trainings">تدريبات منفذة</span></span>
+                    </article>
+                    <article class="kpi-card">
+                        <span class="kpi-icon"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><path d="M2 10h20"></path></svg></span>
+                        <span class="kpi-body"><span class="kpi-label" data-en="Net revenue">صافي الإيرادات</span><strong class="kpi-value" id="kpiRevenue">0</strong><span class="kpi-hint" data-en="After platform commission">بعد عمولة المنصة</span></span>
+                    </article>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-head">
+                        <div>
+                            <h2 data-en="Latest requests">أحدث الطلبات</h2>
+                            <p data-en="New requests waiting for a decision.">طلبات جديدة بانتظار القرار.</p>
+                        </div>
+                        <button type="button" class="btn btn-ghost btn-sm" data-goto="requests" data-en="All requests">كل الطلبات</button>
+                    </div>
+                    <div id="latestRequests" class="panel-state"></div>
+                </div>
+            </section>
+
+            <section class="app-section hidden" data-panel="programs">
+                <div class="page-intro">
+                    <div>
+                        <h2 data-en="My programs">برامجي التدريبية</h2>
+                        <p data-en="Publish courses, update prices and control availability.">انشر الدورات وحدّث الأسعار وتحكم بالإتاحة.</p>
+                    </div>
+                    <div class="toolbar">
+                        <button type="button" class="btn btn-outline btn-sm" data-refresh data-en="Refresh">تحديث</button>
+                        <button type="button" class="btn btn-primary btn-sm" data-new-program data-en="Add program">أضف برنامجًا</button>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div id="programsList" class="panel-state"></div>
+                </div>
+            </section>
+
+            <section class="app-section hidden" data-panel="requests">
+                <div class="page-intro">
+                    <div>
+                        <h2 data-en="Incoming requests">طلبات التدريب الواردة</h2>
+                        <p data-en="Accept, decline, start and complete training requests.">اقبل الطلبات أو ارفضها ثم ابدأ وأكمل التدريب.</p>
+                    </div>
+                    <button type="button" class="btn btn-outline btn-sm" data-refresh data-en="Refresh">تحديث</button>
+                </div>
+                <div class="panel">
+                    <div class="panel-head">
+                        <div class="toolbar">
+                            <button type="button" class="filter-chip" data-request-status="ALL" aria-pressed="true" data-en="All">الكل</button>
+                            <button type="button" class="filter-chip" data-request-status="PENDING" aria-pressed="false" data-en="Pending">جديد</button>
+                            <button type="button" class="filter-chip" data-request-status="PAID" aria-pressed="false" data-en="Paid">مدفوع</button>
+                            <button type="button" class="filter-chip" data-request-status="IN_PROGRESS" aria-pressed="false" data-en="In progress">قيد التنفيذ</button>
+                            <button type="button" class="filter-chip" data-request-status="COMPLETED" aria-pressed="false" data-en="Completed">مكتمل</button>
+                        </div>
+                        <div class="search-box">
+                            <svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+                            <input id="requestSearch" class="input" type="search" placeholder="ابحث بالجهة أو البرنامج" data-en-placeholder="Search by organization or program">
+                        </div>
+                    </div>
+                    <div id="requestsList" class="panel-state"></div>
+                </div>
+            </section>
+
+            <section class="app-section hidden" data-panel="payments">
+                <div class="page-intro">
+                    <div>
+                        <h2 data-en="Payments">المدفوعات</h2>
+                        <p data-en="Confirmed payments and platform commission for your programs.">المدفوعات المؤكدة وعمولة المنصة لبرامجك.</p>
+                    </div>
+                    <button type="button" class="btn btn-outline btn-sm" data-refresh data-en="Refresh">تحديث</button>
+                </div>
+                <div class="panel">
+                    <div id="paymentsList" class="panel-state"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+</div>
+
+<dialog id="programDialog" class="app-dialog">
+    <form id="programForm">
+        <div class="dialog-head">
+            <div>
+                <h2 id="programDialogTitle" data-en="Add program">إضافة برنامج</h2>
+                <p data-en="Publish a training course for beneficiary organizations.">انشر دورة تدريبية للجهات المستفيدة.</p>
+            </div>
+            <button type="button" class="dialog-close" data-close-dialog aria-label="إغلاق" data-en-aria="Close">
+                <svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        <div class="dialog-body">
+            <div id="programError"></div>
+            <div class="form-grid">
+                <div class="field full">
+                    <label for="programTitle" data-en="Program title">اسم البرنامج</label>
+                    <input id="programTitle" class="input" type="text" maxlength="150" required>
+                </div>
+                <div class="field">
+                    <label for="programCategory" data-en="Category">التصنيف</label>
+                    <input id="programCategory" class="input" type="text" maxlength="100" required>
+                </div>
+                <div class="field">
+                    <label for="programPrice" data-en="Price (SAR)">السعر (ر.س)</label>
+                    <input id="programPrice" class="input" type="number" min="1" step="0.01" dir="ltr" required>
+                </div>
+                <div class="field">
+                    <label for="programMode" data-en="Delivery mode">طريقة التقديم</label>
+                    <select id="programMode" class="input" required>
+                        <option value="IN_PERSON" data-en="In person">حضوري</option>
+                        <option value="ONLINE" data-en="Online">عن بعد</option>
+                        <option value="HYBRID" data-en="Hybrid">مدمج</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <span data-en="Availability">الإتاحة</span>
+                    <label class="check" style="min-height: 50px">
+                        <input type="checkbox" id="programActive" checked>
+                        <span data-en="Available for new requests">متاح لطلبات جديدة</span>
+                    </label>
+                </div>
+                <div class="field full">
+                    <label for="programDescription" data-en="Description">الوصف</label>
+                    <textarea id="programDescription" class="input" maxlength="5000" rows="4" required></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="dialog-footer">
+            <button type="button" class="btn btn-outline btn-sm" data-close-dialog data-en="Cancel">إلغاء</button>
+            <button type="submit" id="programSubmit" class="btn btn-primary btn-sm" data-en="Save program">حفظ البرنامج</button>
+        </div>
+    </form>
+</dialog>
+
+<dialog id="rejectDialog" class="app-dialog">
+    <form id="rejectForm">
+        <div class="dialog-head">
+            <div>
+                <h2 data-en="Reject request">رفض الطلب</h2>
+                <p data-en="Explain why the request cannot be delivered.">وضّح سبب تعذر تنفيذ الطلب.</p>
+            </div>
+            <button type="button" class="dialog-close" data-close-dialog aria-label="إغلاق" data-en-aria="Close">
+                <svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        <div class="dialog-body">
+            <div id="rejectError"></div>
+            <div class="field">
+                <label for="rejectReason" data-en="Rejection reason">سبب الرفض</label>
+                <textarea id="rejectReason" class="input" maxlength="500" rows="3" required></textarea>
+            </div>
+        </div>
+        <div class="dialog-footer">
+            <button type="button" class="btn btn-outline btn-sm" data-close-dialog data-en="Cancel">إلغاء</button>
+            <button type="submit" id="rejectSubmit" class="btn btn-danger btn-sm" data-en="Reject request">رفض الطلب</button>
+        </div>
+    </form>
+</dialog>
+
+<dialog id="detailDialog" class="app-dialog wide">
+    <div class="dialog-head">
+        <div>
+            <h2 data-en="Request details">تفاصيل الطلب</h2>
+            <p data-en="The full request, schedule and payment information.">بيانات الطلب والموعد والدفع.</p>
+        </div>
+        <button type="button" class="dialog-close" data-close-dialog aria-label="إغلاق" data-en-aria="Close">
+            <svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+        </button>
+    </div>
+    <div id="detailContent" class="dialog-body"></div>
+    <div class="dialog-footer">
+        <button type="button" class="btn btn-outline btn-sm" data-close-dialog data-en="Close">إغلاق</button>
+    </div>
+</dialog>
+
+<script src="/js/api.js"></script>
+<script src="/js/dashboard.js"></script>
+<script th:inline="none">
+    let dashboardUser = null;
+    let programs = [];
+    let incoming = [];
+    let payments = [];
+    let requestStatus = "ALL";
+    let editingProgramId = null;
+    let rejectRequestId = null;
+
+    function latestPayment(request) {
+        if (!request.payments || !request.payments.length) {
+            return null;
+        }
+        return request.payments.slice().sort(function (a, b) {
+            return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+        })[0];
+    }
+
+    function setStats() {
+        const pending = incoming.filter(function (item) { return item.status === "PENDING"; }).length;
+        const inProgress = incoming.filter(function (item) { return item.status === "IN_PROGRESS"; }).length;
+        const completed = incoming.filter(function (item) { return item.status === "COMPLETED"; }).length;
+        const revenue = payments.filter(function (payment) {
+            return payment.status === "PAID";
+        }).reduce(function (sum, payment) {
+            return sum + Number(payment.providerAmount || 0);
+        }, 0);
+
+        document.getElementById("kpiPrograms").textContent = WaeiDashboard.formatNumber(programs.length);
+        document.getElementById("kpiActivePrograms").textContent = tr(
+            WaeiDashboard.formatNumber(programs.filter(function (program) { return program.isActive; }).length) + " نشط",
+            WaeiDashboard.formatNumber(programs.filter(function (program) { return program.isActive; }).length) + " active"
+        );
+        document.getElementById("kpiPending").textContent = WaeiDashboard.formatNumber(pending);
+        document.getElementById("kpiInProgress").textContent = WaeiDashboard.formatNumber(inProgress);
+        document.getElementById("kpiCompleted").textContent = WaeiDashboard.formatNumber(completed);
+        document.getElementById("kpiRevenue").textContent = WaeiDashboard.formatMoney(revenue);
+        WaeiDashboard.setNavBadge("requests", pending);
+    }
+
+    function renderPrograms() {
+        const target = document.getElementById("programsList");
+        if (!programs.length) {
+            showEmpty(target, tr("ما فيه برامج بعد. أضف أول برنامج لك.", "No programs yet. Add your first program."));
+            return;
+        }
+        let html = '<div class="table-wrap"><table class="data-table"><thead><tr>'
+            + '<th>' + tr("البرنامج", "Program") + '</th>'
+            + '<th>' + tr("التصنيف", "Category") + '</th>'
+            + '<th>' + tr("طريقة التقديم", "Delivery") + '</th>'
+            + '<th>' + tr("السعر", "Price") + '</th>'
+            + '<th>' + tr("الحالة", "Status") + '</th>'
+            + '<th>' + tr("الإجراءات", "Actions") + '</th>'
+            + '</tr></thead><tbody>';
+        programs.forEach(function (program) {
+            html += '<tr>'
+                + '<td><strong>' + escapeHtml(program.title) + '</strong><small>' + escapeHtml(program.organizationName || "") + '</small></td>'
+                + '<td>' + escapeHtml(program.category) + '</td>'
+                + '<td>' + escapeHtml(WaeiDashboard.modeLabel(program.deliveryMode)) + '</td>'
+                + '<td class="money">' + WaeiDashboard.formatMoney(program.price) + '</td>'
+                + '<td>' + (program.isActive
+                    ? '<span class="badge badge-ok">' + tr("نشط", "Active") + '</span>'
+                    : '<span class="badge badge-muted">' + tr("موقوف", "Inactive") + '</span>') + '</td>'
+                + '<td><div class="cell-actions">'
+                + '<button type="button" class="btn btn-outline btn-sm" data-edit-program="' + program.id + '">' + tr("تعديل", "Edit") + '</button>'
+                + '<button type="button" class="btn btn-ghost btn-sm" data-toggle-program="' + program.id + '">'
+                + (program.isActive ? tr("إيقاف", "Deactivate") : tr("تفعيل", "Activate")) + '</button>'
+                + '<button type="button" class="btn btn-danger btn-sm" data-delete-program="' + program.id + '">' + tr("حذف", "Delete") + '</button>'
+                + '</div></td></tr>';
+        });
+        html += '</tbody></table></div>';
+        target.innerHTML = html;
+        bindProgramActions(target);
+    }
+
+    function bindProgramActions(root) {
+        root.querySelectorAll("[data-edit-program]").forEach(function (button) {
+            button.addEventListener("click", function () {
+                openProgramForm(Number(button.dataset.editProgram));
+            });
+        });
+        root.querySelectorAll("[data-toggle-program]").forEach(function (button) {
+            button.addEventListener("click", function () {
+                toggleProgram(Number(button.dataset.toggleProgram));
+            });
+        });
+        root.querySelectorAll("[data-delete-program]").forEach(function (button) {
+            button.addEventListener("click", function () {
+                deleteProgram(Number(button.dataset.deleteProgram));
+            });
+        });
+    }
+
+    function matchesRequestSearch(item, query) {
+        if (!query) {
+            return true;
+        }
+        return [item.trainingProgramTitle, item.beneficiaryOrganizationName, item.notes]
+            .join(" ").toLowerCase().indexOf(query.toLowerCase()) !== -1;
+    }
+
+    function requestRows() {
+        const query = document.getElementById("requestSearch").value.trim();
+        return incoming.filter(function (item) {
+            return (requestStatus === "ALL" || item.status === requestStatus)
+                && matchesRequestSearch(item, query);
+        });
+    }
+
+    function requestActions(item) {
+        let html = '<button type="button" class="btn btn-outline btn-sm" data-view-request="' + item.id + '">' + tr("تفاصيل", "Details") + '</button>';
+        if (item.status === "PENDING") {
+            html += '<button type="button" class="btn btn-ok btn-sm" data-accept-request="' + item.id + '">' + tr("قبول", "Accept") + '</button>';
+            html += '<button type="button" class="btn btn-danger btn-sm" data-reject-request="' + item.id + '">' + tr("رفض", "Reject") + '</button>';
+        } else if (item.status === "PAID") {
+            html += '<button type="button" class="btn btn-primary btn-sm" data-start-request="' + item.id + '">' + tr("بدء التدريب", "Start training") + '</button>';
+        } else if (item.status === "IN_PROGRESS") {
+            html += '<button type="button" class="btn btn-ok btn-sm" data-complete-request="' + item.id + '">' + tr("إكمال", "Complete") + '</button>';
+        }
+        return html;
+    }
+
+    function renderRequests() {
+        const target = document.getElementById("requestsList");
+        const rows = requestRows();
+        if (!rows.length) {
+            showEmpty(target, tr("ما فيه طلبات مطابقة.", "No matching requests."));
+            return;
+        }
+        let html = '<div class="table-wrap"><table class="data-table"><thead><tr>'
+            + '<th>' + tr("البرنامج", "Program") + '</th>'
+            + '<th>' + tr("الجهة المستفيدة", "Beneficiary") + '</th>'
+            + '<th>' + tr("الموعد", "Schedule") + '</th>'
+            + '<th>' + tr("المشاركون", "Participants") + '</th>'
+            + '<th>' + tr("الحالة", "Status") + '</th>'
+            + '<th>' + tr("الإجراءات", "Actions") + '</th>'
+            + '</tr></thead><tbody>';
+        rows.forEach(function (item) {
+            const payment = latestPayment(item);
+            html += '<tr>'
+                + '<td><strong>' + escapeHtml(item.trainingProgramTitle || "—") + '</strong><small>' + WaeiDashboard.formatMoney(item.programPrice) + '</small></td>'
+                + '<td>' + escapeHtml(item.beneficiaryOrganizationName || "—") + '</td>'
+                + '<td class="nowrap">' + WaeiDashboard.formatDateTime(item.scheduledStart) + '<small>' + WaeiDashboard.formatDateTime(item.scheduledEnd) + '</small></td>'
+                + '<td>' + WaeiDashboard.formatNumber(item.participantCount) + '</td>'
+                + '<td>' + WaeiDashboard.statusBadge("request", item.status)
+                + (payment ? '<small>' + tr("الدفع: ", "Payment: ") + escapeHtml(WaeiDashboard.statusLabel("payment", payment.status)) + '</small>' : "")
+                + '</td>'
+                + '<td><div class="cell-actions">' + requestActions(item) + '</div></td>'
+                + '</tr>';
+        });
+        html += '</tbody></table></div>';
+        target.innerHTML = html;
+        bindRequestActions(target);
+    }
+
+    function renderLatestRequests() {
+        const target = document.getElementById("latestRequests");
+        const rows = incoming.filter(function (item) {
+            return item.status === "PENDING";
+        }).slice(0, 6);
+        if (!rows.length) {
+            showEmpty(target, tr("ما فيه طلبات جديدة حاليًا.", "No new requests right now."));
+            return;
+        }
+        let html = '<div class="table-wrap"><table class="data-table"><thead><tr>'
+            + '<th>' + tr("البرنامج", "Program") + '</th>'
+            + '<th>' + tr("الجهة المستفيدة", "Beneficiary") + '</th>'
+            + '<th>' + tr("الموعد", "Schedule") + '</th>'
+            + '<th>' + tr("الإجراءات", "Actions") + '</th>'
+            + '</tr></thead><tbody>';
+        rows.forEach(function (item) {
+            html += '<tr>'
+                + '<td><strong>' + escapeHtml(item.trainingProgramTitle || "—") + '</strong></td>'
+                + '<td>' + escapeHtml(item.beneficiaryOrganizationName || "—") + '</td>'
+                + '<td class="nowrap">' + WaeiDashboard.formatDateTime(item.scheduledStart) + '</td>'
+                + '<td><button type="button" class="btn btn-outline btn-sm" data-view-request="' + item.id + '">' + tr("مراجعة", "Review") + '</button></td>'
+                + '</tr>';
+        });
+        html += '</tbody></table></div>';
+        target.innerHTML = html;
+        bindRequestActions(target);
+    }
+
+    function bindRequestActions(root) {
+        root.querySelectorAll("[data-view-request]").forEach(function (button) {
+            button.addEventListener("click", function () {
+                openDetails(Number(button.dataset.viewRequest));
+            });
+        });
+        root.querySelectorAll("[data-accept-request]").forEach(function (button) {
+            button.addEventListener("click", function () {
+                acceptRequest(Number(button.dataset.acceptRequest));
+            });
+        });
+        root.querySelectorAll("[data-reject-request]").forEach(function (button) {
+            button.addEventListener("click", function () {
+                openReject(Number(button.dataset.rejectRequest));
+            });
+        });
+        root.querySelectorAll("[data-start-request]").forEach(function (button) {
+            button.addEventListener("click", function () {
+                startRequest(Number(button.dataset.startRequest));
+            });
+        });
+        root.querySelectorAll("[data-complete-request]").forEach(function (button) {
+            button.addEventListener("click", function () {
+                completeRequest(Number(button.dataset.completeRequest));
+            });
+        });
+    }
+
+    function renderPayments() {
+        const target = document.getElementById("paymentsList");
+        if (!payments.length) {
+            showEmpty(target, tr("ما فيه مدفوعات بعد.", "No payments yet."));
+            return;
+        }
+        const byRequest = {};
+        incoming.forEach(function (request) {
+            byRequest[request.id] = request.trainingProgramTitle || ("#" + request.id);
+        });
+        let html = '<div class="table-wrap"><table class="data-table"><thead><tr>'
+            + '<th>' + tr("البرنامج", "Program") + '</th>'
+            + '<th>' + tr("المبلغ", "Amount") + '</th>'
+            + '<th>' + tr("العمولة", "Commission") + '</th>'
+            + '<th>' + tr("الصافي", "Net") + '</th>'
+            + '<th>' + tr("الحالة", "Status") + '</th>'
+            + '<th>' + tr("التاريخ", "Date") + '</th>'
+            + '</tr></thead><tbody>';
+        payments.forEach(function (payment) {
+            html += '<tr>'
+                + '<td><strong>' + escapeHtml(byRequest[payment.trainingRequestId] || ("#" + payment.trainingRequestId)) + '</strong></td>'
+                + '<td class="money">' + WaeiDashboard.formatMoney(payment.amount) + '</td>'
+                + '<td>' + WaeiDashboard.formatMoney(payment.commissionAmount) + '</td>'
+                + '<td class="money">' + WaeiDashboard.formatMoney(payment.providerAmount) + '</td>'
+                + '<td>' + WaeiDashboard.statusBadge("payment", payment.status) + '</td>'
+                + '<td class="nowrap">' + WaeiDashboard.formatDateTime(payment.paidAt || payment.createdAt) + '</td>'
+                + '</tr>';
+        });
+        html += '</tbody></table></div>';
+        target.innerHTML = html;
+    }
+
+    function detailRow(label, value) {
+        return '<div class="detail-row"><span>' + escapeHtml(label) + '</span><span>' + escapeHtml(value || "—") + '</span></div>';
+    }
+
+    function openDetails(id) {
+        const item = incoming.find(function (row) { return row.id === id; });
+        if (!item) {
+            return;
+        }
+        const payment = latestPayment(item);
+        let html = '<div class="detail-grid">'
+            + detailRow(tr("البرنامج", "Program"), item.trainingProgramTitle)
+            + detailRow(tr("الجهة المستفيدة", "Beneficiary"), item.beneficiaryOrganizationName)
+            + detailRow(tr("وقت البداية", "Start"), WaeiDashboard.formatDateTime(item.scheduledStart))
+            + detailRow(tr("وقت النهاية", "End"), WaeiDashboard.formatDateTime(item.scheduledEnd))
+            + detailRow(tr("عدد المشاركين", "Participants"), WaeiDashboard.formatNumber(item.participantCount))
+            + detailRow(tr("سعر البرنامج", "Program price"), WaeiDashboard.formatMoney(item.programPrice))
+            + detailRow(tr("حالة الطلب", "Request status"), WaeiDashboard.statusLabel("request", item.status))
+            + detailRow(tr("تاريخ الطلب", "Requested at"), WaeiDashboard.formatDateTime(item.requestedAt))
+            + (item.notes ? '<div class="detail-row" style="grid-column: 1 / -1"><span>' + tr("ملاحظات", "Notes") + '</span><span>' + escapeHtml(item.notes) + '</span></div>' : "")
+            + (item.cancellationReason ? '<div class="detail-row" style="grid-column: 1 / -1"><span>' + tr("سبب الإلغاء أو الرفض", "Cancellation or rejection reason") + '</span><span>' + escapeHtml(item.cancellationReason) + '</span></div>' : "")
+            + (payment ? detailRow(tr("حالة الدفع", "Payment status"), WaeiDashboard.statusLabel("payment", payment.status)) : "")
+            + '</div>';
+        document.getElementById("detailContent").innerHTML = html;
+        WaeiDashboard.openDialog("detailDialog");
+    }
+
+    function openProgramForm(id) {
+        editingProgramId = id || null;
+        const program = id ? programs.find(function (row) { return row.id === id; }) : null;
+        document.getElementById("programError").innerHTML = "";
+        document.getElementById("programDialogTitle").textContent = program
+            ? tr("تعديل البرنامج", "Edit program")
+            : tr("إضافة برنامج", "Add program");
+        document.getElementById("programTitle").value = program ? program.title : "";
+        document.getElementById("programCategory").value = program ? program.category : "";
+        document.getElementById("programPrice").value = program ? program.price : "";
+        document.getElementById("programMode").value = program ? program.deliveryMode : "IN_PERSON";
+        document.getElementById("programActive").checked = program ? Boolean(program.isActive) : true;
+        document.getElementById("programDescription").value = program ? program.description : "";
+        WaeiDashboard.openDialog("programDialog");
+        document.getElementById("programTitle").focus();
+    }
+
+    function openReject(id) {
+        rejectRequestId = id;
+        document.getElementById("rejectReason").value = "";
+        document.getElementById("rejectError").innerHTML = "";
+        WaeiDashboard.openDialog("rejectDialog");
+        document.getElementById("rejectReason").focus();
+    }
+
+    async function toggleProgram(id) {
+        const program = programs.find(function (row) { return row.id === id; });
+        if (!program) {
+            return;
+        }
+        const prompt = program.isActive
+            ? ["إيقاف استقبال الطلبات لهذا البرنامج؟", "Stop accepting requests for this program?"]
+            : ["تفعيل البرنامج لاستقبال الطلبات؟", "Activate this program for new requests?"];
+        if (!WaeiDashboard.confirmAction(prompt[0], prompt[1])) {
+            return;
+        }
+        try {
+            await apiPut("/training-program/change-status/" + id);
+            WaeiDashboard.notify(tr("تم تحديث حالة البرنامج.", "Program status updated."), "ok");
+            await loadData();
+        } catch (e) {
+            WaeiDashboard.notify(e.message, "error");
+        }
+    }
+
+    async function deleteProgram(id) {
+        if (!WaeiDashboard.confirmAction("حذف البرنامج نهائيًا؟", "Delete this program permanently?")) {
+            return;
+        }
+        try {
+            await apiDelete("/training-program/delete/" + id);
+            WaeiDashboard.notify(tr("تم حذف البرنامج.", "Program deleted."), "ok");
+            await loadData();
+        } catch (e) {
+            WaeiDashboard.notify(e.message, "error");
+        }
+    }
+
+    async function acceptRequest(id) {
+        if (!WaeiDashboard.confirmAction("قبول طلب التدريب؟", "Accept this training request?")) {
+            return;
+        }
+        try {
+            await apiPost("/training-request/" + id + "/accept");
+            WaeiDashboard.notify(tr("تم قبول الطلب.", "Request accepted."), "ok");
+            await loadData();
+        } catch (e) {
+            WaeiDashboard.notify(e.message, "error");
+        }
+    }
+
+    async function startRequest(id) {
+        if (!WaeiDashboard.confirmAction("بدء التدريب الآن؟", "Start the training now?")) {
+            return;
+        }
+        try {
+            await apiPost("/training-request/" + id + "/start");
+            WaeiDashboard.notify(tr("تم بدء التدريب.", "Training started."), "ok");
+            await loadData();
+        } catch (e) {
+            WaeiDashboard.notify(e.message, "error");
+        }
+    }
+
+    async function completeRequest(id) {
+        if (!WaeiDashboard.confirmAction("إكمال التدريب؟", "Mark the training as completed?")) {
+            return;
+        }
+        try {
+            await apiPost("/training-request/" + id + "/complete");
+            WaeiDashboard.notify(tr("تم إكمال التدريب.", "Training completed."), "ok");
+            await loadData();
+        } catch (e) {
+            WaeiDashboard.notify(e.message, "error");
+        }
+    }
+
+    async function loadData() {
+        if (!dashboardUser) {
+            return;
+        }
+        const root = document.getElementById("programsList");
+        showLoading(root, tr("نجيب بيانات جهتك...", "Loading your organization data..."));
+        try {
+            const results = await Promise.all([
+                apiGet("/training-program/get-by-organization/" + dashboardUser.organizationId),
+                apiGet("/training-request/my-provider-requests"),
+                apiGet("/payment/get")
+            ]);
+            programs = results[0];
+            incoming = results[1];
+            const requestIds = new Set(incoming.map(function (item) { return item.id; }));
+            payments = results[2].filter(function (payment) {
+                return requestIds.has(payment.trainingRequestId);
+            }).sort(function (a, b) {
+                return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+            });
+            setStats();
+            renderLatestRequests();
+            renderPrograms();
+            renderRequests();
+            renderPayments();
+        } catch (e) {
+            showError(root, e.message);
+            WaeiDashboard.notify(e.message, "error");
+        }
+    }
+
+    document.querySelectorAll("[data-new-program]").forEach(function (button) {
+        button.addEventListener("click", function () {
+            openProgramForm(null);
+        });
+    });
+
+    document.querySelectorAll("[data-request-status]").forEach(function (button) {
+        button.addEventListener("click", function () {
+            requestStatus = button.dataset.requestStatus;
+            document.querySelectorAll("[data-request-status]").forEach(function (chip) {
+                chip.setAttribute("aria-pressed", chip === button ? "true" : "false");
+            });
+            renderRequests();
+        });
+    });
+
+    document.querySelectorAll("[data-refresh]").forEach(function (button) {
+        button.addEventListener("click", loadData);
+    });
+
+    document.querySelectorAll("[data-goto]").forEach(function (button) {
+        button.addEventListener("click", function () {
+            WaeiDashboard.setPanel(button.dataset.goto);
+        });
+    });
+
+    document.getElementById("requestSearch").addEventListener("input", renderRequests);
+
+    document.getElementById("programForm").addEventListener("submit", async function (event) {
+        event.preventDefault();
+        const errorRoot = document.getElementById("programError");
+        errorRoot.innerHTML = "";
+        const title = document.getElementById("programTitle").value.trim();
+        const category = document.getElementById("programCategory").value.trim();
+        const description = document.getElementById("programDescription").value.trim();
+        const price = Number(document.getElementById("programPrice").value);
+        const deliveryMode = document.getElementById("programMode").value;
+        const isActive = document.getElementById("programActive").checked;
+
+        if (!title || !category || !description) {
+            errorRoot.innerHTML = '<div class="alert alert-error" role="alert">' + tr("عبّئ اسم البرنامج والتصنيف والوصف.", "Fill in the title, category and description.") + "</div>";
+            return;
+        }
+        if (!price || price < 1) {
+            errorRoot.innerHTML = '<div class="alert alert-error" role="alert">' + tr("السعر لازم يكون 1 ريال على الأقل.", "The price must be at least 1 SAR.") + "</div>";
+            return;
+        }
+
+        const payload = {
+            title: title,
+            category: category,
+            description: description,
+            price: price,
+            deliveryMode: deliveryMode,
+            isActive: isActive
+        };
+        const button = document.getElementById("programSubmit");
+        button.disabled = true;
+        try {
+            if (editingProgramId) {
+                await apiPut("/training-program/update/" + editingProgramId, payload);
+                WaeiDashboard.notify(tr("تم تحديث البرنامج.", "Program updated."), "ok");
+            } else {
+                await apiPost("/training-program/add", payload);
+                WaeiDashboard.notify(tr("تمت إضافة البرنامج.", "Program added."), "ok");
+            }
+            WaeiDashboard.closeDialog("programDialog");
+            await loadData();
+        } catch (e) {
+            errorRoot.innerHTML = '<div class="alert alert-error" role="alert">' + escapeHtml(e.message) + "</div>";
+        } finally {
+            button.disabled = false;
+        }
+    });
+
+    document.getElementById("rejectForm").addEventListener("submit", async function (event) {
+        event.preventDefault();
+        if (!rejectRequestId) {
+            return;
+        }
+        const reason = document.getElementById("rejectReason").value.trim();
+        const errorRoot = document.getElementById("rejectError");
+        errorRoot.innerHTML = "";
+        if (!reason) {
+            errorRoot.innerHTML = '<div class="alert alert-error" role="alert">' + tr("اكتب سبب الرفض.", "Enter a rejection reason.") + "</div>";
+            return;
+        }
+        const button = document.getElementById("rejectSubmit");
+        button.disabled = true;
+        try {
+            await apiPost("/training-request/" + rejectRequestId + "/reject", { reason: reason });
+            WaeiDashboard.closeDialog("rejectDialog");
+            WaeiDashboard.notify(tr("تم رفض الطلب.", "Request rejected."), "ok");
+            await loadData();
+        } catch (e) {
+            errorRoot.innerHTML = '<div class="alert alert-error" role="alert">' + escapeHtml(e.message) + "</div>";
+        } finally {
+            button.disabled = false;
+        }
+    });
+
+    WaeiDashboard.init({
+        role: "ORG_ADMIN",
+        orgTypes: ["PROVIDER", "BOTH"],
+        workspaceSwitch: {
+            href: "/dashboard/beneficiary",
+            ar: "مساحة الجهة المستفيدة",
+            en: "Beneficiary workspace"
+        },
+        nav: [
+            { id: "overview", ar: "نظرة عامة", en: "Overview", icon: "grid" },
+            { id: "programs", ar: "برامجي", en: "My programs", icon: "book" },
+            { id: "requests", ar: "الطلبات الواردة", en: "Incoming requests", icon: "clipboard", badge: true },
+            { id: "payments", ar: "المدفوعات", en: "Payments", icon: "card" }
+        ]
+    }).then(function (user) {
+        if (!user) {
+            return;
+        }
+        dashboardUser = user;
+        loadData();
+    });
+</script>
+</body>
+</html>

@@ -1,149 +1,108 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="ar" dir="rtl" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Payment result · WAEI</title>
-    <style>
-        :root {
-            color-scheme: light;
-            --ink: #14212b;
-            --muted: #5c6b78;
-            --line: #dfe6ec;
-            --brand: #0f6b5c;
-            --bg: #f4f7f9;
-        }
-
-        * { box-sizing: border-box; }
-
-        body {
-            margin: 0;
-            min-height: 100vh;
-            display: grid;
-            place-items: center;
-            padding: 24px;
-            background: var(--bg);
-            color: var(--ink);
-            font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
-        }
-
-        .card {
-            width: 100%;
-            max-width: 520px;
-            background: #fff;
-            border: 1px solid var(--line);
-            border-radius: 14px;
-            padding: 32px;
-            box-shadow: 0 10px 30px rgba(20, 33, 43, .06);
-        }
-
-        .brand {
-            color: var(--brand);
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: .08em;
-            text-transform: uppercase;
-            margin-bottom: 12px;
-        }
-
-        h1 {
-            margin: 0 0 8px;
-            font-size: 24px;
-        }
-
-        .muted { color: var(--muted); margin: 0 0 20px; }
-        .small { font-size: 13px; line-height: 1.6; margin-top: 20px; }
-        .error {
-            margin: 0 0 8px;
-            padding: 12px 14px;
-            border-radius: 10px;
-            background: #fdecec;
-            color: #8a1c1c;
-            font-size: 14px;
-        }
-
-        dl { margin: 24px 0 0; display: grid; gap: 14px; }
-
-        dl > div {
-            display: flex;
-            justify-content: space-between;
-            gap: 16px;
-            padding-bottom: 14px;
-            border-bottom: 1px solid var(--line);
-        }
-
-        dl > div:last-child { border-bottom: 0; padding-bottom: 0; }
-
-        dt { color: var(--muted); font-size: 14px; }
-        dd { margin: 0; font-weight: 600; text-align: right; }
-        .mono { font-family: Consolas, monospace; font-size: 12px; font-weight: 500; word-break: break-all; }
-
-        .badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 999px;
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: .02em;
-        }
-
-        .badge-paid { background: #e2f5ec; color: #0d6b45; }
-        .badge-pending { background: #fff4d6; color: #7a5600; }
-        .badge-failed { background: #fdecec; color: #8a1c1c; }
-        .badge-refunded { background: #e8eefb; color: #27458c; }
-        .badge-cancelled { background: #eceff2; color: #4c5762; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-en="Payment result — Waei">نتيجة الدفع — واعي</title>
+    <link rel="icon" href="/img/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/app.css">
+    <script src="/js/i18n.js"></script>
 </head>
-<body>
-<main class="card">
-    <div class="brand">WAEI Training Platform</div>
-    <h1>Payment result</h1>
+<body class="app-body">
 
-    <th:block th:if="${state == 'ok'}">
-        <p class="muted">Moyasar was checked and the status below is current.</p>
+<main class="guard-state">
+    <div class="card" style="text-align: start">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 22px">
+            <a href="/" class="brand">
+                <img src="/img/logo.png" alt="شعار واعي" data-en-alt="Waei logo">
+                <span data-en="Waei">واعي</span>
+            </a>
+            <button type="button" class="lang-toggle">English</button>
+        </div>
 
-        <dl>
-            <div>
-                <dt>Status</dt>
-                <dd>
-                    <span class="badge"
-                          th:classappend="${'badge-' + #strings.toLowerCase(payment.status)}"
-                          th:text="${#strings.capitalize(#strings.toLowerCase(payment.status))}">Paid</span>
-                </dd>
+        <h1 style="font-size: 27px" data-en="Payment result">نتيجة الدفع</h1>
+
+        <th:block th:if="${state == 'ok'}">
+            <p style="color: var(--muted); margin-top: 6px" data-en="Moyasar was checked and the status below is current.">تم التحقق من ميسر والحالة أدناه محدثة.</p>
+
+            <div class="detail-grid" style="margin-top: 18px">
+                <div class="detail-row">
+                    <span data-en="Status">الحالة</span>
+                    <span id="paymentStatus" th:attr="data-status=${payment.status}">
+                        <span class="badge badge-warn" th:text="${payment.status}">PENDING</span>
+                    </span>
+                </div>
+                <div class="detail-row">
+                    <span data-en="Amount">المبلغ</span>
+                    <span th:text="${#numbers.formatDecimal(payment.amount, 1, 2) + ' SAR'}">0.00 SAR</span>
+                </div>
+                <div class="detail-row">
+                    <span data-en="Training request">طلب التدريب</span>
+                    <span th:text="${'#' + payment.trainingRequestId}">#0</span>
+                </div>
+                <div class="detail-row" th:if="${payment.moyasarPaymentId != null}">
+                    <span data-en="Payment reference">مرجع الدفع</span>
+                    <span dir="ltr" style="font-family: Consolas, monospace; font-size: 12px" th:text="${payment.moyasarPaymentId}">—</span>
+                </div>
             </div>
-            <div>
-                <dt>Amount</dt>
-                <dd th:text="${#numbers.formatDecimal(payment.amount, 1, 2) + ' SAR'}">0.00 SAR</dd>
-            </div>
-            <div>
-                <dt>Training request</dt>
-                <dd th:text="${'#' + payment.trainingRequestId}">#0</dd>
-            </div>
-            <div th:if="${payment.moyasarPaymentId != null}">
-                <dt>Payment reference</dt>
-                <dd class="mono" th:text="${payment.moyasarPaymentId}">—</dd>
-            </div>
-        </dl>
 
-        <p class="muted small" th:if="${payment.status == 'PENDING'}">
-            The payment is still being confirmed. The webhook will update it automatically.
-        </p>
-    </th:block>
+            <p style="color: var(--soft); font-size: 14px; margin-top: 16px" th:if="${payment.status == 'PENDING'}"
+               data-en="The payment is still being confirmed. The webhook will update it automatically.">
+                الدفعة لا تزال قيد التأكيد. سيتم تحديثها تلقائيًا من ميسر.
+            </p>
+        </th:block>
 
-    <th:block th:if="${state == 'error'}">
-        <p class="error" th:text="${message}">The payment could not be confirmed.</p>
-        <p class="muted small">
-            If you completed the payment, the webhook will update the training request automatically.
-            You can also confirm it later with the payment sync API.
-        </p>
-    </th:block>
+        <th:block th:if="${state == 'error'}">
+            <div class="alert alert-error" style="margin-top: 16px" th:text="${message}">تعذر تأكيد الدفع.</div>
+            <p style="color: var(--muted); margin-top: 14px" data-en="If you completed the payment, the webhook will update the request automatically. You can also confirm it later from the dashboard.">
+                إذا أكملت الدفع، سيتم تحديث الطلب تلقائيًا. يمكنك أيضًا تأكيد الحالة لاحقًا من لوحة التحكم.
+            </p>
+        </th:block>
 
-    <th:block th:if="${state == 'empty'}">
-        <p class="muted">No payment reference was provided in this link.</p>
-        <p class="muted small">
-            This page is the return address for the Moyasar checkout. It is opened automatically after a payment.
-        </p>
-    </th:block>
+        <th:block th:if="${state == 'empty'}">
+            <p style="color: var(--muted); margin-top: 8px" data-en="No payment reference was provided in this link.">ما فيه مرجع دفع في هذا الرابط.</p>
+            <p style="color: var(--soft); font-size: 14px; margin-top: 8px" data-en="This page is the return address for the Moyasar checkout. It is opened automatically after a payment.">
+                هذه الصفحة هي عنوان العودة من صفحة الدفع في ميسر، وتُفتح تلقائيًا بعد الدفع.
+            </p>
+        </th:block>
+
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 24px">
+            <a id="dashboardLink" href="/login" class="btn btn-primary btn-block" data-en="Back to dashboard">العودة إلى لوحة التحكم</a>
+            <a href="/" class="btn btn-outline btn-block" data-en="Back to home">العودة للرئيسية</a>
+        </div>
+    </div>
 </main>
+
+<script src="/js/api.js"></script>
+<script th:inline="none">
+    (function () {
+        const user = getUser();
+        const link = document.getElementById("dashboardLink");
+        if (user && getToken()) {
+            link.href = dashboardPath(user);
+        } else {
+            link.textContent = tr("تسجيل الدخول", "Log in");
+        }
+
+        const statusRoot = document.getElementById("paymentStatus");
+        if (statusRoot) {
+            const status = statusRoot.dataset.status;
+            const labels = {
+                PENDING: ["قيد المعالجة", "Pending", "warn"],
+                PAID: ["مدفوع", "Paid", "ok"],
+                FAILED: ["فشل", "Failed", "bad"],
+                REFUNDED: ["مسترد", "Refunded", "neutral"],
+                CANCELLED: ["ملغي", "Cancelled", "muted"]
+            };
+            const entry = labels[status];
+            if (entry) {
+                statusRoot.innerHTML = '<span class="badge badge-' + entry[2] + '">' + tr(entry[0], entry[1]) + "</span>";
+            }
+        }
+    })();
+</script>
 </body>
 </html>

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-en="Waei — Register your organization">واعي — تسجيل جهة</title>
+    <link rel="icon" href="/img/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/app.css">
+    <script src="/js/i18n.js"></script>
+</head>
+<body class="app-body">
+
+<div class="register-layout">
+    <aside class="register-aside">
+        <a href="/" class="brand">
+            <img src="/img/logo-dark.png" alt="شعار واعي" data-en-alt="Waei logo">
+            <span data-en="Waei">واعي</span>
+        </a>
+        <div>
+            <h1 data-en="Join Waei as an organization">انضم إلى واعي كجهة</h1>
+            <p data-en="Register your organization, upload the supporting document, and the Waei team will review your application.">سجّل جهتك وارفع المستند الداعم، وفريق واعي يراجع طلبك ويتواصل معك.</p>
+        </div>
+        <ol class="register-steps">
+            <li>
+                <span class="step-dot">1</span>
+                <span data-en="Fill in the organization and account details.">عبّئ بيانات الجهة وحساب مدير الجهة.</span>
+            </li>
+            <li>
+                <span class="step-dot">2</span>
+                <span data-en="Upload a PDF or image of the supporting document.">ارفع المستند الداعم بصيغة PDF أو صورة.</span>
+            </li>
+            <li>
+                <span class="step-dot">3</span>
+                <span data-en="After approval, the organization administrator can log in and use the dashboard.">بعد الموافقة، يستطيع مدير الجهة تسجيل الدخول واستخدام لوحة التحكم.</span>
+            </li>
+        </ol>
+        <span class="tagline" data-en="Because awareness.. saves lives">لأن الوعي.. ينقذ حياة</span>
+    </aside>
+
+    <main class="register-main">
+        <div class="register-topbar">
+            <a href="/" class="btn btn-outline btn-sm" data-en="Back to home">العودة للرئيسية</a>
+            <button type="button" class="lang-toggle">English</button>
+        </div>
+
+        <div class="register-card">
+            <header>
+                <h2 data-en="Register your organization">تسجيل جهة جديدة</h2>
+                <p data-en="All fields are required unless marked optional. The login account is for the organization administrator.">جميع الحقول مطلوبة إلا إذا ذُكر أنها اختيارية. حساب الدخول يكون لمدير الجهة.</p>
+            </header>
+
+            <form id="registerForm" novalidate>
+                <div id="registerError" aria-live="polite"></div>
+
+                <fieldset class="form-section">
+                    <legend><span class="section-num">1</span><span data-en="Organization details">بيانات الجهة</span></legend>
+                    <div class="form-grid">
+                        <div class="field full">
+                            <span data-en="Organization type">نوع الجهة</span>
+                            <div class="type-options">
+                                <label class="type-option">
+                                    <input type="radio" name="type" value="BENEFICIARY">
+                                    <span>
+                                        <strong data-en="Beneficiary organization">جهة مستفيدة</strong>
+                                        <small data-en="Schools, companies and entities that request training for their teams.">مدارس وشركات وجهات تطلب تدريبًا لفريقها.</small>
+                                    </span>
+                                </label>
+                                <label class="type-option">
+                                    <input type="radio" name="type" value="PROVIDER">
+                                    <span>
+                                        <strong data-en="Training provider">جهة مقدمة خدمة</strong>
+                                        <small data-en="Training centers and providers that publish and deliver courses.">مراكز تدريب ومقدمو خدمات ينشرون الدورات ويقدمونها.</small>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label for="name" data-en="Organization name">اسم الجهة</label>
+                            <input id="name" name="name" class="input" type="text" maxlength="150" autocomplete="organization" required>
+                        </div>
+
+                        <div class="field">
+                            <label for="sector" data-en="Sector">القطاع</label>
+                            <input id="sector" name="sector" class="input" type="text" list="sectorOptions" maxlength="120" required>
+                            <datalist id="sectorOptions">
+                                <option value="التعليم"></option>
+                                <option value="الصحة"></option>
+                                <option value="الشركات"></option>
+                                <option value="القطاع الحكومي"></option>
+                                <option value="القطاع غير الربحي"></option>
+                                <option value="التدريب"></option>
+                            </datalist>
+                        </div>
+
+                        <div class="field">
+                            <label for="email" data-en="Organization email">البريد الإلكتروني للجهة</label>
+                            <input id="email" name="email" class="input" type="email" dir="ltr" autocomplete="email" placeholder="name@organization.sa" required>
+                        </div>
+
+                        <div class="field">
+                            <label for="phoneNumber" data-en="Mobile number">رقم الجوال</label>
+                            <input id="phoneNumber" name="phoneNumber" class="input" type="tel" dir="ltr" inputmode="numeric" maxlength="10" placeholder="05XXXXXXXX" required>
+                            <span class="field-hint" data-en="A Saudi mobile number starting with 05.">رقم جوال سعودي يبدأ بـ 05.</span>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-section">
+                    <legend><span class="section-num">2</span><span data-en="Organization administrator">مدير الجهة</span></legend>
+                    <div class="form-grid">
+                        <div class="field full">
+                            <label for="adminFullName" data-en="Full name">الاسم الكامل</label>
+                            <input id="adminFullName" name="adminFullName" class="input" type="text" maxlength="150" autocomplete="name" required>
+                        </div>
+
+                        <div class="field">
+                            <label for="adminEmail" data-en="Login email">بريد الدخول</label>
+                            <input id="adminEmail" name="adminEmail" class="input" type="email" dir="ltr" autocomplete="email" placeholder="admin@organization.sa" required>
+                        </div>
+
+                        <div class="field">
+                            <label for="adminPassword" data-en="Password">كلمة المرور</label>
+                            <input id="adminPassword" name="adminPassword" class="input" type="password" dir="ltr" autocomplete="new-password" minlength="8" required>
+                            <span class="field-hint" data-en="At least 8 characters.">8 أحرف على الأقل.</span>
+                        </div>
+
+                        <div class="field">
+                            <label for="adminPasswordConfirm" data-en="Confirm password">تأكيد كلمة المرور</label>
+                            <input id="adminPasswordConfirm" class="input" type="password" dir="ltr" autocomplete="new-password" required>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-section">
+                    <legend><span class="section-num">3</span><span data-en="Supporting document">المستند الداعم</span></legend>
+                    <div class="form-grid">
+                        <div class="field full">
+                            <label for="documentReference" data-en="Document reference (optional)">مرجع المستند (اختياري)</label>
+                            <input id="documentReference" name="documentReference" class="input" type="text" maxlength="150" data-en-placeholder="For example: commercial registration number" placeholder="مثال: رقم السجل التجاري">
+                        </div>
+
+                        <div class="field full">
+                            <span data-en="Upload the document">ارفع المستند</span>
+                            <label class="upload-zone" id="uploadZone" for="document">
+                                <input id="document" name="document" type="file" accept=".pdf,.png,.jpg,.jpeg,application/pdf,image/png,image/jpeg">
+                                <svg aria-hidden="true" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m17 8-5-5-5 5M12 3v12"></path></svg>
+                                <strong data-en="Click to choose a file, or drag it here">اضغط لاختيار ملف أو اسحبه هنا</strong>
+                                <span class="field-hint" data-en="PDF, JPEG or PNG — maximum 10 MB">PDF أو JPEG أو PNG — بحد أقصى 10 ميجابايت</span>
+                            </label>
+                        </div>
+
+                        <div class="full hidden" id="filePreview"></div>
+                    </div>
+                </fieldset>
+
+                <label class="check">
+                    <input type="checkbox" id="terms">
+                    <span data-en="I confirm that the information is correct and that I am authorized to register this organization.">أقر بأن البيانات صحيحة وأنني مخوّل بتسجيل هذه الجهة.</span>
+                </label>
+
+                <div class="form-actions">
+                    <button type="submit" id="registerSubmit" class="btn btn-primary" data-en="Submit registration">إرسال طلب التسجيل</button>
+                    <a href="/login" class="btn btn-outline" data-en="I already have an account">عندي حساب بالفعل</a>
+                </div>
+            </form>
+
+            <section id="registerSuccess" class="register-success hidden" aria-live="polite">
+                <div class="success-icon">
+                    <svg aria-hidden="true" width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4.5 4.5L19 7"></path></svg>
+                </div>
+                <h2 data-en="Your registration was received">تم استلام طلب التسجيل</h2>
+                <p data-en="The platform administrator will review your organization and its document. You can log in after the organization is verified.">إدارة المنصة تراجع بيانات جهتك والمستند المرفق. يمكنك تسجيل الدخول بعد توثيق الجهة.</p>
+                <div class="application-ref">
+                    <span data-en="Application number">رقم الطلب</span>
+                    <span id="applicationRef" dir="ltr">#</span>
+                </div>
+                <div>
+                    <a href="/login" class="btn btn-primary" data-en="Go to login">الذهاب لتسجيل الدخول</a>
+                </div>
+            </section>
+        </div>
+    </main>
+</div>
+
+<script src="/js/api.js"></script>
+<script th:inline="none">
+    const form = document.getElementById("registerForm");
+    const errorBox = document.getElementById("registerError");
+    const submitButton = document.getElementById("registerSubmit");
+    const fileInput = document.getElementById("document");
+    const uploadZone = document.getElementById("uploadZone");
+    const filePreview = document.getElementById("filePreview");
+    const MAX_FILE_SIZE = 10 * 1024 * 1024;
+    const ALLOWED_TYPES = ["application/pdf", "image/jpeg", "image/png"];
+    const ALLOWED_EXTENSIONS = ["pdf", "jpg", "jpeg", "png"];
+    let selectedFile = null;
+
+    function showFormError(message) {
+        errorBox.innerHTML = '<div class="alert alert-error" role="alert">' + escapeHtml(message) + "</div>";
+        errorBox.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function clearFormError() {
+        errorBox.innerHTML = "";
+    }
+
+    function fileExtension(name) {
+        const parts = String(name || "").toLowerCase().split(".");
+        return parts.length > 1 ? parts.pop() : "";
+    }
+
+    function validateFile(file) {
+        if (!file) {
+            return tr("اختر المستند الداعم أول.", "Choose the supporting document first.");
+        }
+        if (file.size > MAX_FILE_SIZE) {
+            return tr("حجم المستند أكبر من 10 ميجابايت.", "The document is larger than 10 MB.");
+        }
+        if (ALLOWED_TYPES.indexOf(file.type) === -1 && ALLOWED_EXTENSIONS.indexOf(fileExtension(file.name)) === -1) {
+            return tr("المستند لازم يكون PDF أو صورة JPEG أو PNG.", "The document must be a PDF, JPEG or PNG file.");
+        }
+        return "";
+    }
+
+    function formatFileSize(bytes) {
+        if (bytes < 1024 * 1024) {
+            return (bytes / 1024).toFixed(1) + " KB";
+        }
+        return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+    }
+
+    function renderFilePreview() {
+        if (!selectedFile) {
+            filePreview.classList.add("hidden");
+            filePreview.innerHTML = "";
+            return;
+        }
+        filePreview.classList.remove("hidden");
+        filePreview.innerHTML = '<div class="upload-preview">'
+            + '<span class="file-icon"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6M9 15h6"></path></svg></span>'
+            + '<span class="file-meta"><strong></strong><small>' + escapeHtml(formatFileSize(selectedFile.size)) + "</small></span>"
+            + '<button type="button" class="icon-btn" id="removeFile" aria-label="' + tr("إزالة الملف", "Remove file") + '">'
+            + '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>'
+            + "</div>";
+        filePreview.querySelector(".file-meta strong").textContent = selectedFile.name;
+        document.getElementById("removeFile").addEventListener("click", function () {
+            selectedFile = null;
+            fileInput.value = "";
+            clearFormError();
+            renderFilePreview();
+        });
+    }
+
+    function acceptFile(file) {
+        const problem = validateFile(file);
+        if (problem) {
+            selectedFile = null;
+            fileInput.value = "";
+            renderFilePreview();
+            showFormError(problem);
+            return;
+        }
+        selectedFile = file;
+        clearFormError();
+        renderFilePreview();
+    }
+
+    fileInput.addEventListener("change", function () {
+        const file = fileInput.files && fileInput.files[0];
+        if (file) {
+            acceptFile(file);
+            return;
+        }
+        selectedFile = null;
+        renderFilePreview();
+    });
+
+    ["dragenter", "dragover"].forEach(function (name) {
+        uploadZone.addEventListener(name, function (event) {
+            event.preventDefault();
+            uploadZone.classList.add("dragover");
+        });
+    });
+
+    ["dragleave", "drop"].forEach(function (name) {
+        uploadZone.addEventListener(name, function (event) {
+            event.preventDefault();
+            uploadZone.classList.remove("dragover");
+        });
+    });
+
+    uploadZone.addEventListener("drop", function (event) {
+        const file = event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0];
+        if (file) {
+            acceptFile(file);
+        }
+    });
+
+    document.getElementById("phoneNumber").addEventListener("input", function () {
+        this.value = this.value.replace(/\D/g, "").slice(0, 10);
+    });
+
+    function validateForm() {
+        const type = form.querySelector('input[name="type"]:checked');
+        const name = document.getElementById("name").value.trim();
+        const sector = document.getElementById("sector").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const phoneNumber = document.getElementById("phoneNumber").value.trim();
+        const adminFullName = document.getElementById("adminFullName").value.trim();
+        const adminEmail = document.getElementById("adminEmail").value.trim();
+        const adminPassword = document.getElementById("adminPassword").value;
+        const adminPasswordConfirm = document.getElementById("adminPasswordConfirm").value;
+        const terms = document.getElementById("terms").checked;
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!type) {
+            return tr("اختر نوع الجهة.", "Choose the organization type.");
+        }
+        if (!name) {
+            return tr("اسم الجهة مطلوب.", "Organization name is required.");
+        }
+        if (!sector) {
+            return tr("القطاع مطلوب.", "Sector is required.");
+        }
+        if (!emailPattern.test(email)) {
+            return tr("اكتب بريدًا إلكترونيًا صحيحًا للجهة.", "Enter a valid organization email.");
+        }
+        if (!/^05\d{8}$/.test(phoneNumber)) {
+            return tr("رقم الجوال لازم يكون سعوديًا ويبدأ بـ 05.", "The mobile number must be a Saudi number starting with 05.");
+        }
+        if (!adminFullName) {
+            return tr("اسم مدير الجهة مطلوب.", "The administrator full name is required.");
+        }
+        if (!emailPattern.test(adminEmail)) {
+            return tr("اكتب بريدًا إلكترونيًا صحيحًا لمدير الجهة.", "Enter a valid administrator email.");
+        }
+        if (adminPassword.length < 8) {
+            return tr("كلمة المرور لازم تكون 8 أحرف على الأقل.", "The password must be at least 8 characters.");
+        }
+        if (adminPassword !== adminPasswordConfirm) {
+            return tr("كلمتا المرور غير متطابقتين.", "The passwords do not match.");
+        }
+        if (!selectedFile) {
+            return tr("ارفع المستند الداعم.", "Upload the supporting document.");
+        }
+        if (!terms) {
+            return tr("لازم تقر بصحة البيانات.", "Confirm that the information is correct.");
+        }
+        return "";
+    }
+
+    form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+        clearFormError();
+        const problem = validateForm();
+        if (problem) {
+            showFormError(problem);
+            return;
+        }
+
+        const data = new FormData();
+        data.append("type", form.querySelector('input[name="type"]:checked').value);
+        data.append("name", document.getElementById("name").value.trim());
+        data.append("sector", document.getElementById("sector").value.trim());
+        data.append("email", document.getElementById("email").value.trim());
+        data.append("phoneNumber", document.getElementById("phoneNumber").value.trim());
+        data.append("documentReference", document.getElementById("documentReference").value.trim());
+        data.append("adminFullName", document.getElementById("adminFullName").value.trim());
+        data.append("adminEmail", document.getElementById("adminEmail").value.trim());
+        data.append("adminPassword", document.getElementById("adminPassword").value);
+        data.append("document", selectedFile, selectedFile.name);
+
+        submitButton.disabled = true;
+        submitButton.textContent = tr("جاري إرسال الطلب...", "Submitting...");
+        try {
+            const response = await apiPostForm("/organization/register", data);
+            form.classList.add("hidden");
+            document.getElementById("registerSuccess").classList.remove("hidden");
+            document.getElementById("applicationRef").textContent = "#" + response.id;
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        } catch (e) {
+            showFormError(e.message);
+        } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = tr("إرسال طلب التسجيل", "Submit registration");
+        }
+    });
+</script>
+</body>
+</html>

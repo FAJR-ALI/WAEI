@@ -107,55 +107,30 @@
 
                 <button type="submit" id="loginBtn" class="btn btn-primary btn-block">دخول</button>
 
-                <p class="center-text" data-en="Organization not registered? Accounts are created by the Waei team.">جهتك مو مسجلة؟ حسابات الجهات تنشئها إدارة واعي.</p>
+                <p class="center-text" data-en="Organization not registered? <a href=&quot;/register&quot;>Register your organization</a>">جهتك مو مسجلة؟ <a href="/register">سجّل جهتك الآن</a></p>
                 <p class="center-text" style="font-size: 14px; color: var(--soft)" data-en="Just want to train? <a href=&quot;/#trainings&quot;>Training is open without an account</a>">تبي تتدرب بس؟ <a href="/#trainings">التدريب مفتوح بدون حساب</a></p>
             </form>
-
-            <!-- Already logged in -->
-            <section id="loggedIn" class="login-form hidden" aria-live="polite">
-                <div>
-                    <h2><span data-en="Hello">هلا</span> <span id="userName"></span></h2>
-                    <p class="sub" data-en="You are logged in">سجّلت دخولك بنجاح</p>
-                </div>
-                <div>
-                    <div class="info-row"><span data-en="Email">البريد</span><span id="userEmail" dir="ltr"></span></div>
-                    <div class="info-row"><span data-en="Account type">نوع الحساب</span><span id="userRole"></span></div>
-                    <div class="info-row" id="orgRow"><span data-en="Organization">الجهة</span><span id="userOrg"></span></div>
-                </div>
-                <a href="/" class="btn btn-primary btn-block" data-en="Home page">الصفحة الرئيسية</a>
-                <button type="button" id="logoutBtn" class="btn btn-outline btn-block" data-en="Log out">تسجيل خروج</button>
-            </section>
         </div>
     </main>
 </div>
 
 <script src="/js/api.js"></script>
 <script th:inline="none">
-    const ROLE_LABELS = {
-        PLATFORM_ADMIN: tr("إدارة المنصة", "Platform admin"),
-        ORG_ADMIN: tr("مسؤول جهة", "Organization admin")
-    };
     const LOGIN_TEXT = tr("دخول", "Log in");
 
     document.getElementById("loginBtn").textContent = LOGIN_TEXT;
 
-    function showLoggedIn(user) {
-        document.getElementById("loginForm").classList.add("hidden");
-        document.getElementById("loggedIn").classList.remove("hidden");
-        document.getElementById("userName").textContent = user.fullName || "";
-        document.getElementById("userEmail").textContent = user.email || "";
-        document.getElementById("userRole").textContent = ROLE_LABELS[user.role] || user.role || "";
-        if (user.organizationName) {
-            document.getElementById("userOrg").textContent = user.organizationName;
-        } else {
-            document.getElementById("orgRow").classList.add("hidden");
-        }
-    }
-
     function showForm() {
-        document.getElementById("loggedIn").classList.add("hidden");
         document.getElementById("loginForm").classList.remove("hidden");
         document.getElementById("email").focus();
+    }
+
+    function nextDestination(user) {
+        const next = getQueryParam("next");
+        if (next && next.startsWith("/dashboard/") && !next.startsWith("//")) {
+            return next;
+        }
+        return dashboardPath(user);
     }
 
     // Show / hide the password
@@ -187,7 +162,7 @@
         try {
             const auth = await apiPost("/auth/login", { email: email, password: password });
             saveLogin(auth);
-            showLoggedIn(auth);
+            window.location.replace(nextDestination(auth));
         } catch (err) {
             errorBox.innerHTML = '<div class="alert alert-error" role="alert">' + escapeHtml(err.message) + "</div>";
         } finally {
@@ -196,9 +171,7 @@
         }
     });
 
-    document.getElementById("logoutBtn").addEventListener("click", logout);
-
-    // Already logged in? check the token is still valid with /auth/me
+    // Already logged in? Send the user straight to their dashboard.
     async function start() {
         if (!getToken()) {
             showForm();
@@ -206,13 +179,9 @@
         }
         try {
             const me = await apiGet("/auth/me");
-            showLoggedIn(me);
+            saveLogin(me);
+            window.location.replace(nextDestination(me));
         } catch (e) {
-            // Token expired
-            try {
-                localStorage.removeItem("waeiToken");
-                localStorage.removeItem("waeiUser");
-            } catch (ignore) {}
             showForm();
         }
     }
