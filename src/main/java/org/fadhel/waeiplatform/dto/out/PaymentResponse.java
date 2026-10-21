@@ -24,9 +24,19 @@ public class PaymentResponse {
 
     private String moyasarPaymentId;
 
+    private String moyasarInvoiceId;
+
+    private String checkoutUrl;
+
     private LocalDateTime createdAt;
 
+    private LocalDateTime updatedAt;
+
     private LocalDateTime paidAt;
+
+    private BigDecimal refundedAmount;
+
+    private LocalDateTime refundedAt;
 
     private Long trainingRequestId;
 

@@ -27,4 +27,8 @@ public class TrainingProgramResponse {
 
     private Boolean isActive;
 
+    private Long organizationId;
+
+    private String organizationName;
+
 }

@@ -3,9 +3,10 @@ package org.fadhel.waeiplatform.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -29,9 +30,11 @@ public class TrainingRequest {
     @Column(columnDefinition = "TEXT")
     private String notes;
 
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
     @Column(nullable = false, length = 30)
-    @Pattern(regexp = "^(PENDING|ACCEPTED|REJECTED|PAYMENT_PENDING|PAID|IN_PROGRESS|COMPLETED|CANCELLED)$", message = "Invalid status")
-    private String status;
+    private TrainingRequestStatus status;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime requestedAt;
@@ -40,6 +43,20 @@ public class TrainingRequest {
     @Positive
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal programPrice;
+
+    @Column
+    private LocalDateTime scheduledStart;
+
+    @Column
+    private LocalDateTime scheduledEnd;
+    private LocalDateTime acceptedAt;
+
+    private LocalDateTime completedAt;
+
+    private LocalDateTime cancelledAt;
+
+    @Column(length = 500)
+    private String cancellationReason;
 
     @ManyToOne
     @JoinColumn

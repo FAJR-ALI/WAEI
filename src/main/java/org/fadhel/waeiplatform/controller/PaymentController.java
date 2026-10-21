@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.fadhel.waeiplatform.api.ApiResponse;
 import org.fadhel.waeiplatform.dto.in.PaymentRequest;
-import org.fadhel.waeiplatform.dto.in.PaymentUpdateRequest;
+import org.fadhel.waeiplatform.integration.MoyasarClient;
 import org.fadhel.waeiplatform.service.PaymentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,14 +43,28 @@ public class PaymentController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addPayment(@Valid @RequestBody PaymentRequest request) {
-        paymentService.addPayment(request);
-        return ResponseEntity.status(200).body(new ApiResponse("Payment added successfully"));
+        return ResponseEntity.status(200).body(paymentService.addPayment(request));
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<?> updatePayment(@PathVariable Long id, @Valid @RequestBody PaymentUpdateRequest request) {
-        paymentService.updatePayment(id, request);
-        return ResponseEntity.status(200).body(new ApiResponse("Payment updated successfully"));
+    @PostMapping("/{id}/refund")
+    public ResponseEntity<?> refundPayment(@PathVariable Long id) {
+        return ResponseEntity.status(200).body(paymentService.refundPayment(id));
+    }
+
+    @PostMapping("/{id}/sync")
+    public ResponseEntity<?> syncPayment(@PathVariable Long id) {
+        return ResponseEntity.status(200).body(paymentService.syncPayment(id));
+    }
+
+    @PostMapping("/sync-by-invoice/{invoiceId}")
+    public ResponseEntity<?> syncByInvoice(@PathVariable String invoiceId) {
+        return ResponseEntity.status(200).body(paymentService.syncByInvoice(invoiceId));
+    }
+
+    @PostMapping("/webhook/moyasar")
+    public ResponseEntity<?> moyasarWebhook(@RequestBody MoyasarClient.MoyasarWebhook payload) {
+        paymentService.handleWebhook(payload);
+        return ResponseEntity.status(200).body(new ApiResponse("Webhook processed"));
     }
 
     @DeleteMapping("/delete/{id}")

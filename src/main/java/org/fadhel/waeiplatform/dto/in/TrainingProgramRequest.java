@@ -27,7 +27,7 @@ public class TrainingProgramRequest {
     private String description;
 
     @NotNull
-    @DecimalMin("0.00")
+    @DecimalMin(value = "1.00", message = "Price must be at least 1 SAR")
     @Digits(integer = 10, fraction = 2)
     private BigDecimal price;
 
@@ -35,8 +35,10 @@ public class TrainingProgramRequest {
     @Pattern(regexp = "^(IN_PERSON|ONLINE|HYBRID)$", message = "Invalid delivery mode")
     private String deliveryMode;
 
-    @NotNull
-    @Positive
+    /**
+     * Optional. Ignored for organization administrators and derived from their token.
+     * Only the platform administrator may create a program for another organization.
+     */
     private Long organizationId;
 
     private Boolean isActive;
