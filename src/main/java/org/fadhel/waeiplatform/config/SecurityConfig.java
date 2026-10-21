@@ -85,7 +85,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/login", "/api/v1/payment/webhook/moyasar").permitAll()
                         // Visitor pages (templates) + CSS/JS/images (static) + Spring error page
                         .requestMatchers(HttpMethod.GET, "/", "/login", "/train", "/programs", "/pricing",
-                                "/kids", "/story", "/call").permitAll()
+                                "/kids", "/story", "/call", "/guide", "/guide/detail").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/img/**", "/error").permitAll()
                         // Visitor endpoints: no login needed
                         .requestMatchers(HttpMethod.GET,
@@ -94,10 +94,16 @@ public class SecurityConfig {
                                 "/api/v1/awareness-calendar/upcoming",
                                 "/api/v1/awareness-session/quiz/*",
                                 "/api/v1/kids/**",
-                                "/api/v1/training-program/get-active").permitAll()
+                                "/api/v1/training-program/get-active",
+                                "/api/v1/guide/published",
+                                "/api/v1/guide/published/*",
+                                "/api/v1/guide/category/*").permitAll()
                         .requestMatchers(HttpMethod.POST,
                                 "/api/v1/awareness-session/evaluate/*",
-                                "/api/v1/awareness-session/quiz/submit/*").permitAll()
+                                "/api/v1/awareness-session/quiz/submit/*",
+                                "/api/v1/guide/smart-search").permitAll()
+                        // Emergency guide management: platform admin only
+                        .requestMatchers("/api/v1/guide/**").hasRole("PLATFORM_ADMIN")
                         .requestMatchers(HttpMethod.POST,
                                 "/api/v1/organization/register",
                                 "/api/v1/organization/*/resubmit").permitAll()
