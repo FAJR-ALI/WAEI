@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.fadhel.waeiplatform.api.ApiException;
 import org.fadhel.waeiplatform.dto.in.AwarenessServiceRequest;
 import org.fadhel.waeiplatform.dto.out.AwarenessServiceResponse;
+import org.fadhel.waeiplatform.model.AwarenessCalendarEvent;
 import org.fadhel.waeiplatform.model.AwarenessService;
+import org.fadhel.waeiplatform.repository.AwarenessCalendarEventRepository;
 import org.fadhel.waeiplatform.repository.AwarenessServiceRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,13 +18,14 @@ import java.util.List;
 public class AwarenessServiceService {
 
     private final AwarenessServiceRepository awarenessServiceRepository;
+    private final AwarenessCalendarEventRepository awarenessCalendarEventRepository;
 
     public List<AwarenessServiceResponse> getAllServices() {
         List<AwarenessService> services = awarenessServiceRepository.findAll();
         List<AwarenessServiceResponse> responses = new ArrayList<>();
 
         for (AwarenessService s : services) {
-            responses.add(new AwarenessServiceResponse(s.getId(), s.getTitle(), s.getCategory(), s.getDescription(), s.getIsActive()));
+            responses.add(new AwarenessServiceResponse(s.getId(), s.getTitle(), s.getCategory(), s.getDescription(), s.getOfficialVideoUrl(), s.getIsActive()));
         }
         return responses;
     }
@@ -32,7 +35,7 @@ public class AwarenessServiceService {
         if (s == null) {
             throw new ApiException("Awareness service not found");
         }
-        return new AwarenessServiceResponse(s.getId(), s.getTitle(), s.getCategory(), s.getDescription(), s.getIsActive());
+        return new AwarenessServiceResponse(s.getId(), s.getTitle(), s.getCategory(), s.getDescription(), s.getOfficialVideoUrl(), s.getIsActive());
     }
 
     public List<AwarenessServiceResponse> getActiveServices() {
@@ -40,7 +43,7 @@ public class AwarenessServiceService {
         List<AwarenessServiceResponse> responses = new ArrayList<>();
 
         for (AwarenessService s : services) {
-            responses.add(new AwarenessServiceResponse(s.getId(), s.getTitle(), s.getCategory(), s.getDescription(), s.getIsActive()));
+            responses.add(new AwarenessServiceResponse(s.getId(), s.getTitle(), s.getCategory(), s.getDescription(), s.getOfficialVideoUrl(), s.getIsActive()));
         }
         return responses;
     }
@@ -50,7 +53,7 @@ public class AwarenessServiceService {
         List<AwarenessServiceResponse> responses = new ArrayList<>();
 
         for (AwarenessService s : services) {
-            responses.add(new AwarenessServiceResponse(s.getId(), s.getTitle(), s.getCategory(), s.getDescription(), s.getIsActive()));
+            responses.add(new AwarenessServiceResponse(s.getId(), s.getTitle(), s.getCategory(), s.getDescription(), s.getOfficialVideoUrl(), s.getIsActive()));
         }
         return responses;
     }
@@ -64,6 +67,7 @@ public class AwarenessServiceService {
         service.setTitle(request.getTitle());
         service.setCategory(request.getCategory());
         service.setDescription(request.getDescription());
+        service.setOfficialVideoUrl(request.getOfficialVideoUrl());
         if (request.getIsActive() != null) {
             service.setIsActive(request.getIsActive());
         }
@@ -80,6 +84,7 @@ public class AwarenessServiceService {
         oldService.setTitle(request.getTitle());
         oldService.setCategory(request.getCategory());
         oldService.setDescription(request.getDescription());
+        oldService.setOfficialVideoUrl(request.getOfficialVideoUrl());
         if (request.getIsActive() != null) {
             oldService.setIsActive(request.getIsActive());
         }
@@ -108,6 +113,14 @@ public class AwarenessServiceService {
         if (service == null) {
             throw new ApiException("Awareness service not found");
         }
+
+        // Calendar days that promote this training stay, they just lose the link
+        List<AwarenessCalendarEvent> events = awarenessCalendarEventRepository.findAwarenessCalendarEventsByAwarenessService(service);
+        for (AwarenessCalendarEvent event : events) {
+            event.setAwarenessService(null);
+            awarenessCalendarEventRepository.save(event);
+        }
+
         awarenessServiceRepository.delete(service);
     }
 }

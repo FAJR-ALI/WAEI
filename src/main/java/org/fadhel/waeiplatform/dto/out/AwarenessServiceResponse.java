@@ -19,5 +19,7 @@ public class AwarenessServiceResponse {
 
     private String description;
 
+    private String officialVideoUrl;
+
     private Boolean isActive;
 }

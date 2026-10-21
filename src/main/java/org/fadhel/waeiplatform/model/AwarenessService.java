@@ -35,6 +35,10 @@ public class AwarenessService {
     @Column(columnDefinition = "text not null")
     private String description;
 
+    // Link to an official video that shows the correct way (Red Crescent, Civil Defense...)
+    @Column(columnDefinition = "varchar(255)")
+    private String officialVideoUrl;
+
     @Column(columnDefinition = "boolean default true")
     private Boolean isActive = true;
 

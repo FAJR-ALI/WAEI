@@ -1,8 +1,10 @@
 package org.fadhel.waeiplatform.controller;
 
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.fadhel.waeiplatform.api.ApiResponse;
+import org.fadhel.waeiplatform.dto.in.QuizSubmitRequest;
 import org.fadhel.waeiplatform.service.AwarenessSessionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +26,18 @@ public class AwarenessSessionController {
         return ResponseEntity.status(200).body(awarenessSessionService.evaluateVideo(serviceId, video, consentGiven, ageConfirmed));
     }
 
+    // Get the 3 quiz questions of a session (without the correct answers)
+    @GetMapping("/quiz/{sessionId}")
+    public ResponseEntity<?> getQuiz(@PathVariable Long sessionId) {
+        return ResponseEntity.status(200).body(awarenessSessionService.getQuiz(sessionId));
+    }
+
+    // Body: { "answers": ["A", "C", "B"] }
+    @PostMapping("/quiz/submit/{sessionId}")
+    public ResponseEntity<?> submitQuiz(@PathVariable Long sessionId, @RequestBody @Valid QuizSubmitRequest request) {
+        return ResponseEntity.status(200).body(awarenessSessionService.submitQuiz(sessionId, request));
+    }
+
     @GetMapping("/get")
     public ResponseEntity<?> getAllSessions() {
         return ResponseEntity.status(200).body(awarenessSessionService.getAllSessions());
@@ -42,6 +56,12 @@ public class AwarenessSessionController {
     @GetMapping("/stats/{serviceId}")
     public ResponseEntity<?> getServiceStats(@PathVariable Long serviceId) {
         return ResponseEntity.status(200).body(awarenessSessionService.getServiceStats(serviceId));
+    }
+
+    // Admin dashboard: attempts + average score for every training
+    @GetMapping("/stats")
+    public ResponseEntity<?> getAllServicesStats() {
+        return ResponseEntity.status(200).body(awarenessSessionService.getAllServicesStats());
     }
 
     @DeleteMapping("/delete/{id}")
