@@ -28,9 +28,25 @@ public class TrainingRequestResponse {
 
     private LocalDateTime requestedAt;
 
+    private LocalDateTime scheduledStart;
+
+    private LocalDateTime scheduledEnd;
+
+    private LocalDateTime acceptedAt;
+
+    private LocalDateTime completedAt;
+
+    private LocalDateTime cancelledAt;
+
+    private String cancellationReason;
+
     private Long trainingProgramId;
 
     private String trainingProgramTitle;
+
+    private Long providerOrganizationId;
+
+    private String providerOrganizationName;
 
     private Long beneficiaryOrganizationId;
 

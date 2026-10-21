@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.fadhel.waeiplatform.model.OrganizationType;
 
 import java.time.LocalDateTime;
 
@@ -15,7 +16,7 @@ public class OrganizationDTOOut {
 
     private Long id;
     private String name;
-    private String type;
+    private OrganizationType type;
     private String sector;
     private String email;
     private String phoneNumber;

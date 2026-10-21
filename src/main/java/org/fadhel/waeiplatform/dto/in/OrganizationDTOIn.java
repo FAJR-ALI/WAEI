@@ -2,11 +2,13 @@ package org.fadhel.waeiplatform.dto.in;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.fadhel.waeiplatform.model.OrganizationType;
 
 @Getter
 @Setter
@@ -18,9 +20,8 @@ public class OrganizationDTOIn {
     @NotEmpty(message = "Organization name must be filled")
     private String name;
 
-    @NotEmpty(message = "Organization type is required")
-    @Pattern(regexp = "BENEFICIARY|PROVIDER|BOTH", message = "Type must be BENEFICIARY, PROVIDER or BOTH")
-    private String type;
+    @NotNull(message = "Organization type is required")
+    private OrganizationType type;
 
     @NotEmpty(message = "Sector is required")
     private String sector;

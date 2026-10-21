@@ -16,5 +16,8 @@ public class AccountDTOOut {
     private String role;
     private String status;
     private LocalDateTime createdAt;
+    private Long organizationId;
+    private String organizationName;
+    private String organizationType;
 
 }

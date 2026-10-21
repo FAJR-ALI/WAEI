@@ -3,6 +3,7 @@ package org.fadhel.waeiplatform.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.fadhel.waeiplatform.api.ApiResponse;
+import org.fadhel.waeiplatform.dto.in.CancelTrainingRequest;
 import org.fadhel.waeiplatform.dto.in.TrainingRequestRequest;
 import org.fadhel.waeiplatform.service.TrainingRequestService;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +46,11 @@ public class TrainingRequestController {
         return ResponseEntity.status(200).body(trainingRequestService.getRequestsByStatus(status));
     }
 
+    @GetMapping("/my-provider-requests")
+    public ResponseEntity<?> getMyProviderRequests() {
+        return ResponseEntity.status(200).body(trainingRequestService.getMyProviderRequests());
+    }
+
     @PostMapping("/add")
     public ResponseEntity<?> addRequest(@Valid @RequestBody TrainingRequestRequest request) {
         trainingRequestService.addRequest(request);
@@ -52,15 +58,42 @@ public class TrainingRequestController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateRequest(@PathVariable Long id, @Valid @RequestBody TrainingRequestRequest request) {
+    public ResponseEntity<?> updateRequest(@PathVariable Long id,
+                                           @Valid @RequestBody TrainingRequestRequest request) {
         trainingRequestService.updateRequest(id, request);
         return ResponseEntity.status(200).body(new ApiResponse("Training request updated successfully"));
     }
 
-    @PutMapping("/change-status/{id}")
-    public ResponseEntity<?> changeStatus(@PathVariable Long id, @RequestParam String status) {
-        trainingRequestService.changeStatus(id, status);
-        return ResponseEntity.status(200).body(new ApiResponse("Training request status changed successfully"));
+    @PostMapping("/{id}/accept")
+    public ResponseEntity<?> acceptRequest(@PathVariable Long id) {
+        trainingRequestService.acceptRequest(id);
+        return ResponseEntity.status(200).body(new ApiResponse("Training request accepted successfully"));
+    }
+
+    @PostMapping("/{id}/reject")
+    public ResponseEntity<?> rejectRequest(@PathVariable Long id,
+                                           @RequestBody(required = false) CancelTrainingRequest request) {
+        trainingRequestService.rejectRequest(id, request);
+        return ResponseEntity.status(200).body(new ApiResponse("Training request rejected successfully"));
+    }
+
+    @PostMapping("/{id}/start")
+    public ResponseEntity<?> startRequest(@PathVariable Long id) {
+        trainingRequestService.startRequest(id);
+        return ResponseEntity.status(200).body(new ApiResponse("Training request started successfully"));
+    }
+
+    @PostMapping("/{id}/complete")
+    public ResponseEntity<?> completeRequest(@PathVariable Long id) {
+        trainingRequestService.completeRequest(id);
+        return ResponseEntity.status(200).body(new ApiResponse("Training request completed successfully"));
+    }
+
+    @PostMapping("/{id}/cancel")
+    public ResponseEntity<?> cancelRequest(@PathVariable Long id,
+                                           @RequestBody(required = false) CancelTrainingRequest request) {
+        trainingRequestService.cancelRequest(id, request);
+        return ResponseEntity.status(200).body(new ApiResponse("Training request cancelled successfully"));
     }
 
     @DeleteMapping("/delete/{id}")
