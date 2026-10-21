@@ -40,17 +40,19 @@ public class MoyasarClient {
         return secretKey != null && !secretKey.isBlank();
     }
 
-    public MoyasarInvoice createInvoice(BigDecimal amount, String description, Long trainingRequestId) {
+    public MoyasarInvoice createInvoice(BigDecimal amount, String description, Long trainingRequestId,
+                                        Long paymentId) {
         requireConfigured();
 
         Map<String, Object> metadata = new LinkedHashMap<>();
         metadata.put("training_request_id", String.valueOf(trainingRequestId));
+        metadata.put("payment_id", String.valueOf(paymentId));
 
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("amount", toHalalas(amount));
         body.put("currency", "SAR");
         body.put("description", description);
-        body.put("success_url", successUrl);
+        body.put("success_url", paymentSuccessUrl(paymentId));
         body.put("back_url", backUrl);
         body.put("metadata", metadata);
 
@@ -121,6 +123,13 @@ public class MoyasarClient {
         } catch (RestClientResponseException e) {
             throw new ApiException("Moyasar rejected the invoice cancellation: " + e.getResponseBodyAsString());
         }
+    }
+
+    private String paymentSuccessUrl(Long paymentId) {
+        String base = successUrl.endsWith("/")
+                ? successUrl.substring(0, successUrl.length() - 1)
+                : successUrl;
+        return base + "/" + paymentId;
     }
 
     private void requireConfigured() {

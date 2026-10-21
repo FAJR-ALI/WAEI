@@ -6,7 +6,7 @@ A marketplace connecting **beneficiary organizations** with **training providers
 
 - **Backend:** Spring Boot 4.1.1, Java 17+, Spring Security (JWT), Spring Data JPA
 - **Database:** MySQL in normal use, H2 in the `dev` profile and in tests
-- **Frontend:** Angular 22 (standalone components, no UI framework)
+- **Interface:** REST API only; no bundled web UI
 - **Payments:** Moyasar Invoices API, refunds via Payments API
 
 ## Running locally
@@ -36,15 +36,20 @@ The platform administrator is created on first start:
 
 Override with `ADMIN_EMAIL` / `ADMIN_PASSWORD`.
 
-### 2. Frontend
+### 2. Using the API
+
+The backend is the whole application; there is no separate web app to start. Call the endpoints directly with curl, Postman, or another client:
 
 ```bash
-cd frontend
-npm install
-npm start
+curl -X POST http://localhost:8080/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@waei.sa","password":"Admin@12345"}'
 ```
 
-Open `http://localhost:4200`. The dev server proxies `/api` to `http://localhost:8080` (`frontend/proxy.conf.json`).
+Send the returned token as `Authorization: Bearer <token>` on every other request.
+
+After a Moyasar payment the browser returns to the backend-rendered page at
+`http://localhost:8080/payment/callback/{paymentId}`, which pulls the current status from Moyasar.
 
 ## Environment variables
 
@@ -53,11 +58,11 @@ Open `http://localhost:4200`. The dev server proxies `/api` to `http://localhost
 | `DB_URL`, `DB_USERNAME`, `DB_PASSWORD` | MySQL connection |
 | `JWT_SECRET` | HMAC key for JWTs (at least 32 characters) |
 | `ADMIN_EMAIL`, `ADMIN_PASSWORD` | Bootstrap platform administrator |
-| `CORS_ORIGINS` | Comma-separated allowed origins (default `http://localhost:4200`) |
+| `CORS_ORIGINS` | Comma-separated allowed origins; empty by default (set it for browser clients) |
 | `MOYASAR_SECRET_KEY` | Moyasar `sk_test_...` or `sk_live_...` key |
 | `MOYASAR_WEBHOOK_SECRET` | Secret token configured on the Moyasar webhook |
-| `MOYASAR_SUCCESS_URL` | Redirect after payment (default `http://localhost:4200/payment/callback`) |
-| `MOYASAR_BACK_URL` | Back button URL on Moyasar checkout |
+| `MOYASAR_SUCCESS_URL` | Base return URL (default `http://localhost:8080/payment/callback`); the payment id is appended |
+| `MOYASAR_BACK_URL` | Back button URL on Moyasar checkout (default `http://localhost:8080/payment/callback`) |
 
 ## Roles and scoping
 
@@ -99,9 +104,9 @@ Only one `PENDING` or `PAID` payment may exist per training request. Payment sta
    - **URL:** `https://<public-host>/api/v1/payment/webhook/moyasar` (must be HTTPS; use ngrok locally)
    - **Secret token:** same value as `MOYASAR_WEBHOOK_SECRET`
    - **Events:** `payment_paid`, `payment_failed`, `payment_refunded`, `payment_voided`
-3. Set the same success URL in the environment (`MOYASAR_SUCCESS_URL`) or keep the default.
+3. The default return URL is the backend page at `http://localhost:8080/payment/callback`; the payment id is appended automatically. Override the base with `MOYASAR_SUCCESS_URL` only if the API is served from a different host.
 
-The webhook verifies `secret_token`, checks the amount and currency, and is idempotent per payment id. For local testing without a public webhook, the callback page calls `POST /api/v1/payment/sync-by-invoice/{invoiceId}` to pull the status from Moyasar directly.
+The webhook verifies `secret_token`, checks the amount and currency, and is idempotent per payment id. For local testing without a public webhook, the return page pulls the invoice status from Moyasar server-side, so `POST /api/v1/payment/sync-by-invoice/{invoiceId}` is not needed just to see the result.
 
 ## API overview
 

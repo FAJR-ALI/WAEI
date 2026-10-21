@@ -161,9 +161,6 @@ public class PaymentService {
                 ? " - " + trainingRequest.getTrainingProgram().getTitle()
                 : "");
 
-        MoyasarClient.MoyasarInvoice invoice = moyasarClient.createInvoice(
-                amount, description, trainingRequest.getId());
-
         Payment payment = new Payment();
         payment.setAmount(amount);
         payment.setCurrency("SAR");
@@ -173,9 +170,13 @@ public class PaymentService {
         payment.setProviderAmount(providerAmount);
         payment.setTrainingRequest(trainingRequest);
         payment.setCreatedAt(LocalDateTime.now());
+        paymentRepository.save(payment);
+
+        MoyasarClient.MoyasarInvoice invoice = moyasarClient.createInvoice(
+                amount, description, trainingRequest.getId(), payment.getId());
+
         payment.setMoyasarInvoiceId(invoice.id());
         payment.setCheckoutUrl(invoice.url());
-
         paymentRepository.save(payment);
 
         transitionRequest(trainingRequest, TrainingRequestStatus.PAYMENT_PENDING);
@@ -260,6 +261,27 @@ public class PaymentService {
         }
 
         applyRemotePayment(payment, remote);
+
+        return toResponse(payment);
+    }
+
+    /**
+     * Used by the public payment return page. It never exposes other payments and only reflects
+     * the status that Moyasar reports for the stored invoice.
+     */
+    @Transactional
+    public PaymentResponse syncForCallback(Long paymentId) {
+        Payment payment = findPayment(paymentId);
+
+        if (!moyasarClient.isConfigured() || payment.getMoyasarInvoiceId() == null) {
+            return toResponse(payment);
+        }
+
+        MoyasarClient.MoyasarInvoice invoice = moyasarClient.fetchInvoice(payment.getMoyasarInvoiceId());
+        if (invoice.payments() != null && !invoice.payments().isEmpty()) {
+            MoyasarClient.MoyasarPayment remote = invoice.payments().get(invoice.payments().size() - 1);
+            applyRemotePayment(payment, remote);
+        }
 
         return toResponse(payment);
     }
