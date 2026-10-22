@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-en="Waei — Awareness calendar">واعي — التقويم التوعوي</title>
+    <meta name="description" content="الأيام التوعوية الصحية والوقائية على مدار السنة: الإسعافات الأولية، الحرائق والطوارئ، الأمراض المزمنة، والصحة النفسية.">
+    <link rel="icon" href="/img/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/i18n.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="container">
+        <a href="/" class="brand">
+            <img src="/img/logo.png" alt="شعار واعي" data-en-alt="Waei logo">
+            <span data-en="Waei">واعي</span>
+        </a>
+        <nav class="nav" aria-label="القائمة الرئيسية" data-en-aria="Main menu">
+            <a href="/#trainings" data-en="Trainings">التدريبات</a>
+            <a href="/guide" data-en="Emergency guide">دليل الطوارئ</a>
+            <a href="/#numbers" data-en="Emergency numbers">أرقام الطوارئ</a>
+            <a href="/calendar" class="active" aria-current="page" data-en="Awareness calendar">التقويم التوعوي</a>
+        </nav>
+        <div class="header-actions">
+            <a href="/kids" class="pill pill-kids" data-en="Kids mode">وضع الأطفال</a>
+            <a href="/login" id="headerLogin" class="pill pill-outline" data-en="Join Waei">انضم لواعي</a>
+            <button type="button" class="lang-toggle">English</button>
+        </div>
+    </div>
+</header>
+
+<main class="section calendar-page">
+    <div class="container stack">
+        <div class="calendar-head">
+            <span class="tag" data-en="Awareness calendar">التقويم التوعوي</span>
+            <h1 class="section-title" data-en="Awareness days through the year">الأيام التوعوية على مدار السنة</h1>
+            <p class="section-sub" data-en="Health and safety days that matter: first aid, fire and emergencies, chronic conditions, mental health, and more.">
+                أيام صحية ووقائية تهمك: الإسعافات الأولية، الحرائق والطوارئ، الأمراض المزمنة، الصحة النفسية، وغيرها.
+            </p>
+        </div>
+
+        <div class="calendar-toolbar">
+            <div class="segmented" role="group" aria-label="طريقة العرض" data-en-aria="Calendar view">
+                <button type="button" data-view="upcoming" aria-pressed="true" data-en="Upcoming">القادمة</button>
+                <button type="button" data-view="year" aria-pressed="false" data-en="Full year">السنة كاملة</button>
+            </div>
+
+            <div id="yearControls" class="year-switcher hidden">
+                <button type="button" id="prevYear" aria-label="السنة السابقة" data-en-aria="Previous year">&#8249;</button>
+                <strong id="yearLabel">2026</strong>
+                <button type="button" id="nextYear" aria-label="السنة التالية" data-en-aria="Next year">&#8250;</button>
+            </div>
+        </div>
+
+        <div id="categoryFilters" class="filters" role="group" aria-label="تصفية الأيام التوعوية" data-en-aria="Filter awareness days"></div>
+
+        <div id="calendarList"></div>
+    </div>
+</main>
+
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-brand">
+            <img src="/img/logo-dark.png" alt="">
+            <span data-en="Because awareness.. saves lives">لأن الوعي.. ينقذ حياة</span>
+        </div>
+        <span style="font-size: 14px" data-en="© Waei">© واعي</span>
+    </div>
+</footer>
+
+<script src="/js/api.js"></script>
+<script src="/js/calendar.js"></script>
+</body>
+</html>

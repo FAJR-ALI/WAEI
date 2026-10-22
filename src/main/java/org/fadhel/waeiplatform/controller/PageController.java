@@ -1,6 +1,8 @@
 package org.fadhel.waeiplatform.controller;
 
+import org.fadhel.waeiplatform.model.OrganizationType;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 // Opens the HTML pages in src/main/resources/templates (Thymeleaf)
@@ -20,6 +22,22 @@ public class PageController {
 
     @GetMapping("/register")
     public String register() {
+        return "redirect:/login#join-waei";
+    }
+
+    @GetMapping("/register/beneficiary")
+    public String registerBeneficiary(Model model) {
+        return registrationPage(model, OrganizationType.BENEFICIARY);
+    }
+
+    @GetMapping("/register/provider")
+    public String registerProvider(Model model) {
+        return registrationPage(model, OrganizationType.PROVIDER);
+    }
+
+    private String registrationPage(Model model, OrganizationType organizationType) {
+        model.addAttribute("organizationType", organizationType.name());
+        model.addAttribute("isProvider", organizationType == OrganizationType.PROVIDER);
         return "register";
     }
 
@@ -81,5 +99,11 @@ public class PageController {
     @GetMapping("/guide/detail")
     public String guideDetail() {
         return "visitor/guide-detail";
+    }
+
+    // Full-year awareness calendar
+    @GetMapping("/calendar")
+    public String calendar() {
+        return "visitor/calendar";
     }
 }

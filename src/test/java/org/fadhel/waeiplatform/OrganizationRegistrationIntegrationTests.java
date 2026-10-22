@@ -3,6 +3,7 @@ package org.fadhel.waeiplatform;
 import com.jayway.jsonpath.JsonPath;
 import org.fadhel.waeiplatform.model.Account;
 import org.fadhel.waeiplatform.model.Organization;
+import org.fadhel.waeiplatform.model.OrganizationType;
 import org.fadhel.waeiplatform.model.OrganizationVerificationStatus;
 import org.fadhel.waeiplatform.repository.AccountRepository;
 import org.fadhel.waeiplatform.repository.OrganizationRepository;
@@ -100,6 +101,37 @@ class OrganizationRegistrationIntegrationTests {
         assertEquals("ORG_ADMIN", account.getRole());
         assertEquals("PENDING", account.getStatus());
         assertEquals(organization.getId(), account.getOrganization().getId());
+    }
+
+    @Test
+    void providerRegistrationStoresProviderOrganizationType() throws Exception {
+        mockMvc.perform(registrationRequest("provider@example.sa", "provider-admin@example.sa",
+                        document("registration.pdf"), "PROVIDER"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.verificationStatus").value("PENDING"));
+
+        Organization organization = organizationRepository.findOrganizationByEmail("provider@example.sa");
+        assertNotNull(organization);
+        assertEquals(OrganizationType.PROVIDER, organization.getType());
+    }
+
+    @Test
+    void publicRegistrationIgnoresValidAndInvalidJwt() throws Exception {
+        String adminToken = login(ADMIN_EMAIL, ADMIN_PASSWORD);
+
+        mockMvc.perform(get("/register/beneficiary")
+                        .header(HttpHeaders.AUTHORIZATION, bearer(adminToken)))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(registrationRequest("valid-token@example.sa", "valid-token-admin@example.sa")
+                        .header(HttpHeaders.AUTHORIZATION, bearer(adminToken)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.verificationStatus").value("PENDING"));
+
+        mockMvc.perform(registrationRequest("invalid-token@example.sa", "invalid-token-admin@example.sa")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer invalid.token.value"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.verificationStatus").value("PENDING"));
     }
 
     @Test
@@ -262,10 +294,15 @@ class OrganizationRegistrationIntegrationTests {
 
     private MockMultipartHttpServletRequestBuilder registrationRequest(
             String organizationEmail, String adminEmail, MockMultipartFile file) {
+        return registrationRequest(organizationEmail, adminEmail, file, "BENEFICIARY");
+    }
+
+    private MockMultipartHttpServletRequestBuilder registrationRequest(
+            String organizationEmail, String adminEmail, MockMultipartFile file, String type) {
         return multipart("/api/v1/organization/register")
                 .file(file)
                 .param("name", "Helping Hands Organization")
-                .param("type", "BENEFICIARY")
+                .param("type", type)
                 .param("sector", "Education")
                 .param("email", organizationEmail)
                 .param("phoneNumber", "0512345678")

@@ -20,6 +20,9 @@ public class AwarenessCalendarEventRequest {
     @Size(min = 3, max = 100, message = "Title must be between 3 and 100 characters")
     private String title;
 
+    @Size(max = 100, message = "English title must be at most 100 characters")
+    private String titleEn;
+
     @NotBlank(message = "Category is required")
     @Size(max = 50, message = "Category must be at most 50 characters")
     private String category;
@@ -27,8 +30,15 @@ public class AwarenessCalendarEventRequest {
     @Size(max = 2000, message = "Description must be at most 2000 characters")
     private String description;
 
+    @Size(max = 2000, message = "English description must be at most 2000 characters")
+    private String descriptionEn;
+
     @NotNull(message = "Event date is required")
     private LocalDate eventDate;
+
+    // Optional rule for days that move every year, for example NTH_WEEKDAY:09:SATURDAY:2
+    @Size(max = 40, message = "Date rule must be at most 40 characters")
+    private String dateRule;
 
     // ANNUAL = repeats every year on the same day, ONE_TIME = happens once
     @NotBlank(message = "Recurrence pattern is required")

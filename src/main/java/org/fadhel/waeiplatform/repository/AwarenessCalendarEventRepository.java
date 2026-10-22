@@ -14,6 +14,12 @@ public interface AwarenessCalendarEventRepository extends JpaRepository<Awarenes
 
     AwarenessCalendarEvent findAwarenessCalendarEventByTitle(String title);
 
+    AwarenessCalendarEvent findAwarenessCalendarEventBySlug(String slug);
+
+    boolean existsBySlug(String slug);
+
+    boolean existsByTitle(String title);
+
     List<AwarenessCalendarEvent> findAwarenessCalendarEventsByIsPublished(Boolean isPublished);
 
     List<AwarenessCalendarEvent> findAwarenessCalendarEventsByCategory(String category);

@@ -3,6 +3,7 @@ package org.fadhel.waeiplatform.config;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +22,11 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -35,6 +40,78 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    private static final DefaultBearerTokenResolver DEFAULT_BEARER_TOKEN_RESOLVER =
+            new DefaultBearerTokenResolver();
+
+    // Public requests must not be rejected just because the browser still has an
+    // expired token. Protected endpoints keep using the normal JWT resolver below.
+    private static final RequestMatcher PUBLIC_REQUESTS = new OrRequestMatcher(
+            PathPatternRequestMatcher.pathPattern(HttpMethod.OPTIONS, "/**"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/payment/callback"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/payment/callback/**"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/login"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/register"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/register/beneficiary"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/register/provider"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/train"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/programs"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/pricing"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/kids"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/story"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/call"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/guide"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/guide/detail"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/calendar"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/dashboard/admin"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/dashboard/beneficiary"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/dashboard/provider"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/css/**"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/js/**"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/img/**"),
+            PathPatternRequestMatcher.pathPattern("/error"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET,
+                    "/api/v1/awareness-service/get-active"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET,
+                    "/api/v1/awareness-service/get/*"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET,
+                    "/api/v1/awareness-calendar/upcoming"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET,
+                    "/api/v1/awareness-calendar/year"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET,
+                    "/api/v1/awareness-session/quiz/*"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/api/v1/kids/**"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET,
+                    "/api/v1/training-program/get-active"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET,
+                    "/api/v1/guide/published"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET,
+                    "/api/v1/guide/published/*"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET,
+                    "/api/v1/guide/category/*"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.POST,
+                    "/api/v1/auth/login"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.POST,
+                    "/api/v1/payment/webhook/moyasar"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.POST,
+                    "/api/v1/awareness-session/evaluate/*"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.POST,
+                    "/api/v1/awareness-session/quiz/submit/*"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.POST,
+                    "/api/v1/guide/smart-search"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.POST,
+                    "/api/v1/organization/register"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.POST,
+                    "/api/v1/organization/*/resubmit")
+    );
+
+    private static String resolveBearerToken(HttpServletRequest request) {
+        if (PUBLIC_REQUESTS.matches(request)) {
+            return null;
+        }
+        return DEFAULT_BEARER_TOKEN_RESOLVER.resolve(request);
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -84,15 +161,17 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/payment/callback", "/payment/callback/**").permitAll()
                         .requestMatchers("/api/v1/auth/login", "/api/v1/payment/webhook/moyasar").permitAll()
                         // Visitor pages (templates) + CSS/JS/images (static) + Spring error page
-                        .requestMatchers(HttpMethod.GET, "/", "/login", "/register", "/train", "/programs", "/pricing",
-                                "/kids", "/story", "/call", "/guide", "/guide/detail", "/dashboard/admin",
-                                "/dashboard/beneficiary", "/dashboard/provider").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/", "/login", "/register", "/register/beneficiary",
+                                "/register/provider", "/train", "/programs", "/pricing",
+                                "/kids", "/story", "/call", "/guide", "/guide/detail", "/calendar",
+                                "/dashboard/admin", "/dashboard/beneficiary", "/dashboard/provider").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/img/**", "/error").permitAll()
                         // Visitor endpoints: no login needed
                         .requestMatchers(HttpMethod.GET,
                                 "/api/v1/awareness-service/get-active",
                                 "/api/v1/awareness-service/get/*",
                                 "/api/v1/awareness-calendar/upcoming",
+                                "/api/v1/awareness-calendar/year",
                                 "/api/v1/awareness-session/quiz/*",
                                 "/api/v1/kids/**",
                                 "/api/v1/training-program/get-active",
@@ -119,6 +198,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/account/**").hasRole("PLATFORM_ADMIN")
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2
+                        .bearerTokenResolver(SecurityConfig::resolveBearerToken)
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)))
                 .exceptionHandling(exceptions -> exceptions
                         .authenticationEntryPoint((request, response, authException) -> {

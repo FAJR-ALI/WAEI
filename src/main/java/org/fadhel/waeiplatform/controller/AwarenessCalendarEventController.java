@@ -32,6 +32,13 @@ public class AwarenessCalendarEventController {
         return ResponseEntity.status(200).body(awarenessCalendarEventService.getUpcomingEvents(limit));
     }
 
+    // Visitor (full calendar page): example /year?year=2026&category=CHRONIC
+    @GetMapping("/year")
+    public ResponseEntity<?> getEventsForYear(@RequestParam(required = false) Integer year,
+                                              @RequestParam(required = false) String category) {
+        return ResponseEntity.status(200).body(awarenessCalendarEventService.getEventsForYear(year, category));
+    }
+
     // Visitor
     @GetMapping("/get-by-category/{category}")
     public ResponseEntity<?> getEventsByCategory(@PathVariable String category) {
