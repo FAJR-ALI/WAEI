@@ -84,8 +84,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/payment/callback", "/payment/callback/**").permitAll()
                         .requestMatchers("/api/v1/auth/login", "/api/v1/payment/webhook/moyasar").permitAll()
                         // Visitor pages (templates) + CSS/JS/images (static) + Spring error page
-                        .requestMatchers(HttpMethod.GET, "/", "/login", "/train", "/programs", "/pricing",
-                                "/kids", "/story", "/call", "/guide", "/guide/detail").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/", "/login", "/register", "/train", "/programs", "/pricing",
+                                "/kids", "/story", "/call", "/guide", "/guide/detail", "/dashboard/admin",
+                                "/dashboard/beneficiary", "/dashboard/provider").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/img/**", "/error").permitAll()
                         // Visitor endpoints: no login needed
                         .requestMatchers(HttpMethod.GET,
@@ -108,6 +109,8 @@ public class SecurityConfig {
                                 "/api/v1/organization/register",
                                 "/api/v1/organization/*/resubmit").permitAll()
                         .requestMatchers(HttpMethod.GET,
+                                "/api/v1/organization/get",
+                                "/api/v1/organization/get/*",
                                 "/api/v1/organization/registrations",
                                 "/api/v1/organization/*/document").hasRole("PLATFORM_ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/v1/organization/**").hasRole("PLATFORM_ADMIN")

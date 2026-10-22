@@ -31,7 +31,6 @@ const ARABIC_MESSAGES = {
     "Smart search is not available right now, please browse the cases": "البحث الذكي غير متاح الحين، تصفح الحالات تحت",
     "Your organization registration is awaiting platform administrator verification.": "طلب تسجيل جهتك قيد المراجعة من إدارة المنصة",
     "Your organization is not verified yet. Please contact the platform administrator.": "جهتك ما توثقت بعد، تواصل مع إدارة المنصة",
-    "Access denied": "ما عندك صلاحية
     "Access denied": "ما عندك صلاحية",
     "Organization email already exists": "بريد الجهة مسجل من قبل",
     "Organization administrator email already exists": "بريد مدير الجهة مسجل من قبل",
