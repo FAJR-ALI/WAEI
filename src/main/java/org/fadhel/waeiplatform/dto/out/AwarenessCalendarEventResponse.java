@@ -17,9 +17,13 @@ public class AwarenessCalendarEventResponse {
 
     private String title;
 
+    private String titleEn;
+
     private String category;
 
     private String description;
+
+    private String descriptionEn;
 
     // The date the admin entered
     private LocalDate eventDate;
@@ -31,9 +35,16 @@ public class AwarenessCalendarEventResponse {
 
     private String recurrencePattern;
 
+    // FIXED:11-14, NTH_WEEKDAY:09:SATURDAY:2, LAST_WEEKDAY:01:SUNDAY
+    private String dateRule;
+
     private String sourceUrl;
 
     private Boolean isPublished;
+
+    private Boolean isSystem;
+
+    private String slug;
 
     private Long awarenessServiceId;
 
