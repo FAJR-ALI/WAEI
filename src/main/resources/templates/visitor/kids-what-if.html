@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-en="Waei — What would you do?">واعي — وش تسوي لو...؟</title>
+    <link rel="icon" href="/img/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/kids.css">
+    <script src="/js/i18n.js"></script>
+</head>
+<body>
+<header class="k-header">
+    <a href="/kids" class="k-back">
+        <svg aria-hidden="true" class="flip-ltr" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        <span data-en="Back to games">رجوع للألعاب</span>
+    </a>
+    <div class="k-tools">
+        <button type="button" class="lang-toggle">English</button>
+        <div class="k-stars" id="starsBox" aria-live="polite">
+            <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"></path></svg>
+            <span id="starsCount">0</span>
+        </div>
+        <button type="button" class="k-sound" id="speakHero" aria-label="اسمع الكلام بصوت" data-en-aria="Listen">
+            <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.5 8.5a5 5 0 0 1 0 7"></path><path d="M19 5a10 10 0 0 1 0 14"></path></svg>
+        </button>
+    </div>
+</header>
+<main class="k-main"><section class="k-hero"><div class="k-hero-text"><h1 id="heroTitle" data-en="What would you do?">وش تسوي لو...؟</h1></div></section>
+        <section id="whatIf" class="k-card" style="flex: 3 1 560px; min-width: 0" aria-label="وش تسوي لو" data-en-aria="What would you do">
+            <span class="k-label" data-en="What would you do?">وش تسوي لو...؟</span>
+            <h2 id="scenarioText"></h2>
+            <div class="k-choices" id="choicesList"></div>
+            <div id="whatIfFeedback" role="status"></div>
+        </section>
+
+    <p class="k-note" data-en="&lt;strong&gt;Note for parents:&lt;/strong&gt; Kids mode is for learning only. We don&#x27;t ask for video or collect any data about the child, and the stars disappear when you close the page. Every AI-written story is reviewed by a specialist before it is published."><strong>ملاحظة للأهل:</strong> وضع الأطفال للتعلم فقط. ما نطلب فيديو ولا نجمع أي بيانات عن الطفل، والنجوم تختفي لما تسكّر الصفحة. كل قصة يكتبها الذكاء الاصطناعي يراجعها مختص قبل ما تنشر.</p>
+</main>
+<script src="/js/api.js"></script>
+<script th:inline="none">
+    // Stars live only in this page (nothing is saved about the child)
+    let stars = 0;
+
+    function addStar() {
+        stars++;
+        document.getElementById("starsCount").textContent = stars;
+        document.getElementById("starsBox").setAttribute("aria-label", tr("عندك " + stars + " نجوم", "You have " + stars + " stars"));
+    }
+
+    // Read text out loud with the browser's voice (works offline, nothing is sent anywhere)
+    function speak(text) {
+        if (!("speechSynthesis" in window)) return;
+        window.speechSynthesis.cancel();
+        const voice = new SpeechSynthesisUtterance(text);
+        voice.lang = tr("ar-SA", "en-US");
+        voice.rate = 0.9;
+        window.speechSynthesis.speak(voice);
+    }
+
+    document.getElementById("speakHero").addEventListener("click", function () {
+        speak(document.getElementById("heroTitle").textContent);
+    });
+
+
+    const ICONS = {
+        run: "M13 4a2 2 0 1 0 4 0 2 2 0 0 0-4 0M7 21l3-6 3 2v5M10 15l2-6 4 3h4M12 9L8 10l-2 3",
+        hide: "M3 18h18M5 18V9h14v9M8 13h8",
+        water: "M12 2.7l5.7 5.6a8 8 0 1 1-11.3 0z",
+        adult: "M12 7a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM5 22v-6a7 7 0 0 1 14 0v6",
+        hand: "M18 11V6a2 2 0 0 0-4 0v5M14 10V4a2 2 0 0 0-4 0v6M10 10.5V6a2 2 0 0 0-4 0v8a8 8 0 0 0 16 0v-3a2 2 0 0 0-4 0",
+        play: "M6 4l14 8-14 8z",
+        pocket: "M4 4h16v6a8 8 0 0 1-16 0zM8 4v4M16 4v4"
+    };
+
+    const SCENARIOS = [
+        {
+            text: tr("شفت دخان طالع من المطبخ!", "You see smoke coming from the kitchen!"),
+            choices: [
+                { text: tr("أطلع بسرعة وأنادي شخص كبير", "Get out fast and call a grown-up"), icon: "run", ok: true },
+                { text: tr("أتخبى تحت السرير", "Hide under the bed"), icon: "hide", ok: false },
+                { text: tr("أطفيها بالموية", "Put it out with water"), icon: "water", ok: false }
+            ],
+            hint: tr("الدخان خطر، اطلع ونادِ شخص كبير.", "Smoke is dangerous, get out and call a grown-up.")
+        },
+        {
+            text: tr("لقيت حبوب ملوّنة على الطاولة شكلها مثل الحلاوة!", "You find colorful pills on the table that look like candy!"),
+            choices: [
+                { text: tr("آكل حبة وحدة بس", "Eat just one"), icon: "hand", ok: false },
+                { text: tr("ما ألمسها وأقول لشخص كبير", "Don't touch them and tell a grown-up"), icon: "adult", ok: true },
+                { text: tr("أخبيها في جيبي", "Hide them in my pocket"), icon: "pocket", ok: false }
+            ],
+            hint: tr("ممكن تكون دواء! لا تلمسها وقل لشخص كبير.", "They might be medicine! Don't touch them, tell a grown-up.")
+        },
+        {
+            text: tr("صاحبك طاح في الملعب وما قدر يقوم!", "Your friend fell on the playground and can't get up!"),
+            choices: [
+                { text: tr("أكمل اللعب", "Keep playing"), icon: "play", ok: false },
+                { text: tr("أشدّه بقوة عشان يقوم", "Pull him up hard"), icon: "hand", ok: false },
+                { text: tr("أنادي المعلم بسرعة", "Call the teacher fast"), icon: "adult", ok: true }
+            ],
+            hint: tr("لا تحركه، نادِ المعلم أو شخص كبير بسرعة.", "Don't move him, call the teacher or a grown-up fast.")
+        },
+        {
+            text: tr("شفت سلك كهرباء مقطوع على الأرض!", "You see a broken electric wire on the ground!"),
+            choices: [
+                { text: tr("أبعد عنه وأقول لشخص كبير", "Stay away and tell a grown-up"), icon: "run", ok: true },
+                { text: tr("أشيله بيدي", "Pick it up with my hand"), icon: "hand", ok: false },
+                { text: tr("أرش عليه موية", "Pour water on it"), icon: "water", ok: false }
+            ],
+            hint: tr("الكهرباء خطيرة، لا تقرب منها وقل لشخص كبير.", "Electricity is dangerous, stay away and tell a grown-up.")
+        }
+    ];
+
+    let scenarioIndex = 0;
+    let solved = false;
+    let pickedIndex = -1;
+
+    function renderScenario() {
+        const scenario = SCENARIOS[scenarioIndex];
+        document.getElementById("scenarioText").textContent = scenario.text;
+
+        let html = "";
+        scenario.choices.forEach(function (c, i) {
+            let cls = "k-choice";
+            if (i === pickedIndex) cls += c.ok ? " right" : " try";
+            html += '<button type="button" class="' + cls + '" data-index="' + i + '" aria-pressed="' + (i === pickedIndex) + '">'
+                + '<span class="ic"><svg aria-hidden="true" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="' + ICONS[c.icon] + '"></path></svg></span>'
+                + escapeHtml(c.text) + "</button>";
+        });
+        document.getElementById("choicesList").innerHTML = html;
+
+        document.querySelectorAll("#choicesList .k-choice").forEach(function (button) {
+            button.addEventListener("click", function () {
+                if (solved) return;
+                pickedIndex = Number(button.dataset.index);
+                const choice = scenario.choices[pickedIndex];
+                if (choice.ok) {
+                    solved = true;
+                    addStar();
+                }
+                renderScenario();
+            });
+        });
+
+        const feedback = document.getElementById("whatIfFeedback");
+        if (pickedIndex === -1) {
+            feedback.innerHTML = "";
+        } else if (scenario.choices[pickedIndex].ok) {
+            feedback.innerHTML = '<div class="k-feedback good"><span>' + tr("بطل! أخذت نجمة", "Hero! You got a star") + '</span><button type="button" class="k-btn" id="nextScenario">' + tr("موقف جديد", "New situation") + '</button></div>';
+            document.getElementById("nextScenario").addEventListener("click", function () {
+                scenarioIndex = (scenarioIndex + 1) % SCENARIOS.length;
+                solved = false;
+                pickedIndex = -1;
+                renderScenario();
+            });
+        } else {
+            feedback.innerHTML = '<div class="k-feedback almost"><span>' + tr("قربت! ", "Almost! ") + escapeHtml(scenario.hint) + "</span></div>";
+        }
+    }
+
+
+renderScenario();
+</script>
+</body>
+</html>
