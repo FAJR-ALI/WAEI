@@ -31,8 +31,19 @@ public class TrainingProgramRequest {
     @Digits(integer = 10, fraction = 2)
     private BigDecimal price;
 
+    @NotNull
+    @DecimalMin(value = "0.5", message = "Program hours per day must be at least 0.5")
+    @DecimalMax(value = "24.0", message = "Program hours per day must not exceed 24")
+    @Digits(integer = 2, fraction = 1)
+    private BigDecimal hoursPerDay;
+
+    @NotNull
+    @Min(value = 1, message = "Maximum days must be at least 1")
+    @Max(value = 365, message = "Maximum days must not exceed 365")
+    private Integer maxDays;
+
     @NotBlank
-    @Pattern(regexp = "^(IN_PERSON|ONLINE|HYBRID)$", message = "Invalid delivery mode")
+    @Pattern(regexp = "^(IN_PERSON|ONLINE)$", message = "Invalid delivery mode")
     private String deliveryMode;
 
     /**

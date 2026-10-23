@@ -39,6 +39,7 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final TrainingRequestRepository trainingRequestRepository;
     private final MoyasarClient moyasarClient;
+    private final ZoomMeetingService zoomMeetingService;
     private final CurrentUser currentUser;
     private final AccessControl accessControl;
 
@@ -196,9 +197,13 @@ public class PaymentService {
             accessControl.requireBeneficiaryOwner(trainingRequest);
         }
 
+        boolean startedByTime = trainingRequest != null
+                && trainingRequest.getScheduledStart() != null
+                && !trainingRequest.getScheduledStart().isAfter(LocalDateTime.now());
         if (trainingRequest != null
                 && (trainingRequest.getStatus() == TrainingRequestStatus.IN_PROGRESS
-                || trainingRequest.getStatus() == TrainingRequestStatus.COMPLETED)) {
+                || trainingRequest.getStatus() == TrainingRequestStatus.COMPLETED
+                || (trainingRequest.getStatus() == TrainingRequestStatus.CONFIRMED && startedByTime))) {
             throw new ApiException("A payment cannot be refunded after the training has started");
         }
 
@@ -429,10 +434,10 @@ public class PaymentService {
         switch (paymentStatus) {
             case PAID -> {
                 if (request.getStatus() == TrainingRequestStatus.PAYMENT_PENDING) {
-                    transitionRequest(request, TrainingRequestStatus.PAID);
+                    transitionRequest(request, TrainingRequestStatus.CONFIRMED);
                 } else if (request.getStatus() == TrainingRequestStatus.ACCEPTED) {
                     transitionRequest(request, TrainingRequestStatus.PAYMENT_PENDING);
-                    transitionRequest(request, TrainingRequestStatus.PAID);
+                    transitionRequest(request, TrainingRequestStatus.CONFIRMED);
                 }
             }
             case FAILED, CANCELLED -> {
@@ -449,6 +454,7 @@ public class PaymentService {
                     request.setCancelledAt(LocalDateTime.now());
                     request.setCancellationReason("Payment refunded");
                     trainingRequestRepository.save(request);
+                    zoomMeetingService.deleteForRequest(request);
                 }
             }
             default -> {

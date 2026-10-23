@@ -1,6 +1,8 @@
 package org.fadhel.waeiplatform.dto.in;
 
 import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -42,7 +44,10 @@ public class TrainingRequestRequest {
     private LocalDateTime scheduledStart;
 
     @NotNull
-    @Future(message = "The training end date must be in the future")
+    @Min(value = 1, message = "The number of training days must be at least 1")
+    @Max(value = 365, message = "The number of training days must not exceed 365")
+    private Integer daysCount;
+
     private LocalDateTime scheduledEnd;
 
     @Size(max = 5000)

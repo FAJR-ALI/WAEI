@@ -31,4 +31,10 @@ public class TrainingProgramResponse {
 
     private String organizationName;
 
+    private BigDecimal hoursPerDay;
+
+    private Integer maxDays;
+
+    private String imageUrl;
+
 }
