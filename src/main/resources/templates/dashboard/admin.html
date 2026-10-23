@@ -161,6 +161,61 @@
                     <div id="organizationsList" class="panel-state"></div>
                 </div>
             </section>
+
+            <section class="app-section hidden" data-panel="payments">
+                <div class="page-intro">
+                    <div>
+                        <h2 data-en="Payments">المدفوعات</h2>
+                        <p data-en="All payment attempts across the platform.">كل محاولات الدفع على مستوى المنصة.</p>
+                    </div>
+                    <button type="button" class="btn btn-outline btn-sm" data-refresh data-en="Refresh">تحديث</button>
+                </div>
+
+                <div class="kpi-grid">
+                    <article class="kpi-card">
+                        <span class="kpi-icon ok">
+                            <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><path d="M2 10h20"></path></svg>
+                        </span>
+                        <span class="kpi-body"><span class="kpi-label" data-en="Paid total">إجمالي المدفوع</span><strong class="kpi-value" id="paymentKpiCollected">0</strong><span class="kpi-hint" data-en="Currently paid payments">الدفعات المدفوعة حاليًا</span></span>
+                    </article>
+                    <article class="kpi-card">
+                        <span class="kpi-icon ok">
+                            <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"></line><circle cx="6.5" cy="6.5" r="2.5"></circle><circle cx="17.5" cy="17.5" r="2.5"></circle></svg>
+                        </span>
+                        <span class="kpi-body"><span class="kpi-label" data-en="Platform commission">عمولة المنصة</span><strong class="kpi-value" id="paymentKpiCommission">0</strong><span class="kpi-hint" data-en="From confirmed payments">من الدفعات المؤكدة</span></span>
+                    </article>
+                    <article class="kpi-card">
+                        <span class="kpi-icon warn">
+                            <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+                        </span>
+                        <span class="kpi-body"><span class="kpi-label" data-en="Pending payments">مدفوعات معلقة</span><strong class="kpi-value" id="paymentKpiPending">0</strong><span class="kpi-hint" data-en="Awaiting completion">بانتظار الإكمال</span></span>
+                    </article>
+                    <article class="kpi-card">
+                        <span class="kpi-icon">
+                            <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path></svg>
+                        </span>
+                        <span class="kpi-body"><span class="kpi-label" data-en="Refunded">المبالغ المسترجعة</span><strong class="kpi-value" id="paymentKpiRefunded">0</strong><span class="kpi-hint" data-en="Refunded payments">مدفوعات مسترجعة</span></span>
+                    </article>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-head">
+                        <div class="toolbar">
+                            <button type="button" class="filter-chip" data-payment-status="ALL" aria-pressed="true" data-en="All">الكل</button>
+                            <button type="button" class="filter-chip" data-payment-status="PENDING" aria-pressed="false" data-en="Pending">معلق</button>
+                            <button type="button" class="filter-chip" data-payment-status="PAID" aria-pressed="false" data-en="Paid">مدفوع</button>
+                            <button type="button" class="filter-chip" data-payment-status="FAILED" aria-pressed="false" data-en="Failed">فشل</button>
+                            <button type="button" class="filter-chip" data-payment-status="REFUNDED" aria-pressed="false" data-en="Refunded">مسترجع</button>
+                            <button type="button" class="filter-chip" data-payment-status="CANCELLED" aria-pressed="false" data-en="Cancelled">ملغي</button>
+                        </div>
+                        <div class="search-box">
+                            <svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+                            <input id="paymentSearch" class="input" type="search" placeholder="ابحث بالدورة أو الجهة أو رقم الدفع" data-en-placeholder="Search by course, organization, or payment ID">
+                        </div>
+                    </div>
+                    <div id="paymentsList" class="panel-state"></div>
+                </div>
+            </section>
         </main>
     </div>
 </div>
@@ -208,6 +263,22 @@
     </form>
 </dialog>
 
+<dialog id="paymentDialog" class="app-dialog wide">
+    <div class="dialog-head">
+        <div>
+            <h2 data-en="Payment details">تفاصيل الدفع</h2>
+            <p data-en="Read-only payment, commission and training request information.">بيانات الدفع والعمولة وطلب التدريب للعرض فقط.</p>
+        </div>
+        <button type="button" class="dialog-close" data-close-dialog aria-label="إغلاق" data-en-aria="Close">
+            <svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+        </button>
+    </div>
+    <div id="paymentDetails" class="dialog-body"></div>
+    <div class="dialog-footer">
+        <button type="button" class="btn btn-outline btn-sm" data-close-dialog data-en="Close">إغلاق</button>
+    </div>
+</dialog>
+
 <script src="/js/api.js"></script>
 <script src="/js/dashboard.js"></script>
 <script th:inline="none">
@@ -215,8 +286,10 @@
     let organizations = [];
     let programs = [];
     let requests = [];
+    let payments = [];
     let registrationStatus = "PENDING";
     let organizationType = "ALL";
+    let paymentStatus = "ALL";
     let selectedRegistration = null;
     let dashboardUser = null;
 
@@ -224,6 +297,12 @@
         return items.slice().sort(function (a, b) {
             return new Date(b[field] || 0) - new Date(a[field] || 0);
         });
+    }
+
+    function sumPaymentField(items, field) {
+        return items.reduce(function (sum, payment) {
+            return sum + Number(payment[field] || 0);
+        }, 0);
     }
 
     function setStats() {
@@ -236,6 +315,26 @@
             programs.filter(function (program) { return program.isActive; }).length);
         document.getElementById("kpiRequests").textContent = WaeiDashboard.formatNumber(requests.length);
         WaeiDashboard.setNavBadge("registrations", pending.length);
+
+        const paidPayments = payments.filter(function (payment) { return payment.status === "PAID"; });
+        const pendingPayments = payments.filter(function (payment) { return payment.status === "PENDING"; });
+        const refundedPayments = payments.filter(function (payment) { return payment.status === "REFUNDED"; });
+        const collected = document.getElementById("paymentKpiCollected");
+        const commission = document.getElementById("paymentKpiCommission");
+        const pendingCount = document.getElementById("paymentKpiPending");
+        const refunded = document.getElementById("paymentKpiRefunded");
+        if (collected) {
+            collected.textContent = WaeiDashboard.formatMoney(sumPaymentField(paidPayments, "amount"));
+        }
+        if (commission) {
+            commission.textContent = WaeiDashboard.formatMoney(sumPaymentField(paidPayments, "commissionAmount"));
+        }
+        if (pendingCount) {
+            pendingCount.textContent = WaeiDashboard.formatNumber(pendingPayments.length);
+        }
+        if (refunded) {
+            refunded.textContent = WaeiDashboard.formatMoney(sumPaymentField(refundedPayments, "refundedAmount"));
+        }
     }
 
     function matchesSearch(item, query) {
@@ -453,6 +552,139 @@
         bindRegistrationActions(target);
     }
 
+    function requestForPayment(payment) {
+        if (payment.trainingRequestId === null || payment.trainingRequestId === undefined) {
+            return null;
+        }
+        return requests.find(function (request) {
+            return request.id === payment.trainingRequestId;
+        }) || null;
+    }
+
+    function paymentMatchesSearch(payment, query) {
+        if (!query) {
+            return true;
+        }
+        const request = requestForPayment(payment);
+        const haystack = [
+            payment.id,
+            payment.trainingRequestId,
+            payment.moyasarPaymentId,
+            payment.moyasarInvoiceId,
+            request ? request.trainingProgramTitle : "",
+            request ? request.beneficiaryOrganizationName : "",
+            request ? request.providerOrganizationName : ""
+        ].filter(function (value) {
+            return value !== null && value !== undefined && value !== "";
+        }).join(" ").toLowerCase();
+        return haystack.indexOf(query.toLowerCase()) !== -1;
+    }
+
+    function paymentRows() {
+        const search = document.getElementById("paymentSearch");
+        const query = search ? search.value.trim() : "";
+        return payments.filter(function (payment) {
+            return (paymentStatus === "ALL" || payment.status === paymentStatus)
+                && paymentMatchesSearch(payment, query);
+        }).sort(function (a, b) {
+            return new Date(b.paidAt || b.createdAt || 0) - new Date(a.paidAt || a.createdAt || 0);
+        });
+    }
+
+    function renderPayments() {
+        const target = document.getElementById("paymentsList");
+        if (!target) {
+            return;
+        }
+        const rows = paymentRows();
+        if (!rows.length) {
+            showEmpty(target, payments.length
+                ? tr("ما فيه مدفوعات مطابقة.", "No matching payments.")
+                : tr("ما فيه مدفوعات بعد.", "No payments yet."));
+            return;
+        }
+        let html = '<div class="table-wrap"><table class="data-table"><thead><tr>'
+            + '<th>' + tr("الدورة / الطلب", "Course / request") + '</th>'
+            + '<th>' + tr("الجهة المستفيدة", "Beneficiary") + '</th>'
+            + '<th>' + tr("مقدم الخدمة", "Provider") + '</th>'
+            + '<th>' + tr("المبلغ", "Amount") + '</th>'
+            + '<th>' + tr("العمولة", "Commission") + '</th>'
+            + '<th>' + tr("صافي المقدم", "Provider net") + '</th>'
+            + '<th>' + tr("الحالة", "Status") + '</th>'
+            + '<th>' + tr("التاريخ", "Date") + '</th>'
+            + '<th>' + tr("الإجراءات", "Actions") + '</th>'
+            + '</tr></thead><tbody>';
+        rows.forEach(function (payment) {
+            const request = requestForPayment(payment);
+            const programTitle = request && request.trainingProgramTitle
+                ? request.trainingProgramTitle
+                : tr("طلب تدريب", "Training request");
+            const rate = payment.commissionRatePercent !== null && payment.commissionRatePercent !== undefined
+                ? WaeiDashboard.formatNumber(payment.commissionRatePercent) + "%"
+                : "—";
+            html += '<tr>'
+                + '<td><strong>' + escapeHtml(programTitle) + '</strong><small>'
+                + tr("طلب رقم ", "Request #") + escapeHtml(payment.trainingRequestId || "—") + '</small></td>'
+                + '<td>' + escapeHtml(request && request.beneficiaryOrganizationName ? request.beneficiaryOrganizationName : "—") + '</td>'
+                + '<td>' + escapeHtml(request && request.providerOrganizationName ? request.providerOrganizationName : "—") + '</td>'
+                + '<td class="money">' + WaeiDashboard.formatMoney(payment.amount) + '</td>'
+                + '<td><strong>' + WaeiDashboard.formatMoney(payment.commissionAmount) + '</strong><small>' + escapeHtml(rate) + '</small></td>'
+                + '<td class="money">' + WaeiDashboard.formatMoney(payment.providerAmount) + '</td>'
+                + '<td>' + WaeiDashboard.statusBadge("payment", payment.status) + '</td>'
+                + '<td class="nowrap">' + WaeiDashboard.formatDateTime(payment.paidAt || payment.createdAt) + '</td>'
+                + '<td><button type="button" class="btn btn-outline btn-sm" data-view-payment="' + payment.id + '">' + tr("عرض", "View") + '</button></td>'
+                + '</tr>';
+        });
+        html += '</tbody></table></div>';
+        target.innerHTML = html;
+        target.querySelectorAll("[data-view-payment]").forEach(function (button) {
+            button.addEventListener("click", function () {
+                openPayment(Number(button.dataset.viewPayment));
+            });
+        });
+    }
+
+    function paymentDetailsHtml(payment) {
+        const request = requestForPayment(payment);
+        return '<div class="detail-grid">'
+            + detailRow(tr("رقم الدفع", "Payment ID"), payment.id)
+            + detailRow(tr("الحالة", "Status"), WaeiDashboard.statusLabel("payment", payment.status))
+            + detailRow(tr("المبلغ", "Amount"), WaeiDashboard.formatMoney(payment.amount))
+            + detailRow(tr("العملة", "Currency"), payment.currency)
+            + detailRow(tr("نسبة العمولة", "Commission rate"), payment.commissionRatePercent !== null && payment.commissionRatePercent !== undefined
+                ? WaeiDashboard.formatNumber(payment.commissionRatePercent) + "%"
+                : "—")
+            + detailRow(tr("عمولة المنصة", "Platform commission"), WaeiDashboard.formatMoney(payment.commissionAmount))
+            + detailRow(tr("صافي مقدم الخدمة", "Provider net"), WaeiDashboard.formatMoney(payment.providerAmount))
+            + detailRow(tr("المبلغ المسترجع", "Refunded amount"), payment.refundedAmount !== null && payment.refundedAmount !== undefined
+                ? WaeiDashboard.formatMoney(payment.refundedAmount)
+                : "—")
+            + detailRow(tr("تاريخ الاسترجاع", "Refunded at"), WaeiDashboard.formatDateTime(payment.refundedAt))
+            + detailRow(tr("تاريخ الإنشاء", "Created"), WaeiDashboard.formatDateTime(payment.createdAt))
+            + detailRow(tr("تاريخ الدفع", "Paid at"), WaeiDashboard.formatDateTime(payment.paidAt))
+            + detailRow(tr("آخر تحديث", "Updated"), WaeiDashboard.formatDateTime(payment.updatedAt))
+            + detailRow(tr("طلب التدريب", "Training request"), payment.trainingRequestId ? "#" + payment.trainingRequestId : "—")
+            + detailRow(tr("البرنامج", "Program"), request ? request.trainingProgramTitle : "—")
+            + detailRow(tr("حالة الطلب", "Request status"), request ? WaeiDashboard.statusLabel("request", request.status) : "—")
+            + detailRow(tr("الجهة المستفيدة", "Beneficiary"), request ? request.beneficiaryOrganizationName : "—")
+            + detailRow(tr("مقدم الخدمة", "Provider"), request ? request.providerOrganizationName : "—")
+            + detailRow(tr("معرف دفع ميسر", "Moyasar payment ID"), payment.moyasarPaymentId || "—")
+            + detailRow(tr("معرف فاتورة ميسر", "Moyasar invoice ID"), payment.moyasarInvoiceId || "—")
+            + detailRow(tr("رابط الدفع", "Checkout link"), payment.checkoutUrl
+                ? tr("متوفر", "Available")
+                : tr("غير متوفر", "Not available"))
+            + '</div>';
+    }
+
+    function openPayment(id) {
+        const payment = payments.find(function (item) { return item.id === id; });
+        if (!payment) {
+            return;
+        }
+        document.getElementById("paymentDetails").innerHTML = paymentDetailsHtml(payment);
+        WaeiDashboard.openDialog("paymentDialog");
+    }
+
     async function loadData() {
         const pendingRoot = document.getElementById("registrationsList");
         if (pendingRoot) {
@@ -465,16 +697,19 @@
                 apiGet("/organization/registrations?status=REJECTED"),
                 apiGet("/organization/get"),
                 apiGet("/training-program/get"),
-                apiGet("/training-request/get")
+                apiGet("/training-request/get"),
+                apiGet("/payment/get")
             ]);
             registrations = results[0].concat(results[1]).concat(results[2]);
             organizations = results[3];
             programs = results[4];
             requests = results[5];
+            payments = results[6];
             setStats();
             renderOverviewPending();
             renderRegistrations();
             renderOrganizations();
+            renderPayments();
         } catch (e) {
             showError(pendingRoot, e.message);
             WaeiDashboard.notify(e.message, "error");
@@ -501,8 +736,19 @@
         });
     });
 
+    document.querySelectorAll("[data-payment-status]").forEach(function (button) {
+        button.addEventListener("click", function () {
+            paymentStatus = button.dataset.paymentStatus;
+            document.querySelectorAll("[data-payment-status]").forEach(function (chip) {
+                chip.setAttribute("aria-pressed", chip === button ? "true" : "false");
+            });
+            renderPayments();
+        });
+    });
+
     document.getElementById("registrationSearch").addEventListener("input", renderRegistrations);
     document.getElementById("organizationSearch").addEventListener("input", renderOrganizations);
+    document.getElementById("paymentSearch").addEventListener("input", renderPayments);
     document.querySelectorAll("[data-refresh]").forEach(function (button) {
         button.addEventListener("click", loadData);
     });
@@ -558,7 +804,8 @@
         nav: [
             { id: "overview", ar: "نظرة عامة", en: "Overview", icon: "grid" },
             { id: "registrations", ar: "طلبات التسجيل", en: "Applications", icon: "clipboard", badge: true },
-            { id: "organizations", ar: "الجهات", en: "Organizations", icon: "building" }
+            { id: "organizations", ar: "الجهات", en: "Organizations", icon: "building" },
+            { id: "payments", ar: "المدفوعات", en: "Payments", icon: "card" }
         ]
     }).then(function (user) {
         if (!user) {

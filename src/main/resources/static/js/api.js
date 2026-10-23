@@ -70,7 +70,12 @@ const ARABIC_MESSAGES = {
     "You do not have access to this training request": "ما عندك صلاحية على طلب التدريب هذا",
     "Only the beneficiary organization can perform this action": "الإجراء هذا متاح للجهة المستفيدة فقط",
     "Only the training provider can perform this action": "الإجراء هذا متاح لمقدم الخدمة فقط",
-    "Only the provider organization that owns this program can manage it": "إدارة البرنامج متاحة للجهة المقدمة له فقط"
+    "Only the provider organization that owns this program can manage it": "إدارة البرنامج متاحة للجهة المقدمة له فقط",
+    "Built-in awareness days cannot be deleted. Unpublish it instead.": "أيام التقويم الأساسية ما يمكن حذفها، أخفها بإلغاء النشر بدلًا من ذلك",
+    "A date rule can only be used with ANNUAL recurrence": "قاعدة التاريخ تُستخدم فقط مع التكرار السنوي",
+    "Date rule must look like FIXED:11-14, NTH_WEEKDAY:09:SATURDAY:2, or LAST_WEEKDAY:01:SUNDAY": "صيغة قاعدة التاريخ غير صحيحة",
+    "Year must be between 2000 and 2100": "السنة لازم تكون بين 2000 و2100",
+    "Awareness day not found": "اليوم التوعوي غير موجود"
 };
 
 // In English mode the backend message is shown as it is
@@ -241,12 +246,13 @@ async function apiDownload(path, fileName) {
     }
 }
 
-// For uploading files (multipart/form-data): the browser sets the Content-Type itself
-async function apiPostForm(path, formData) {
+// For uploading files (multipart/form-data): the browser sets the Content-Type itself.
+// Pass withAuth = false for public endpoints such as organization registration.
+async function apiPostForm(path, formData, withAuth = true) {
     try {
         const response = await fetch(API_BASE + path, {
             method: "POST",
-            headers: authHeaders(),
+            headers: withAuth ? authHeaders() : {},
             body: formData
         });
         return await handleResponse(response);
@@ -355,7 +361,7 @@ function showEmpty(element, message) {
     element.innerHTML = '<div class="empty-state">' + escapeHtml(message) + "</div>";
 }
 
-// Header: if the user is logged in, "دخول الجهات" becomes their name
+// Header: if the user is logged in, "انضم لواعي" becomes their name
 document.addEventListener("DOMContentLoaded", function () {
     const loginLink = document.getElementById("headerLogin");
     const user = getUser();
