@@ -13,9 +13,13 @@
         .booking-steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
         .booking-steps li { display: flex; gap: 12px; align-items: center; padding: 16px 18px; border-radius: 18px; background: #FFFFFF; border: 1px solid var(--line); font-size: 16px; font-weight: 600; }
         .booking-steps .n { flex: 0 0 auto; width: 36px; height: 36px; border-radius: 10px; background: var(--primary); color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 700; }
-        .program-card { display: flex; flex-direction: column; gap: 12px; padding: 24px; border-radius: 22px; background: #FFFFFF; border: 1px solid var(--line); }
+        .program-card { display: flex; flex-direction: column; gap: 12px; padding: 24px; border-radius: 22px; background: #FFFFFF; border: 1px solid var(--line); overflow: hidden; }
         .program-card h3 { font-size: 21px; line-height: 1.5; }
         .program-card p { font-size: 15px; line-height: 1.7; color: var(--muted); flex-grow: 1; }
+        .program-cover { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 16px; background: #F2F7F4; }
+        .program-cover-empty { display: flex; align-items: center; justify-content: center; color: var(--soft); font-size: 14px; font-weight: 600; }
+        .program-meta { display: grid; gap: 6px; padding: 12px 14px; border-radius: 14px; background: #F7FAF8; font-size: 14px; color: var(--muted); }
+        .program-meta strong { color: var(--text); }
         .mode-tag { background: #F5F3FF; color: #5B21B6; }
         .price { font-size: 18px; font-weight: 700; }
         .price small { font-size: 14px; font-weight: 500; color: var(--soft); }
@@ -51,7 +55,7 @@
 
         <ol class="booking-steps" aria-label="خطوات الحجز" data-en-aria="Booking steps">
             <li><span class="n">1</span><span data-en="Choose the course">اختر الدورة</span></li>
-            <li><span class="n">2</span><span data-en="Send a request with the number of participants">أرسل طلب بعدد المشاركين</span></li>
+            <li><span class="n">2</span><span data-en="Choose the start date and number of days">اختر تاريخ البداية وعدد الأيام</span></li>
             <li><span class="n">3</span><span data-en="After approval, pay with Moyasar">بعد الموافقة ادفع عبر ميسر</span></li>
         </ol>
 
@@ -61,7 +65,6 @@
                 <button type="button" class="chip" data-mode="ALL" aria-pressed="true" data-en="All">الكل</button>
                 <button type="button" class="chip" data-mode="IN_PERSON" aria-pressed="false" data-en="In person">حضوري</button>
                 <button type="button" class="chip" data-mode="ONLINE" aria-pressed="false" data-en="Online">عن بعد</button>
-                <button type="button" class="chip" data-mode="HYBRID" aria-pressed="false" data-en="Hybrid">مدمج</button>
             </div>
         </div>
 
@@ -85,8 +88,7 @@
 <script th:inline="none">
     const MODE_LABELS = {
         IN_PERSON: tr("حضوري", "In person"),
-        ONLINE: tr("عن بعد", "Online"),
-        HYBRID: tr("مدمج", "Hybrid")
+        ONLINE: tr("عن بعد", "Online")
     };
     let allPrograms = [];
     let selectedMode = "ALL";
@@ -115,16 +117,25 @@
         let html = "";
         for (const p of programs) {
             const price = p.price !== null && p.price !== undefined ? Number(p.price).toLocaleString(tr("ar-SA", "en-US")) : "—";
+            const hours = p.hoursPerDay !== null && p.hoursPerDay !== undefined ? p.hoursPerDay : "—";
+            const maxDays = p.maxDays !== null && p.maxDays !== undefined ? p.maxDays : "—";
             html += '<article class="program-card">'
+                + (p.imageUrl
+                    ? '<img class="program-cover" src="' + escapeHtml(p.imageUrl) + '" alt="' + escapeHtml(p.title) + '" loading="lazy">'
+                    : '<div class="program-cover program-cover-empty">' + tr("لا توجد صورة", "No image") + '</div>')
                 + '<div style="display: flex; flex-wrap: wrap; gap: 8px">'
                 + '<span class="tag">' + escapeHtml(p.category) + "</span>"
                 + '<span class="tag mode-tag">' + escapeHtml(MODE_LABELS[p.deliveryMode] || p.deliveryMode) + "</span>"
                 + "</div>"
                 + "<h3>" + escapeHtml(p.title) + "</h3>"
                 + "<p>" + escapeHtml(p.description) + "</p>"
+                + '<div class="program-meta">'
+                + '<span>' + tr("الساعات في اليوم: ", "Hours per day: ") + "<strong>" + escapeHtml(hours) + "</strong></span>"
+                + '<span>' + tr("الحد الأقصى: ", "Maximum: ") + "<strong>" + escapeHtml(maxDays) + " " + tr("يوم", "days") + "</strong></span>"
+                + '</div>'
                 + (p.organizationName ? '<span style="font-size: 14px; color: var(--soft)">' + tr("يقدمها: ", "Offered by: ") + escapeHtml(p.organizationName) + "</span>" : "")
                 + '<div class="card-footer">'
-                + '<span class="price">' + price + " <small>" + tr("ر.س", "SAR") + "</small></span>"
+                + '<span class="price">' + price + " <small>" + tr("ر.س", "SAR") + " / " + tr("يوم", "day") + "</small></span>"
                 + '<a href="/login" class="btn btn-primary" style="min-height: 44px; font-size: 15px">' + tr("اطلب لجهتك", "Request for your organization") + '</a>'
                 + "</div></article>";
         }

@@ -23,8 +23,8 @@ const WaeiDashboard = (function () {
             PENDING: ['قيد الانتظار', 'Pending', 'warn'],
             ACCEPTED: ['بانتظار الدفع', 'Awaiting payment', 'warn'],
             REJECTED: ['مرفوض', 'Rejected', 'bad'],
-            PAYMENT_PENDING: ['جاري الدفع', 'Payment pending', 'warn'],
-            PAID: ['مدفوع', 'Paid', 'ok'],
+            PAYMENT_PENDING: ['الدفع قيد المعالجة', 'Payment in progress', 'warn'],
+            CONFIRMED: ['مؤكد', 'Confirmed', 'ok'],
             IN_PROGRESS: ['قيد التنفيذ', 'In progress', 'neutral'],
             COMPLETED: ['مكتمل', 'Completed', 'ok'],
             CANCELLED: ['ملغي', 'Cancelled', 'muted']
@@ -46,8 +46,7 @@ const WaeiDashboard = (function () {
 
     const MODES = {
         IN_PERSON: ['حضوري', 'In person'],
-        ONLINE: ['عن بعد', 'Online'],
-        HYBRID: ['مدمج', 'Hybrid']
+        ONLINE: ['عن بعد', 'Online']
     };
 
     let state = { user: null, config: null };
@@ -176,6 +175,29 @@ const WaeiDashboard = (function () {
         window.setTimeout(function () {
             toast.remove();
         }, 4200);
+    }
+
+    function copyText(text) {
+        return new Promise(function (resolve, reject) {
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(resolve).catch(reject);
+            } else {
+                const input = document.createElement("textarea");
+                input.value = text;
+                input.style.position = "fixed";
+                input.style.opacity = 0;
+                document.body.appendChild(input);
+                input.select();
+                try {
+                    document.execCommand("copy");
+                    resolve();
+                } catch (e) {
+                    reject(e);
+                } finally {
+                    input.remove();
+                }
+            }
+        });
     }
 
     function openDialog(id) {
@@ -421,6 +443,7 @@ const WaeiDashboard = (function () {
         setPanel: setPanel,
         setNavBadge: setNavBadge,
         notify: notify,
+        copyText: copyText,
         openDialog: openDialog,
         closeDialog: closeDialog,
         confirmAction: confirmAction,

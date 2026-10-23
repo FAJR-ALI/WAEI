@@ -56,6 +56,69 @@ class PageRoutesIntegrationTests {
     }
 
     @Test
+    void dashboardsExposeCancelledRequestFilter() throws Exception {
+        mockMvc.perform(get("/dashboard/beneficiary"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString(
+                        "data-request-status=\"CANCELLED\"")));
+
+        mockMvc.perform(get("/dashboard/provider"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString(
+                        "data-request-status=\"CANCELLED\"")));
+    }
+
+    @Test
+    void providerCannotManuallyAdvanceTrainingStatus() throws Exception {
+        mockMvc.perform(get("/dashboard/provider"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString(
+                        "تتغير حالة بدء التدريب وإكماله تلقائيًا حسب الموعد.")))
+                .andExpect(content().string(org.hamcrest.Matchers.not(
+                        org.hamcrest.Matchers.containsString("data-start-request"))))
+                .andExpect(content().string(org.hamcrest.Matchers.not(
+                        org.hamcrest.Matchers.containsString("data-complete-request"))));
+    }
+
+    @Test
+    void dashboardPaymentsExposeStatusFilters() throws Exception {
+        assertPaymentStatusFilters("/dashboard/beneficiary");
+        assertPaymentStatusFilters("/dashboard/provider");
+    }
+
+    @Test
+    void dashboardsExposeOnlineMeetingControls() throws Exception {
+        mockMvc.perform(get("/dashboard/beneficiary"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Join Zoom")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("meetingDetailRows")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("data-copy-meeting-link")));
+
+        mockMvc.perform(get("/dashboard/provider"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("data-start-zoom")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("/meeting/host-link")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("data-copy-meeting-link")));
+    }
+
+    private void assertPaymentStatusFilters(String path) throws Exception {
+        mockMvc.perform(get(path))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString(
+                        "data-payment-status=\"ALL\"")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString(
+                        "data-payment-status=\"PENDING\"")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString(
+                        "data-payment-status=\"PAID\"")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString(
+                        "data-payment-status=\"FAILED\"")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString(
+                        "data-payment-status=\"REFUNDED\"")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString(
+                        "data-payment-status=\"CANCELLED\"")));
+    }
+
+    @Test
     void registrationFormsAreAvailableForBothOrganizationTypes() throws Exception {
         mockMvc.perform(get("/register"))
                 .andExpect(status().is3xxRedirection())
@@ -163,6 +226,9 @@ class PageRoutesIntegrationTests {
                 .andExpect(status().isUnauthorized());
 
         mockMvc.perform(get("/api/v1/training-request/get"))
+                .andExpect(status().isUnauthorized());
+
+        mockMvc.perform(get("/api/v1/training-request/1/meeting/host-link"))
                 .andExpect(status().isUnauthorized());
 
         mockMvc.perform(get("/api/v1/organization/get")

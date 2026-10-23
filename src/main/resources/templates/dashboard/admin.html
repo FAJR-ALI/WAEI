@@ -194,7 +194,7 @@
                         <span class="kpi-icon">
                             <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path></svg>
                         </span>
-                        <span class="kpi-body"><span class="kpi-label" data-en="Refunded">المبالغ المسترجعة</span><strong class="kpi-value" id="paymentKpiRefunded">0</strong><span class="kpi-hint" data-en="Refunded payments">مدفوعات مسترجعة</span></span>
+                        <span class="kpi-body"><span class="kpi-label" data-en="Refunded">المبالغ المستردة</span><strong class="kpi-value" id="paymentKpiRefunded">0</strong><span class="kpi-hint" data-en="Refunded payments">مدفوعات مستردة</span></span>
                     </article>
                 </div>
 
@@ -205,7 +205,7 @@
                             <button type="button" class="filter-chip" data-payment-status="PENDING" aria-pressed="false" data-en="Pending">معلق</button>
                             <button type="button" class="filter-chip" data-payment-status="PAID" aria-pressed="false" data-en="Paid">مدفوع</button>
                             <button type="button" class="filter-chip" data-payment-status="FAILED" aria-pressed="false" data-en="Failed">فشل</button>
-                            <button type="button" class="filter-chip" data-payment-status="REFUNDED" aria-pressed="false" data-en="Refunded">مسترجع</button>
+                            <button type="button" class="filter-chip" data-payment-status="REFUNDED" aria-pressed="false" data-en="Refunded">مسترد</button>
                             <button type="button" class="filter-chip" data-payment-status="CANCELLED" aria-pressed="false" data-en="Cancelled">ملغي</button>
                         </div>
                         <div class="search-box">
@@ -656,10 +656,10 @@
                 : "—")
             + detailRow(tr("عمولة المنصة", "Platform commission"), WaeiDashboard.formatMoney(payment.commissionAmount))
             + detailRow(tr("صافي مقدم الخدمة", "Provider net"), WaeiDashboard.formatMoney(payment.providerAmount))
-            + detailRow(tr("المبلغ المسترجع", "Refunded amount"), payment.refundedAmount !== null && payment.refundedAmount !== undefined
+            + detailRow(tr("المبلغ المسترد", "Refunded amount"), payment.refundedAmount !== null && payment.refundedAmount !== undefined
                 ? WaeiDashboard.formatMoney(payment.refundedAmount)
                 : "—")
-            + detailRow(tr("تاريخ الاسترجاع", "Refunded at"), WaeiDashboard.formatDateTime(payment.refundedAt))
+            + detailRow(tr("تاريخ الاسترداد", "Refunded at"), WaeiDashboard.formatDateTime(payment.refundedAt))
             + detailRow(tr("تاريخ الإنشاء", "Created"), WaeiDashboard.formatDateTime(payment.createdAt))
             + detailRow(tr("تاريخ الدفع", "Paid at"), WaeiDashboard.formatDateTime(payment.paidAt))
             + detailRow(tr("آخر تحديث", "Updated"), WaeiDashboard.formatDateTime(payment.updatedAt))
