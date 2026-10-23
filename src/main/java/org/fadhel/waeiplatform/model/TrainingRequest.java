@@ -45,6 +45,15 @@ public class TrainingRequest {
     private BigDecimal programPrice;
 
     @Column
+    private Integer daysCount;
+
+    @Column(precision = 12, scale = 2)
+    private BigDecimal dailyPrice;
+
+    @Column(precision = 4, scale = 1)
+    private BigDecimal hoursPerDay;
+
+    @Column
     private LocalDateTime scheduledStart;
 
     @Column
@@ -57,6 +66,29 @@ public class TrainingRequest {
 
     @Column(length = 500)
     private String cancellationReason;
+
+    @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
+    @Column(length = 20)
+    private OnlineMeetingStatus meetingStatus;
+
+    @Column(length = 64)
+    private String zoomMeetingId;
+
+    @Column(length = 1000)
+    private String zoomJoinUrl;
+
+    @Column(length = 64)
+    private String zoomPassword;
+
+    private LocalDateTime zoomCreatedAt;
+
+    private LocalDateTime zoomLastAttemptAt;
+
+    private Integer zoomAttemptCount;
+
+    @Column(length = 1000)
+    private String zoomLastError;
 
     @ManyToOne
     @JoinColumn

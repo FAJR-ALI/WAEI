@@ -6,8 +6,12 @@ import org.fadhel.waeiplatform.api.ApiResponse;
 import org.fadhel.waeiplatform.dto.in.CancelTrainingRequest;
 import org.fadhel.waeiplatform.dto.in.TrainingRequestRequest;
 import org.fadhel.waeiplatform.service.TrainingRequestService;
+import org.fadhel.waeiplatform.service.ZoomMeetingService;
+import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/training-request")
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class TrainingRequestController {
 
     private final TrainingRequestService trainingRequestService;
+    private final ZoomMeetingService zoomMeetingService;
 
     @GetMapping("/get")
     public ResponseEntity<?> getAllRequests() {
@@ -77,16 +82,12 @@ public class TrainingRequestController {
         return ResponseEntity.status(200).body(new ApiResponse("Training request rejected successfully"));
     }
 
-    @PostMapping("/{id}/start")
-    public ResponseEntity<?> startRequest(@PathVariable Long id) {
-        trainingRequestService.startRequest(id);
-        return ResponseEntity.status(200).body(new ApiResponse("Training request started successfully"));
-    }
-
-    @PostMapping("/{id}/complete")
-    public ResponseEntity<?> completeRequest(@PathVariable Long id) {
-        trainingRequestService.completeRequest(id);
-        return ResponseEntity.status(200).body(new ApiResponse("Training request completed successfully"));
+    @GetMapping("/{id}/meeting/host-link")
+    public ResponseEntity<?> getMeetingHostLink(@PathVariable Long id) {
+        String url = zoomMeetingService.getFreshHostStartUrl(id);
+        return ResponseEntity.ok()
+                .cacheControl(CacheControl.noStore())
+                .body(Map.of("url", url));
     }
 
     @PostMapping("/{id}/cancel")

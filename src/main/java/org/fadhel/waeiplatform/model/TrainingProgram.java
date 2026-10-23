@@ -32,6 +32,18 @@ public class TrainingProgram {
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal price;
 
+    @Column(precision = 4, scale = 1)
+    private BigDecimal hoursPerDay;
+
+    @Column
+    private Integer maxDays;
+
+    @Column(length = 255)
+    private String imageStoredName;
+
+    @Column(length = 100)
+    private String imageContentType;
+
     @Column(nullable = false, length = 20)
     private String deliveryMode;
 

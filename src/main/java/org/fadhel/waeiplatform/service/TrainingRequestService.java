@@ -23,6 +23,7 @@ import org.fadhel.waeiplatform.security.CurrentUser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -42,6 +43,7 @@ public class TrainingRequestService {
     private final AccountRepository accountRepository;
     private final PaymentRepository paymentRepository;
     private final PaymentService paymentService;
+    private final ZoomMeetingService zoomMeetingService;
     private final CurrentUser currentUser;
     private final AccessControl accessControl;
 
@@ -62,6 +64,9 @@ public class TrainingRequestService {
                 request.getId(),
                 request.getParticipantCount(),
                 request.getProgramPrice(),
+                request.getDaysCount() != null ? request.getDaysCount() : 1,
+                request.getDailyPrice() != null ? request.getDailyPrice() : request.getProgramPrice(),
+                request.getHoursPerDay(),
                 request.getNotes(),
                 request.getStatus() != null ? request.getStatus().name() : null,
                 request.getRequestedAt(),
@@ -79,7 +84,10 @@ public class TrainingRequestService {
                 beneficiary != null ? beneficiary.getName() : null,
                 account != null ? account.getId() : null,
                 account != null ? account.getFullName() : null,
-                payments);
+                payments,
+                program != null ? program.getDeliveryMode() : null,
+                request.getMeetingStatus() != null ? request.getMeetingStatus().name() : null,
+                request.getZoomJoinUrl());
     }
 
     public List<TrainingRequestResponse> getAllRequests() {
@@ -162,8 +170,6 @@ public class TrainingRequestService {
 
     @Transactional
     public void addRequest(TrainingRequestRequest request) {
-        validateSchedule(request.getScheduledStart(), request.getScheduledEnd());
-
         Organization beneficiaryOrganization =
                 resolveBeneficiaryOrganization(request.getBeneficiaryOrganizationId());
         Account account = resolveAccount(request.getCreatedByAccountId());
@@ -177,11 +183,11 @@ public class TrainingRequestService {
         }
         accessControl.requireVerifiedOrganization(program.getOrganization());
 
-        assertSlotAvailable(program.getId(), request.getScheduledStart(), request.getScheduledEnd(), -1L);
+        LocalDateTime scheduledEnd = validateSchedule(request, program);
+        assertSlotAvailable(program.getId(), request.getScheduledStart(), scheduledEnd, -1L);
 
         TrainingRequest trainingRequest = new TrainingRequest();
         applyFields(trainingRequest, request, program, beneficiaryOrganization, account);
-        trainingRequest.setProgramPrice(program.getPrice());
         trainingRequest.setStatus(TrainingRequestStatus.PENDING);
         trainingRequest.setRequestedAt(LocalDateTime.now());
 
@@ -197,17 +203,15 @@ public class TrainingRequestService {
             throw new ApiException("A training request can only be edited while it is pending");
         }
 
-        validateSchedule(request.getScheduledStart(), request.getScheduledEnd());
-
         TrainingProgram program = lockProgram(request.getTrainingProgramId());
         if (!Boolean.TRUE.equals(program.getIsActive())) {
             throw new ApiException("This training program is not active right now");
         }
 
-        assertSlotAvailable(program.getId(), request.getScheduledStart(), request.getScheduledEnd(), id);
+        LocalDateTime scheduledEnd = validateSchedule(request, program);
+        assertSlotAvailable(program.getId(), request.getScheduledStart(), scheduledEnd, id);
 
         applyFields(trainingRequest, request, program, trainingRequest.getOrganization(), trainingRequest.getAccount());
-        trainingRequest.setProgramPrice(program.getPrice());
 
         trainingRequestRepository.save(trainingRequest);
     }
@@ -253,24 +257,39 @@ public class TrainingRequestService {
     }
 
     @Transactional
-    public void startRequest(Long id) {
-        TrainingRequest trainingRequest = findRequest(id);
-        accessControl.requireProviderOwner(trainingRequest);
+    public int advanceScheduledTrainingRequests() {
+        LocalDateTime now = LocalDateTime.now();
+        Set<TrainingRequest> candidates = new LinkedHashSet<>(
+                trainingRequestRepository.findByStatusAndScheduledStartLessThanEqual(
+                        TrainingRequestStatus.CONFIRMED, now));
+        candidates.addAll(trainingRequestRepository.findByStatusAndScheduledEndLessThanEqual(
+                TrainingRequestStatus.IN_PROGRESS, now));
 
-        transition(trainingRequest, TrainingRequestStatus.IN_PROGRESS);
+        int changed = 0;
+        for (TrainingRequest trainingRequest : candidates) {
+            boolean updated = false;
+            if (trainingRequest.getStatus() == TrainingRequestStatus.CONFIRMED
+                    && trainingRequest.getScheduledStart() != null
+                    && !trainingRequest.getScheduledStart().isAfter(now)) {
+                transition(trainingRequest, TrainingRequestStatus.IN_PROGRESS);
+                updated = true;
+            }
+            if (trainingRequest.getStatus() == TrainingRequestStatus.IN_PROGRESS
+                    && trainingRequest.getScheduledEnd() != null
+                    && !trainingRequest.getScheduledEnd().isAfter(now)) {
+                transition(trainingRequest, TrainingRequestStatus.COMPLETED);
+                trainingRequest.setCompletedAt(trainingRequest.getScheduledEnd());
+                updated = true;
+            }
+            if (updated) {
+                changed++;
+            }
+        }
 
-        trainingRequestRepository.save(trainingRequest);
-    }
-
-    @Transactional
-    public void completeRequest(Long id) {
-        TrainingRequest trainingRequest = findRequest(id);
-        accessControl.requireProviderOwner(trainingRequest);
-
-        transition(trainingRequest, TrainingRequestStatus.COMPLETED);
-        trainingRequest.setCompletedAt(LocalDateTime.now());
-
-        trainingRequestRepository.save(trainingRequest);
+        if (changed > 0) {
+            trainingRequestRepository.saveAll(candidates);
+        }
+        return changed;
     }
 
     @Transactional
@@ -281,8 +300,12 @@ public class TrainingRequestService {
             accessControl.requireBeneficiaryOwner(trainingRequest);
         }
 
+        LocalDateTime now = LocalDateTime.now();
+        boolean startedByTime = trainingRequest.getScheduledStart() != null
+                && !trainingRequest.getScheduledStart().isAfter(now);
         if (trainingRequest.getStatus() == TrainingRequestStatus.IN_PROGRESS
-                || trainingRequest.getStatus() == TrainingRequestStatus.COMPLETED) {
+                || trainingRequest.getStatus() == TrainingRequestStatus.COMPLETED
+                || (trainingRequest.getStatus() == TrainingRequestStatus.CONFIRMED && startedByTime)) {
             throw new ApiException("A training request cannot be cancelled or refunded after the training has started");
         }
 
@@ -290,16 +313,18 @@ public class TrainingRequestService {
             throw new ApiException("A " + trainingRequest.getStatus() + " request cannot be cancelled");
         }
 
-        if (trainingRequest.getStatus() == TrainingRequestStatus.PAID) {
-            Payment paidPayment = paymentRepository
-                    .findFirstByTrainingRequest_IdAndStatusOrderByCreatedAtDesc(
-                            trainingRequest.getId(), PaymentStatus.PAID)
-                    .orElseThrow(() -> new ApiException("The paid payment for this request was not found"));
+        Payment paidPayment = paymentRepository
+                .findFirstByTrainingRequest_IdAndStatusOrderByCreatedAtDesc(
+                        trainingRequest.getId(), PaymentStatus.PAID)
+                .orElse(null);
 
+        if (paidPayment != null) {
             paymentService.refundForCancellation(paidPayment);
-        } else {
-            paymentService.cancelPendingPayments(trainingRequest);
+        } else if (trainingRequest.getStatus() == TrainingRequestStatus.CONFIRMED) {
+            throw new ApiException("The paid payment for this request was not found");
         }
+
+        paymentService.cancelPendingPayments(trainingRequest);
 
         transition(trainingRequest, TrainingRequestStatus.CANCELLED);
         trainingRequest.setCancelledAt(LocalDateTime.now());
@@ -307,6 +332,7 @@ public class TrainingRequestService {
                 request != null && request.getReason() != null ? request.getReason() : "Cancelled by the beneficiary");
 
         trainingRequestRepository.save(trainingRequest);
+        zoomMeetingService.deleteForRequest(trainingRequest);
     }
 
     @Transactional
@@ -379,25 +405,51 @@ public class TrainingRequestService {
 
     private void applyFields(TrainingRequest trainingRequest, TrainingRequestRequest request,
                              TrainingProgram program, Organization organization, Account account) {
+        int daysCount = request.getDaysCount();
+        LocalDateTime scheduledEnd = TrainingRequestPricing.end(
+                request.getScheduledStart(), daysCount, program.getHoursPerDay());
+
         trainingRequest.setTrainingProgram(program);
         trainingRequest.setOrganization(organization);
         trainingRequest.setAccount(account);
         trainingRequest.setParticipantCount(request.getParticipantCount());
+        trainingRequest.setDaysCount(daysCount);
+        trainingRequest.setDailyPrice(program.getPrice());
+        trainingRequest.setHoursPerDay(program.getHoursPerDay());
+        trainingRequest.setProgramPrice(TrainingRequestPricing.total(program.getPrice(), daysCount));
         trainingRequest.setScheduledStart(request.getScheduledStart());
-        trainingRequest.setScheduledEnd(request.getScheduledEnd());
+        trainingRequest.setScheduledEnd(scheduledEnd);
         trainingRequest.setNotes(request.getNotes());
     }
 
-    private void validateSchedule(LocalDateTime start, LocalDateTime end) {
-        if (start == null || end == null) {
+    private LocalDateTime validateSchedule(TrainingRequestRequest request, TrainingProgram program) {
+        LocalDateTime start = request.getScheduledStart();
+        Integer daysCount = request.getDaysCount();
+
+        if (start == null) {
             throw new ApiException("The training date and time are required");
-        }
-        if (!end.isAfter(start)) {
-            throw new ApiException("The training end time must be after the start time");
         }
         if (start.isBefore(LocalDateTime.now())) {
             throw new ApiException("The training start time must be in the future");
         }
+        if (daysCount == null || daysCount < 1) {
+            throw new ApiException("The number of training days must be at least 1");
+        }
+        if (program.getHoursPerDay() == null || program.getHoursPerDay().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new ApiException("This training program does not have a fixed daily duration yet");
+        }
+        if (program.getMaxDays() == null) {
+            throw new ApiException("This training program does not have a maximum duration yet");
+        }
+        if (daysCount > program.getMaxDays()) {
+            throw new ApiException("The selected number of training days exceeds the program maximum");
+        }
+
+        LocalDateTime end = TrainingRequestPricing.end(start, daysCount, program.getHoursPerDay());
+        if (!end.isAfter(start)) {
+            throw new ApiException("The training end time must be after the start time");
+        }
+        return end;
     }
 
     private void assertSlotAvailable(Long programId, LocalDateTime start, LocalDateTime end, Long excludeId) {

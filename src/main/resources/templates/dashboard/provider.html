@@ -125,7 +125,7 @@
                 <div class="page-intro">
                     <div>
                         <h2 data-en="Incoming requests">طلبات التدريب الواردة</h2>
-                        <p data-en="Accept, decline, start and complete training requests.">اقبل الطلبات أو ارفضها ثم ابدأ وأكمل التدريب.</p>
+                        <p data-en="Accept or decline pending requests. Training start and completion update automatically from the schedule.">اقبل الطلبات أو ارفضها. تتغير حالة بدء التدريب وإكماله تلقائيًا حسب الموعد.</p>
                     </div>
                     <button type="button" class="btn btn-outline btn-sm" data-refresh data-en="Refresh">تحديث</button>
                 </div>
@@ -134,9 +134,11 @@
                         <div class="toolbar">
                             <button type="button" class="filter-chip" data-request-status="ALL" aria-pressed="true" data-en="All">الكل</button>
                             <button type="button" class="filter-chip" data-request-status="PENDING" aria-pressed="false" data-en="Pending">جديد</button>
-                            <button type="button" class="filter-chip" data-request-status="PAID" aria-pressed="false" data-en="Paid">مدفوع</button>
+                            <button type="button" class="filter-chip" data-request-status="AWAITING_PAYMENT" aria-pressed="false" data-en="Awaiting payment">بانتظار الدفع</button>
+                            <button type="button" class="filter-chip" data-request-status="CONFIRMED" aria-pressed="false" data-en="Confirmed">مؤكد</button>
                             <button type="button" class="filter-chip" data-request-status="IN_PROGRESS" aria-pressed="false" data-en="In progress">قيد التنفيذ</button>
                             <button type="button" class="filter-chip" data-request-status="COMPLETED" aria-pressed="false" data-en="Completed">مكتمل</button>
+                            <button type="button" class="filter-chip" data-request-status="CANCELLED" aria-pressed="false" data-en="Cancelled">ملغي</button>
                         </div>
                         <div class="search-box">
                             <svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
@@ -151,11 +153,21 @@
                 <div class="page-intro">
                     <div>
                         <h2 data-en="Payments">المدفوعات</h2>
-                        <p data-en="Confirmed payments and platform commission for your programs.">المدفوعات المؤكدة وعمولة المنصة لبرامجك.</p>
+                        <p data-en="All payment attempts and platform commission for your programs.">كل محاولات الدفع وعمولة المنصة لبرامجك.</p>
                     </div>
                     <button type="button" class="btn btn-outline btn-sm" data-refresh data-en="Refresh">تحديث</button>
                 </div>
                 <div class="panel">
+                    <div class="panel-head">
+                        <div class="toolbar">
+                            <button type="button" class="filter-chip" data-payment-status="ALL" aria-pressed="true" data-en="All">الكل</button>
+                            <button type="button" class="filter-chip" data-payment-status="PENDING" aria-pressed="false" data-en="Payment in progress">قيد المعالجة</button>
+                            <button type="button" class="filter-chip" data-payment-status="PAID" aria-pressed="false" data-en="Paid">مدفوع</button>
+                            <button type="button" class="filter-chip" data-payment-status="FAILED" aria-pressed="false" data-en="Failed">فشل</button>
+                            <button type="button" class="filter-chip" data-payment-status="REFUNDED" aria-pressed="false" data-en="Refunded">مسترد</button>
+                            <button type="button" class="filter-chip" data-payment-status="CANCELLED" aria-pressed="false" data-en="Cancelled">ملغي</button>
+                        </div>
+                    </div>
                     <div id="paymentsList" class="panel-state"></div>
                 </div>
             </section>
@@ -181,20 +193,36 @@
                     <label for="programTitle" data-en="Program title">اسم البرنامج</label>
                     <input id="programTitle" class="input" type="text" maxlength="150" required>
                 </div>
-                <div class="field">
-                    <label for="programCategory" data-en="Category">التصنيف</label>
-                    <input id="programCategory" class="input" type="text" maxlength="100" required>
+                <div class="field full">
+                    <label for="programImage" data-en="Program image">صورة البرنامج</label>
+                    <input id="programImage" class="input" type="file" accept="image/jpeg,image/png,image/webp">
+                    <div id="programImagePreviewWrap" class="program-image-preview hidden">
+                        <img id="programImagePreview" alt="" data-en-alt="Program image preview">
+                        <button type="button" id="programImageRemove" class="btn btn-ghost btn-sm" data-en="Remove image">إزالة الصورة</button>
+                    </div>
+                    <span class="field-hint" data-en="Optional. JPEG, PNG or WebP up to 5 MB.">اختياري. JPEG أو PNG أو WebP بحد أقصى 5 ميجابايت.</span>
                 </div>
                 <div class="field">
-                    <label for="programPrice" data-en="Price (SAR)">السعر (ر.س)</label>
+                    <label for="programCategory" data-en="Category">التصنيف</label>
+                    <select id="programCategory" class="input" required></select>
+                </div>
+                <div class="field">
+                    <label for="programPrice" data-en="Daily price (SAR)">السعر اليومي (ر.س)</label>
                     <input id="programPrice" class="input" type="number" min="1" step="0.01" dir="ltr" required>
+                </div>
+                <div class="field">
+                    <label for="programHours" data-en="Hours per day">عدد الساعات في اليوم</label>
+                    <input id="programHours" class="input" type="number" min="0.5" max="24" step="0.5" dir="ltr" required>
+                </div>
+                <div class="field">
+                    <label for="programMaxDays" data-en="Maximum days">الحد الأقصى للأيام</label>
+                    <input id="programMaxDays" class="input" type="number" min="1" max="365" step="1" dir="ltr" required>
                 </div>
                 <div class="field">
                     <label for="programMode" data-en="Delivery mode">طريقة التقديم</label>
                     <select id="programMode" class="input" required>
                         <option value="IN_PERSON" data-en="In person">حضوري</option>
                         <option value="ONLINE" data-en="Online">عن بعد</option>
-                        <option value="HYBRID" data-en="Hybrid">مدمج</option>
                     </select>
                 </div>
                 <div class="field">
@@ -266,8 +294,13 @@
     let incoming = [];
     let payments = [];
     let requestStatus = "ALL";
+    let paymentStatus = "ALL";
     let editingProgramId = null;
     let rejectRequestId = null;
+    let programCategories = [];
+    let currentProgramImageUrl = null;
+    let removeProgramImage = false;
+    let imagePreviewObjectUrl = null;
 
     function latestPayment(request) {
         if (!request.payments || !request.payments.length) {
@@ -300,6 +333,58 @@
         WaeiDashboard.setNavBadge("requests", pending);
     }
 
+    function formatProgramHours(value) {
+        if (value === null || value === undefined || value === "") {
+            return "—";
+        }
+        return WaeiDashboard.formatNumber(value) + " " + tr("ساعة/يوم", "h/day");
+    }
+
+    function programDurationText(program) {
+        const days = program.maxDays
+            ? tr("حتى ", "up to ") + WaeiDashboard.formatNumber(program.maxDays) + " " + tr("يوم", "days")
+            : "";
+        return formatProgramHours(program.hoursPerDay) + (days ? " · " + days : "");
+    }
+
+    function setProgramImagePreview(url) {
+        const wrap = document.getElementById("programImagePreviewWrap");
+        const image = document.getElementById("programImagePreview");
+        if (url) {
+            image.src = url;
+            wrap.classList.remove("hidden");
+        } else {
+            image.removeAttribute("src");
+            wrap.classList.add("hidden");
+        }
+    }
+
+    function clearImagePreviewObjectUrl() {
+        if (imagePreviewObjectUrl) {
+            URL.revokeObjectURL(imagePreviewObjectUrl);
+            imagePreviewObjectUrl = null;
+        }
+    }
+
+    function populateProgramCategories(selected) {
+        const select = document.getElementById("programCategory");
+        const value = selected || select.value;
+        let html = '<option value="">' + tr("اختر التصنيف", "Choose a category") + "</option>";
+        let found = false;
+        programCategories.forEach(function (category) {
+            const isSelected = category === value;
+            if (isSelected) {
+                found = true;
+            }
+            html += '<option value="' + escapeHtml(category) + '"' + (isSelected ? " selected" : "") + ">"
+                + escapeHtml(category) + "</option>";
+        });
+        if (value && !found) {
+            html += '<option value="' + escapeHtml(value) + '" selected>' + escapeHtml(value) + "</option>";
+        }
+        select.innerHTML = html;
+    }
+
     function renderPrograms() {
         const target = document.getElementById("programsList");
         if (!programs.length) {
@@ -310,16 +395,24 @@
             + '<th>' + tr("البرنامج", "Program") + '</th>'
             + '<th>' + tr("التصنيف", "Category") + '</th>'
             + '<th>' + tr("طريقة التقديم", "Delivery") + '</th>'
-            + '<th>' + tr("السعر", "Price") + '</th>'
+            + '<th>' + tr("المدة", "Duration") + '</th>'
+            + '<th>' + tr("السعر اليومي", "Daily price") + '</th>'
             + '<th>' + tr("الحالة", "Status") + '</th>'
             + '<th>' + tr("الإجراءات", "Actions") + '</th>'
             + '</tr></thead><tbody>';
         programs.forEach(function (program) {
+            const image = program.imageUrl
+                ? '<img class="program-thumb" src="' + escapeHtml(program.imageUrl) + '" alt="">'
+                : '<span class="program-thumb program-thumb-empty"></span>';
+            const warning = !program.hoursPerDay || !program.maxDays
+                ? '<small class="program-warning">' + tr("حدّد المدة قبل استقبال الطلبات", "Set the duration before accepting requests") + '</small>'
+                : '';
             html += '<tr>'
-                + '<td><strong>' + escapeHtml(program.title) + '</strong><small>' + escapeHtml(program.organizationName || "") + '</small></td>'
+                + '<td><div class="program-cell">' + image + '<div><strong>' + escapeHtml(program.title) + '</strong><small>' + escapeHtml(program.organizationName || "") + '</small>' + warning + '</div></div></td>'
                 + '<td>' + escapeHtml(program.category) + '</td>'
                 + '<td>' + escapeHtml(WaeiDashboard.modeLabel(program.deliveryMode)) + '</td>'
-                + '<td class="money">' + WaeiDashboard.formatMoney(program.price) + '</td>'
+                + '<td>' + escapeHtml(programDurationText(program)) + '</td>'
+                + '<td class="money">' + WaeiDashboard.formatMoney(program.price) + '<small>/ ' + tr("يوم", "day") + '</small></td>'
                 + '<td>' + (program.isActive
                     ? '<span class="badge badge-ok">' + tr("نشط", "Active") + '</span>'
                     : '<span class="badge badge-muted">' + tr("موقوف", "Inactive") + '</span>') + '</td>'
@@ -361,12 +454,53 @@
             .join(" ").toLowerCase().indexOf(query.toLowerCase()) !== -1;
     }
 
+    function matchesRequestStatus(item) {
+        if (requestStatus === "ALL") {
+            return true;
+        }
+        if (requestStatus === "AWAITING_PAYMENT") {
+            return item.status === "ACCEPTED" || item.status === "PAYMENT_PENDING";
+        }
+        return item.status === requestStatus;
+    }
+
     function requestRows() {
         const query = document.getElementById("requestSearch").value.trim();
         return incoming.filter(function (item) {
-            return (requestStatus === "ALL" || item.status === requestStatus)
-                && matchesRequestSearch(item, query);
+            return matchesRequestStatus(item) && matchesRequestSearch(item, query);
         });
+    }
+
+    function meetingStartButton(item) {
+        if (!item.meetingJoinUrl || (item.status !== "CONFIRMED" && item.status !== "IN_PROGRESS")) {
+            return "";
+        }
+        return '<button type="button" class="btn btn-ok btn-sm" data-start-zoom="' + item.id + '">'
+            + tr("بدء Zoom", "Start Zoom") + '</button>';
+    }
+
+    function meetingCopyButton(item) {
+        if (!item.meetingJoinUrl || (item.status !== "CONFIRMED" && item.status !== "IN_PROGRESS")) {
+            return "";
+        }
+        return '<button type="button" class="btn btn-outline btn-sm" data-copy-meeting-link="' + item.id + '">'
+            + tr("نسخ رابط المشاركة", "Copy attendee link") + '</button>';
+    }
+
+    function meetingDetailRows(item) {
+        if (item.trainingProgramDeliveryMode !== "ONLINE") {
+            return "";
+        }
+        const label = tr("الاجتماع عبر الإنترنت", "Online meeting");
+        if (item.meetingJoinUrl && (item.status === "CONFIRMED" || item.status === "IN_PROGRESS")) {
+            return '<div class="detail-row"><span>' + escapeHtml(label) + '</span><span class="cell-actions">'
+                + meetingStartButton(item) + meetingCopyButton(item) + '</span></div>';
+        }
+        if (item.status === "CONFIRMED" || item.status === "IN_PROGRESS") {
+            return '<div class="detail-row"><span>' + escapeHtml(label) + '</span><span>'
+                + tr("جارٍ تجهيز رابط الاجتماع", "Meeting link is being prepared") + '</span></div>';
+        }
+        return "";
     }
 
     function requestActions(item) {
@@ -374,12 +508,16 @@
         if (item.status === "PENDING") {
             html += '<button type="button" class="btn btn-ok btn-sm" data-accept-request="' + item.id + '">' + tr("قبول", "Accept") + '</button>';
             html += '<button type="button" class="btn btn-danger btn-sm" data-reject-request="' + item.id + '">' + tr("رفض", "Reject") + '</button>';
-        } else if (item.status === "PAID") {
-            html += '<button type="button" class="btn btn-primary btn-sm" data-start-request="' + item.id + '">' + tr("بدء التدريب", "Start training") + '</button>';
-        } else if (item.status === "IN_PROGRESS") {
-            html += '<button type="button" class="btn btn-ok btn-sm" data-complete-request="' + item.id + '">' + tr("إكمال", "Complete") + '</button>';
+        } else if (item.status === "CONFIRMED" || item.status === "IN_PROGRESS") {
+            html += meetingStartButton(item);
+            html += meetingCopyButton(item);
         }
         return html;
+    }
+
+    function requestDaysText(item) {
+        const days = item.daysCount || 1;
+        return WaeiDashboard.formatNumber(days) + " " + tr("يوم", "days");
     }
 
     function renderRequests() {
@@ -400,9 +538,9 @@
         rows.forEach(function (item) {
             const payment = latestPayment(item);
             html += '<tr>'
-                + '<td><strong>' + escapeHtml(item.trainingProgramTitle || "—") + '</strong><small>' + WaeiDashboard.formatMoney(item.programPrice) + '</small></td>'
+                + '<td><strong>' + escapeHtml(item.trainingProgramTitle || "—") + '</strong><small>' + WaeiDashboard.formatMoney(item.programPrice) + ' · ' + requestDaysText(item) + '</small></td>'
                 + '<td>' + escapeHtml(item.beneficiaryOrganizationName || "—") + '</td>'
-                + '<td class="nowrap">' + WaeiDashboard.formatDateTime(item.scheduledStart) + '<small>' + WaeiDashboard.formatDateTime(item.scheduledEnd) + '</small></td>'
+                + '<td class="nowrap">' + WaeiDashboard.formatDateTime(item.scheduledStart) + '<small>' + WaeiDashboard.formatDateTime(item.scheduledEnd) + '</small><small>' + requestDaysText(item) + (item.hoursPerDay ? ' · ' + formatProgramHours(item.hoursPerDay) : '') + '</small></td>'
                 + '<td>' + WaeiDashboard.formatNumber(item.participantCount) + '</td>'
                 + '<td>' + WaeiDashboard.statusBadge("request", item.status)
                 + (payment ? '<small>' + tr("الدفع: ", "Payment: ") + escapeHtml(WaeiDashboard.statusLabel("payment", payment.status)) + '</small>' : "")
@@ -443,6 +581,36 @@
         bindRequestActions(target);
     }
 
+    function bindStartZoom(root) {
+        root.querySelectorAll("[data-start-zoom]").forEach(function (button) {
+            button.addEventListener("click", function () {
+                startZoomMeeting(Number(button.dataset.startZoom));
+            });
+        });
+    }
+
+    function bindCopyMeetingLink(root) {
+        root.querySelectorAll("[data-copy-meeting-link]").forEach(function (button) {
+            button.addEventListener("click", function () {
+                copyMeetingLink(Number(button.dataset.copyMeetingLink));
+            });
+        });
+    }
+
+    function copyMeetingLink(id) {
+        const item = incoming.find(function (r) { return r.id === id; });
+        if (!item || !item.meetingJoinUrl) {
+            return;
+        }
+        WaeiDashboard.copyText(item.meetingJoinUrl)
+            .then(function () {
+                WaeiDashboard.notify(tr("تم نسخ الرابط.", "Meeting link copied."), "ok");
+            })
+            .catch(function (e) {
+                WaeiDashboard.notify(tr("فشل نسخ الرابط.", "Failed to copy link."), "error");
+            });
+    }
+
     function bindRequestActions(root) {
         root.querySelectorAll("[data-view-request]").forEach(function (button) {
             button.addEventListener("click", function () {
@@ -459,22 +627,23 @@
                 openReject(Number(button.dataset.rejectRequest));
             });
         });
-        root.querySelectorAll("[data-start-request]").forEach(function (button) {
-            button.addEventListener("click", function () {
-                startRequest(Number(button.dataset.startRequest));
-            });
-        });
-        root.querySelectorAll("[data-complete-request]").forEach(function (button) {
-            button.addEventListener("click", function () {
-                completeRequest(Number(button.dataset.completeRequest));
-            });
+        bindStartZoom(root);
+        bindCopyMeetingLink(root);
+    }
+
+    function paymentRows() {
+        return payments.filter(function (payment) {
+            return paymentStatus === "ALL" || payment.status === paymentStatus;
         });
     }
 
     function renderPayments() {
         const target = document.getElementById("paymentsList");
-        if (!payments.length) {
-            showEmpty(target, tr("ما فيه مدفوعات بعد.", "No payments yet."));
+        const rows = paymentRows();
+        if (!rows.length) {
+            showEmpty(target, payments.length
+                ? tr("ما فيه مدفوعات مطابقة.", "No matching payments.")
+                : tr("ما فيه مدفوعات بعد.", "No payments yet."));
             return;
         }
         const byRequest = {};
@@ -489,7 +658,7 @@
             + '<th>' + tr("الحالة", "Status") + '</th>'
             + '<th>' + tr("التاريخ", "Date") + '</th>'
             + '</tr></thead><tbody>';
-        payments.forEach(function (payment) {
+        rows.forEach(function (payment) {
             html += '<tr>'
                 + '<td><strong>' + escapeHtml(byRequest[payment.trainingRequestId] || ("#" + payment.trainingRequestId)) + '</strong></td>'
                 + '<td class="money">' + WaeiDashboard.formatMoney(payment.amount) + '</td>'
@@ -507,6 +676,14 @@
         return '<div class="detail-row"><span>' + escapeHtml(label) + '</span><span>' + escapeHtml(value || "—") + '</span></div>';
     }
 
+    function refundDetailRows(payment) {
+        if (!payment || payment.status !== "REFUNDED") {
+            return "";
+        }
+        return detailRow(tr("المبلغ المسترد", "Refunded amount"), WaeiDashboard.formatMoney(payment.refundedAmount))
+            + detailRow(tr("تاريخ الاسترداد", "Refunded at"), WaeiDashboard.formatDateTime(payment.refundedAt));
+    }
+
     function openDetails(id) {
         const item = incoming.find(function (row) { return row.id === id; });
         if (!item) {
@@ -519,14 +696,26 @@
             + detailRow(tr("وقت البداية", "Start"), WaeiDashboard.formatDateTime(item.scheduledStart))
             + detailRow(tr("وقت النهاية", "End"), WaeiDashboard.formatDateTime(item.scheduledEnd))
             + detailRow(tr("عدد المشاركين", "Participants"), WaeiDashboard.formatNumber(item.participantCount))
-            + detailRow(tr("سعر البرنامج", "Program price"), WaeiDashboard.formatMoney(item.programPrice))
+            + detailRow(tr("عدد الأيام", "Days"), requestDaysText(item))
+            + detailRow(tr("الساعات في اليوم", "Hours per day"), formatProgramHours(item.hoursPerDay))
+            + detailRow(tr("السعر اليومي", "Daily price"), item.dailyPrice ? WaeiDashboard.formatMoney(item.dailyPrice) : "—")
+            + detailRow(tr("السعر الإجمالي", "Total price"), WaeiDashboard.formatMoney(item.programPrice))
             + detailRow(tr("حالة الطلب", "Request status"), WaeiDashboard.statusLabel("request", item.status))
+            + meetingDetailRows(item)
             + detailRow(tr("تاريخ الطلب", "Requested at"), WaeiDashboard.formatDateTime(item.requestedAt))
+            + (item.cancelledAt ? detailRow(
+                item.status === "REJECTED" ? tr("تاريخ الرفض", "Rejected at") : tr("تاريخ الإلغاء", "Cancelled at"),
+                WaeiDashboard.formatDateTime(item.cancelledAt)) : "")
             + (item.notes ? '<div class="detail-row" style="grid-column: 1 / -1"><span>' + tr("ملاحظات", "Notes") + '</span><span>' + escapeHtml(item.notes) + '</span></div>' : "")
-            + (item.cancellationReason ? '<div class="detail-row" style="grid-column: 1 / -1"><span>' + tr("سبب الإلغاء أو الرفض", "Cancellation or rejection reason") + '</span><span>' + escapeHtml(item.cancellationReason) + '</span></div>' : "")
+            + (item.cancellationReason ? '<div class="detail-row" style="grid-column: 1 / -1"><span>'
+                + (item.status === "REJECTED" ? tr("سبب الرفض", "Rejection reason") : tr("سبب الإلغاء", "Cancellation reason"))
+                + '</span><span>' + escapeHtml(item.cancellationReason) + '</span></div>' : "")
             + (payment ? detailRow(tr("حالة الدفع", "Payment status"), WaeiDashboard.statusLabel("payment", payment.status)) : "")
+            + refundDetailRows(payment)
             + '</div>';
         document.getElementById("detailContent").innerHTML = html;
+        bindStartZoom(document.getElementById("detailContent"));
+        bindCopyMeetingLink(document.getElementById("detailContent"));
         WaeiDashboard.openDialog("detailDialog");
     }
 
@@ -538,11 +727,19 @@
             ? tr("تعديل البرنامج", "Edit program")
             : tr("إضافة برنامج", "Add program");
         document.getElementById("programTitle").value = program ? program.title : "";
+        populateProgramCategories(program ? program.category : "");
         document.getElementById("programCategory").value = program ? program.category : "";
         document.getElementById("programPrice").value = program ? program.price : "";
+        document.getElementById("programHours").value = program && program.hoursPerDay ? program.hoursPerDay : "";
+        document.getElementById("programMaxDays").value = program && program.maxDays ? program.maxDays : "";
         document.getElementById("programMode").value = program ? program.deliveryMode : "IN_PERSON";
         document.getElementById("programActive").checked = program ? Boolean(program.isActive) : true;
         document.getElementById("programDescription").value = program ? program.description : "";
+        document.getElementById("programImage").value = "";
+        clearImagePreviewObjectUrl();
+        currentProgramImageUrl = program && program.imageUrl ? program.imageUrl : null;
+        removeProgramImage = false;
+        setProgramImagePreview(currentProgramImageUrl);
         WaeiDashboard.openDialog("programDialog");
         document.getElementById("programTitle").focus();
     }
@@ -588,6 +785,18 @@
         }
     }
 
+    async function startZoomMeeting(id) {
+        try {
+            const response = await apiGet("/training-request/" + id + "/meeting/host-link");
+            if (!response || !response.url) {
+                throw new Error(tr("رابط بدء الاجتماع غير متاح.", "The meeting start link is not available."));
+            }
+            window.open(response.url, "_blank", "noopener");
+        } catch (e) {
+            WaeiDashboard.notify(e.message, "error");
+        }
+    }
+
     async function acceptRequest(id) {
         if (!WaeiDashboard.confirmAction("قبول طلب التدريب؟", "Accept this training request?")) {
             return;
@@ -595,32 +804,6 @@
         try {
             await apiPost("/training-request/" + id + "/accept");
             WaeiDashboard.notify(tr("تم قبول الطلب.", "Request accepted."), "ok");
-            await loadData();
-        } catch (e) {
-            WaeiDashboard.notify(e.message, "error");
-        }
-    }
-
-    async function startRequest(id) {
-        if (!WaeiDashboard.confirmAction("بدء التدريب الآن؟", "Start the training now?")) {
-            return;
-        }
-        try {
-            await apiPost("/training-request/" + id + "/start");
-            WaeiDashboard.notify(tr("تم بدء التدريب.", "Training started."), "ok");
-            await loadData();
-        } catch (e) {
-            WaeiDashboard.notify(e.message, "error");
-        }
-    }
-
-    async function completeRequest(id) {
-        if (!WaeiDashboard.confirmAction("إكمال التدريب؟", "Mark the training as completed?")) {
-            return;
-        }
-        try {
-            await apiPost("/training-request/" + id + "/complete");
-            WaeiDashboard.notify(tr("تم إكمال التدريب.", "Training completed."), "ok");
             await loadData();
         } catch (e) {
             WaeiDashboard.notify(e.message, "error");
@@ -637,10 +820,13 @@
             const results = await Promise.all([
                 apiGet("/training-program/get-by-organization/" + dashboardUser.organizationId),
                 apiGet("/training-request/my-provider-requests"),
-                apiGet("/payment/get")
+                apiGet("/payment/get"),
+                apiGet("/training-program/categories")
             ]);
             programs = results[0];
             incoming = results[1];
+            programCategories = results[3];
+            populateProgramCategories(document.getElementById("programCategory").value);
             const requestIds = new Set(incoming.map(function (item) { return item.id; }));
             payments = results[2].filter(function (payment) {
                 return requestIds.has(payment.trainingRequestId);
@@ -674,6 +860,16 @@
         });
     });
 
+    document.querySelectorAll("[data-payment-status]").forEach(function (button) {
+        button.addEventListener("click", function () {
+            paymentStatus = button.dataset.paymentStatus;
+            document.querySelectorAll("[data-payment-status]").forEach(function (chip) {
+                chip.setAttribute("aria-pressed", chip === button ? "true" : "false");
+            });
+            renderPayments();
+        });
+    });
+
     document.querySelectorAll("[data-refresh]").forEach(function (button) {
         button.addEventListener("click", loadData);
     });
@@ -686,6 +882,25 @@
 
     document.getElementById("requestSearch").addEventListener("input", renderRequests);
 
+    document.getElementById("programImage").addEventListener("change", function () {
+        const file = this.files && this.files[0];
+        removeProgramImage = false;
+        clearImagePreviewObjectUrl();
+        if (file) {
+            imagePreviewObjectUrl = URL.createObjectURL(file);
+            setProgramImagePreview(imagePreviewObjectUrl);
+        } else {
+            setProgramImagePreview(currentProgramImageUrl);
+        }
+    });
+
+    document.getElementById("programImageRemove").addEventListener("click", function () {
+        document.getElementById("programImage").value = "";
+        clearImagePreviewObjectUrl();
+        removeProgramImage = true;
+        setProgramImagePreview(null);
+    });
+
     document.getElementById("programForm").addEventListener("submit", async function (event) {
         event.preventDefault();
         const errorRoot = document.getElementById("programError");
@@ -694,8 +909,11 @@
         const category = document.getElementById("programCategory").value.trim();
         const description = document.getElementById("programDescription").value.trim();
         const price = Number(document.getElementById("programPrice").value);
+        const hoursPerDay = Number(document.getElementById("programHours").value);
+        const maxDays = Number(document.getElementById("programMaxDays").value);
         const deliveryMode = document.getElementById("programMode").value;
         const isActive = document.getElementById("programActive").checked;
+        const imageFile = document.getElementById("programImage").files[0] || null;
 
         if (!title || !category || !description) {
             errorRoot.innerHTML = '<div class="alert alert-error" role="alert">' + tr("عبّئ اسم البرنامج والتصنيف والوصف.", "Fill in the title, category and description.") + "</div>";
@@ -705,25 +923,53 @@
             errorRoot.innerHTML = '<div class="alert alert-error" role="alert">' + tr("السعر لازم يكون 1 ريال على الأقل.", "The price must be at least 1 SAR.") + "</div>";
             return;
         }
+        if (!hoursPerDay || hoursPerDay < 0.5 || hoursPerDay > 24) {
+            errorRoot.innerHTML = '<div class="alert alert-error" role="alert">' + tr("عدد الساعات في اليوم لازم يكون بين 0.5 و24.", "Hours per day must be between 0.5 and 24.") + "</div>";
+            return;
+        }
+        if (!Number.isInteger(maxDays) || maxDays < 1 || maxDays > 365) {
+            errorRoot.innerHTML = '<div class="alert alert-error" role="alert">' + tr("الحد الأقصى للأيام لازم يكون بين 1 و365.", "Maximum days must be between 1 and 365.") + "</div>";
+            return;
+        }
+        if (imageFile && imageFile.size > 5 * 1024 * 1024) {
+            errorRoot.innerHTML = '<div class="alert alert-error" role="alert">' + tr("حجم الصورة لازم يكون 5 ميجابايت أو أقل.", "The image must be 5 MB or smaller.") + "</div>";
+            return;
+        }
 
         const payload = {
             title: title,
             category: category,
             description: description,
             price: price,
+            hoursPerDay: hoursPerDay,
+            maxDays: maxDays,
             deliveryMode: deliveryMode,
             isActive: isActive
         };
         const button = document.getElementById("programSubmit");
+        const wasEditing = Boolean(editingProgramId);
         button.disabled = true;
         try {
-            if (editingProgramId) {
-                await apiPut("/training-program/update/" + editingProgramId, payload);
-                WaeiDashboard.notify(tr("تم تحديث البرنامج.", "Program updated."), "ok");
+            let programId = editingProgramId;
+            if (programId) {
+                await apiPut("/training-program/update/" + programId, payload);
             } else {
-                await apiPost("/training-program/add", payload);
-                WaeiDashboard.notify(tr("تمت إضافة البرنامج.", "Program added."), "ok");
+                const created = await apiPost("/training-program/add", payload);
+                programId = created.id;
+                editingProgramId = programId;
             }
+
+            if (imageFile) {
+                const formData = new FormData();
+                formData.append("image", imageFile);
+                await apiPostForm("/training-program/" + programId + "/image", formData);
+            } else if (removeProgramImage) {
+                await apiDelete("/training-program/" + programId + "/image");
+            }
+
+            WaeiDashboard.notify(wasEditing
+                ? tr("تم تحديث البرنامج.", "Program updated.")
+                : tr("تمت إضافة البرنامج.", "Program added."), "ok");
             WaeiDashboard.closeDialog("programDialog");
             await loadData();
         } catch (e) {

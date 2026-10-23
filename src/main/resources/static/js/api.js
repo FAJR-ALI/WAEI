@@ -57,6 +57,7 @@ const ARABIC_MESSAGES = {
     "A payment is already pending or paid for this training request": "فيه دفعة قيد المعالجة أو مدفوعة لهذا الطلب",
     "Moyasar is not configured. Set MOYASAR_SECRET_KEY to a test or live secret key.": "بوابة ميسر غير مضبوطة حاليًا، تواصل مع إدارة المنصة",
     "This training program is not active right now": "هذا البرنامج غير متاح حاليًا",
+    "The training date and time are required": "تاريخ ووقت التدريب مطلوبان",
     "The training start time must be in the future": "وقت بداية التدريب لازم يكون في المستقبل",
     "The training end time must be after the start time": "وقت نهاية التدريب لازم يكون بعد وقت البداية",
     "The selected date and time is already booked for this program": "الوقت المحدد محجوز لهذا البرنامج",
@@ -64,9 +65,28 @@ const ARABIC_MESSAGES = {
     "Only pending or rejected requests can be deleted": "تُحذف فقط الطلبات قيد الانتظار أو المرفوضة",
     "A training program with this title already exists for this organization": "فيه برنامج بنفس الاسم لهذي الجهة",
     "Cannot delete a training program that has training requests": "ما يمكن حذف برنامج له طلبات تدريب",
+    "Invalid training program category": "تصنيف البرنامج غير صالح",
+    "Price must be at least 1 SAR": "السعر لازم يكون 1 ريال على الأقل",
+    "Program hours per day must be at least 0.5": "عدد الساعات في اليوم لازم يكون 0.5 على الأقل",
+    "Program hours per day must not exceed 24": "عدد الساعات في اليوم لازم يكون 24 أو أقل",
+    "Maximum days must be at least 1": "الحد الأقصى للأيام لازم يكون 1 على الأقل",
+    "Maximum days must not exceed 365": "الحد الأقصى للأيام لازم يكون 365 أو أقل",
+    "The training start date must be in the future": "تاريخ بداية التدريب لازم يكون في المستقبل",
+    "Program image is required": "اختر صورة للبرنامج",
+    "Program image must not exceed 5 MB": "حجم صورة البرنامج لازم يكون 5 ميجابايت أو أقل",
+    "Could not read the uploaded program image": "ما قدرنا نقرأ صورة البرنامج المرفوعة",
+    "Could not save the uploaded program image": "ما قدرنا نحفظ صورة البرنامج المرفوعة",
+    "Program image must be a JPEG, PNG or WebP file": "صورة البرنامج لازم تكون JPEG أو PNG أو WebP",
+    "Program image not found": "صورة البرنامج غير موجودة",
+    "Invalid program image reference": "مرجع صورة البرنامج غير صالح",
+    "This training program does not have a fixed daily duration yet": "هذا البرنامج ما له مدة يومية محددة بعد",
+    "This training program does not have a maximum duration yet": "هذا البرنامج ما له حد أقصى للأيام بعد",
+    "The selected number of training days exceeds the program maximum": "عدد الأيام المحدد يتجاوز الحد الأقصى للبرنامج",
+    "The number of training days must be at least 1": "عدد أيام التدريب لازم يكون 1 على الأقل",
+    "The number of training days must not exceed 365": "عدد أيام التدريب لازم يكون 365 أو أقل",
     "Only a pending request can be accepted": "يمكن قبول الطلبات قيد الانتظار فقط",
     "Only a pending request can be rejected": "يمكن رفض الطلبات قيد الانتظار فقط",
-    "A training request cannot be cancelled or refunded after the training has started": "ما يمكن إلغاء أو استرجاع طلب بعد بدء التدريب",
+    "A training request cannot be cancelled or refunded after the training has started": "ما يمكن إلغاء أو استرداد طلب بعد بدء التدريب",
     "You do not have access to this training request": "ما عندك صلاحية على طلب التدريب هذا",
     "Only the beneficiary organization can perform this action": "الإجراء هذا متاح للجهة المستفيدة فقط",
     "Only the training provider can perform this action": "الإجراء هذا متاح لمقدم الخدمة فقط",
@@ -75,7 +95,8 @@ const ARABIC_MESSAGES = {
     "A date rule can only be used with ANNUAL recurrence": "قاعدة التاريخ تُستخدم فقط مع التكرار السنوي",
     "Date rule must look like FIXED:11-14, NTH_WEEKDAY:09:SATURDAY:2, or LAST_WEEKDAY:01:SUNDAY": "صيغة قاعدة التاريخ غير صحيحة",
     "Year must be between 2000 and 2100": "السنة لازم تكون بين 2000 و2100",
-    "Awareness day not found": "اليوم التوعوي غير موجود"
+    "Awareness day not found": "اليوم التوعوي غير موجود",
+    "Resource not found": "المسار المطلوب غير موجود"
 };
 
 // In English mode the backend message is shown as it is
@@ -101,10 +122,13 @@ function errorMessageFrom(data) {
         return data.message;
     }
     if (data && typeof data === "object") {
-        const firstError = Object.values(data).find(function (value) {
-            return typeof value === "string" && value;
+        const metadataKeys = ["timestamp", "status", "error", "path", "trace", "exception"];
+        const firstError = Object.entries(data).find(function (entry) {
+            return metadataKeys.indexOf(entry[0]) === -1
+                && typeof entry[1] === "string"
+                && entry[1];
         });
-        return firstError || null;
+        return firstError ? firstError[1] : null;
     }
     return null;
 }

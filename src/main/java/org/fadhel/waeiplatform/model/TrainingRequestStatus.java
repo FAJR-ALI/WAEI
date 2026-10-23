@@ -12,7 +12,7 @@ public enum TrainingRequestStatus {
     ACCEPTED,
     REJECTED,
     PAYMENT_PENDING,
-    PAID,
+    CONFIRMED,
     IN_PROGRESS,
     COMPLETED,
     CANCELLED;
@@ -23,8 +23,8 @@ public enum TrainingRequestStatus {
         Map<TrainingRequestStatus, Set<TrainingRequestStatus>> transitions = new EnumMap<>(TrainingRequestStatus.class);
         transitions.put(PENDING, EnumSet.of(ACCEPTED, REJECTED, CANCELLED));
         transitions.put(ACCEPTED, EnumSet.of(PAYMENT_PENDING, CANCELLED));
-        transitions.put(PAYMENT_PENDING, EnumSet.of(PAID, ACCEPTED, CANCELLED));
-        transitions.put(PAID, EnumSet.of(IN_PROGRESS, CANCELLED));
+        transitions.put(PAYMENT_PENDING, EnumSet.of(CONFIRMED, ACCEPTED, CANCELLED));
+        transitions.put(CONFIRMED, EnumSet.of(IN_PROGRESS, CANCELLED));
         transitions.put(IN_PROGRESS, EnumSet.of(COMPLETED));
         transitions.put(REJECTED, Collections.emptySet());
         transitions.put(COMPLETED, Collections.emptySet());

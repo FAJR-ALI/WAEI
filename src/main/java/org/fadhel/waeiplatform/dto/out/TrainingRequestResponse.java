@@ -22,6 +22,12 @@ public class TrainingRequestResponse {
 
     private BigDecimal programPrice;
 
+    private Integer daysCount;
+
+    private BigDecimal dailyPrice;
+
+    private BigDecimal hoursPerDay;
+
     private String notes;
 
     private String status;
@@ -57,5 +63,11 @@ public class TrainingRequestResponse {
     private String createdByFullName;
 
     private Set<PaymentResponse> payments;
+
+    private String trainingProgramDeliveryMode;
+
+    private String meetingStatus;
+
+    private String meetingJoinUrl;
 
 }
