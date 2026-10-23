@@ -1,0 +1,27 @@
+.detective-badge { font-size: 80px; }
+.detective-progress { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.detective-room { position: relative; height: clamp(330px, 55vw, 480px); overflow: hidden; border: 5px solid #DDD6FE; border-radius: 28px; background: linear-gradient(#E0F2FE 0 67%, #D6B69A 67%); direction: ltr; }
+.room-window { position: absolute; left: 9%; top: 8%; width: 22%; height: 32%; background: #7DD3FC; border: 9px solid white; border-radius: 14px; box-shadow: 0 5px #BAE6FD; }
+.room-window::after { content: ""; position: absolute; left: 46%; top: 0; width: 7px; height: 100%; background: white; }
+.room-window span { font-size: 38px; }
+.room-shelf { position: absolute; right: 9%; top: 31%; width: 26%; height: 15px; background: #A16207; border-radius: 8px; }
+.room-sofa { position: absolute; left: 7%; bottom: 19%; width: 36%; height: 27%; background: #A78BFA; border: 12px solid #8B5CF6; border-radius: 30px 30px 12px 12px; box-shadow: 0 10px #6D28D9; }
+.room-table { position: absolute; left: 49%; top: 53%; width: 25%; height: 12%; border-radius: 14px; background: #FCD34D; border-bottom: 10px solid #D97706; }
+.room-table::before, .room-table::after { content: ""; position: absolute; top: 100%; width: 10px; height: 55px; background: #A16207; }
+.room-table::before { left: 12%; } .room-table::after { right: 12%; }
+.room-basket { position: absolute; right: 5%; bottom: 4%; width: 17%; height: 17%; border-radius: 8px 8px 22px 22px; background: #FDBA74; border: 5px solid #EA580C; }
+.room-object { position: absolute; display: grid; place-items: center; width: 15%; min-width: 48px; min-height: 48px; height: 22%; padding: 3px; border: 3px solid transparent; border-radius: 18px; background: transparent; font-size: clamp(35px, 7vw, 64px); cursor: pointer; line-height: 1; }
+.room-object:hover, .room-object:focus-visible { background: #FFFFFF99; border-color: #7C3AED; }
+.room-object.found { border-color: #15803D; background: #DCFCE7CC; }
+.room-object:disabled { cursor: wait; }
+.object-book { right: 14%; top: 10%; }
+.object-teddy { left: 17%; bottom: 25%; }
+.object-cup { left: 62%; top: 34%; }
+.object-medicine { left: 41%; bottom: 0; }
+.object-ball { right: 6%; bottom: 7%; }
+.object-wire { left: 1%; bottom: 0; width: 24%; }
+.object-wire svg { width: 100%; height: 100%; }
+.detective-feedback { min-height: 80px; border-radius: 20px; background: #F3F0FF; padding: 18px; font-size: 23px; line-height: 1.6; }
+.detective-feedback.good { background: #DCFCE7; color: #14532D; }
+#detectiveScore { direction: ltr; }
+@media (max-width: 520px) { .detective-badge { display: none; } .detective-feedback { font-size: 20px; } }

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-en="Waei — Safety detective">واعي — محقق السلامة</title>
+    <link rel="icon" href="/img/logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/kids.css">
+    <link rel="stylesheet" href="/css/kids-detective.css">
+    <script src="/js/i18n.js"></script>
+</head>
+<body>
+<header class="k-header">
+    <a href="/kids" class="k-back" data-en="Back to games">رجوع للألعاب</a>
+    <div class="k-tools"><button type="button" class="lang-toggle">English</button></div>
+</header>
+<main class="k-main">
+    <section class="k-hero">
+        <div class="k-hero-text">
+            <span class="k-hello" data-en="Look carefully, detective!">ركّز يا محقق!</span>
+            <h1 data-en="Safety detective">محقق السلامة</h1>
+            <p data-en="Find three hazards in the room. Tap an object and Waei will explain your choice.">اكتشف ثلاثة أخطار في الغرفة. اضغط على الشيء وواعي يشرح لك اختيارك.</p>
+        </div>
+        <span class="detective-badge" aria-hidden="true">🔍</span>
+    </section>
+
+    <section class="k-card">
+        <div class="detective-progress">
+            <h2 data-en="What needs an adult's help?">وش يحتاج مساعدة شخص كبير؟</h2>
+            <span class="k-stars" id="detectiveScore" role="status">0 / 3 ⭐</span>
+        </div>
+        <!-- The six buttons are objects in one fixed room, not AI-generated images. -->
+        <div class="detective-room" role="group" aria-label="غرفة اللعب، اختر شيئًا لفحصه" data-en-aria="Playroom, choose an object to inspect">
+            <div class="room-window" aria-hidden="true"><span>☀️</span></div>
+            <div class="room-shelf" aria-hidden="true"></div>
+            <div class="room-sofa" aria-hidden="true"></div>
+            <div class="room-table" aria-hidden="true"></div>
+            <div class="room-basket" aria-hidden="true"></div>
+            <button type="button" class="room-object object-book" data-item="book" aria-label="كتاب على الرف" data-en-aria="Book on the shelf"><span aria-hidden="true">📚</span></button>
+            <button type="button" class="room-object object-teddy" data-item="teddy" aria-label="دب على الأريكة" data-en-aria="Teddy on the sofa"><span aria-hidden="true">🧸</span></button>
+            <button type="button" class="room-object object-cup" data-item="cup" aria-label="كوب ساخن على حافة الطاولة" data-en-aria="Hot cup at the table edge"><span aria-hidden="true">☕</span></button>
+            <button type="button" class="room-object object-medicine" data-item="medicine" aria-label="حبوب دواء على الأرض" data-en-aria="Medicine on the floor"><span aria-hidden="true">💊</span></button>
+            <button type="button" class="room-object object-ball" data-item="ball" aria-label="كرة داخل سلة بعيدة عن الممر" data-en-aria="Ball in a basket away from the walkway"><span aria-hidden="true">⚽</span></button>
+            <button type="button" class="room-object object-wire" data-item="wire" aria-label="سلك كهرباء تالف" data-en-aria="Damaged electrical wire">
+                <svg aria-hidden="true" viewBox="0 0 110 80"><path d="M5 55 C45 65 15 12 47 30 L53 39 M70 32 C85 15 68 65 105 55" fill="none" stroke="#334155" stroke-width="7" stroke-linecap="round"/><path d="M57 19 L65 30 L57 36 L65 48" fill="none" stroke="#F59E0B" stroke-width="5"/></svg>
+            </button>
+        </div>
+        <p class="k-note" data-en="Tap the drawing, or use Tab and Enter to choose an object.">اضغط على الرسم، أو استخدم Tab وEnter لاختيار شيء.</p>
+        <div id="detectiveFeedback" class="detective-feedback" role="status" aria-live="polite" data-en="I'm Waei. Choose an object and let's investigate!">أنا واعي، اختر شيئًا وخلّنا نحقق!</div>
+        <div id="detectiveFinished" class="hidden">
+            <h2 data-en="Great detective! You found all three hazards.">محقق بطل! اكتشفت الأخطار الثلاثة.</h2>
+            <p data-en="In real life, stay away from hazards and tell an adult.">في الحقيقة، ابتعد عن الخطر وخبّر شخصًا كبيرًا.</p>
+        </div>
+        <button type="button" class="k-btn k-btn-purple" id="detectiveRestart" data-en="Start again">ابدأ من جديد</button>
+    </section>
+    <p class="k-note" data-en="For learning only. AI explains the choices; never touch real hazards. We do not ask for your name, photos, or voice.">للتعلم فقط. الذكاء الاصطناعي يشرح الاختيارات؛ لا تلمس الأخطار في الحقيقة. ما نطلب اسمك أو صورك أو صوتك.</p>
+</main>
+<script src="/js/kids-detective.js?v=3"></script>
+</body>
+</html>

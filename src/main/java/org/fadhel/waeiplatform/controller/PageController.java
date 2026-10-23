@@ -95,6 +95,16 @@ public class PageController {
         return "visitor/kids-emergency-number";
     }
 
+    @GetMapping("/kids/detective")
+    public String kidsDetective() {
+        return "visitor/kids-detective";
+    }
+
+    @GetMapping("/kids/drawing")
+    public String kidsDrawing() {
+        return "visitor/kids-drawing";
+    }
+
     @GetMapping("/story")
     public String story() {
         return "visitor/story";

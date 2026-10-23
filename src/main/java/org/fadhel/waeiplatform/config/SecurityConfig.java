@@ -59,6 +59,9 @@ public class SecurityConfig {
             PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/programs"),
             PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/pricing"),
             PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/kids"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/kids/detective"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/kids/drawing"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.POST, "/api/v1/kids/drawing/review"),
             PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/story"),
             PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/call"),
             PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/guide"),
@@ -170,7 +173,7 @@ public class SecurityConfig {
                                 "/register/beneficiary", "/register/provider",
                                 "/train", "/programs", "/pricing",
                                 "/kids", "/kids/stories", "/kids/what-if",
-                                "/kids/emergency-number",
+                                "/kids/emergency-number", "/kids/detective", "/kids/drawing",
                                 "/story", "/call", "/guide", "/guide/detail",
                                 "/calendar",
                                 "/dashboard/admin", "/dashboard/beneficiary",
@@ -193,6 +196,7 @@ public class SecurityConfig {
                                 "/api/v1/guide/category/*").permitAll()
                         .requestMatchers(HttpMethod.POST,
                                 "/api/v1/awareness-session/evaluate/*",
+                                "/api/v1/kids/drawing/review",
                                 "/api/v1/awareness-session/quiz/submit/*",
                                 "/api/v1/guide/smart-search").permitAll()
                         // Emergency guide management: platform admin only

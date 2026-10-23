@@ -30,7 +30,7 @@
 <main class="k-main">
     <!-- Hero with the mascot -->
     <section class="k-hero">
-        <svg class="k-mascot" role="img" aria-label="وعيّ، شخصية واعي للأطفال" data-en-aria="Waeiy, the Waei kids character" width="200" height="210" viewBox="0 0 200 210">
+        <svg class="k-mascot" role="img" aria-label="واعي، شخصية واعي للأطفال" data-en-aria="Waei, the Waei kids character" width="200" height="210" viewBox="0 0 200 210">
             <circle cx="100" cy="32" r="24" fill="#FCD34D"></circle>
             <path d="M100 196 C 40 154, 8 112, 28 76 C 48 44, 88 52, 100 82 C 112 52, 152 44, 172 76 C 192 112, 160 154, 100 196 Z" fill="#FFFFFF"></path>
             <path class="k-mascot-hand" d="M34 98 L 10 66" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round"></path>
@@ -46,13 +46,23 @@
         </svg>
         <div class="k-hero-text">
             <span class="k-hello" data-en="Hi hero!">هلا يا بطل!</span>
-            <h1 id="heroTitle" data-en="I&#x27;m Waeiy, and I&#x27;ll teach you what to do when there is danger">أنا وعيّ، وبعلّمك كيف تتصرف وقت الخطر</h1>
+            <h1 id="heroTitle" data-en="I&#x27;m Waei, and I&#x27;ll teach you what to do when there is danger">أنا واعي، وبعلّمك كيف تتصرف وقت الخطر</h1>
             <p data-en="Pick a game and collect stars.">اختر لعبة، واجمع النجوم.</p>
         </div>
     </section>
 
     <!-- Activities -->
     <section class="k-grid" aria-label="الألعاب" data-en-aria="Games">
+        <a href="/kids/drawing" class="k-activity" style="background: #FCE7F3; color: #831843">
+            <span class="ic" aria-hidden="true" style="font-size: 34px">🎨</span>
+            <span class="title" data-en="Draw safety">ارسم الأمان</span>
+            <span class="text" data-en="Draw a safe action and show Waei">ارسم تصرفًا آمنًا وورّه لواعي</span>
+        </a>
+        <a href="/kids/detective" class="k-activity" style="background: #DDD6FE; color: #4C1D95">
+            <span class="ic" aria-hidden="true" style="font-size: 34px">🔍</span>
+            <span class="title" data-en="Safety detective">محقق السلامة</span>
+            <span class="text" data-en="Find three hazards with Waei">اكتشف ثلاثة أخطار مع واعي</span>
+        </a>
         <a href="/kids/stories" class="k-activity" style="background: #FCD34D; color: #451A03">
             <span class="ic" style="color: #B45309"><svg aria-hidden="true" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14zM20 17v4H6.5A2.5 2.5 0 0 1 4 18.5"></path></svg></span>
             <span class="title" data-en="Hero stories">قصص الأبطال</span>
@@ -114,8 +124,8 @@
     }
 
     document.getElementById("speakHero").addEventListener("click", function () {
-        speak(tr("هلا يا بطل! أنا وعيّ، وبعلّمك كيف تتصرف وقت الخطر. اختر لعبة، واجمع النجوم.",
-            "Hi hero! I am Waeiy, and I will teach you what to do when there is danger. Pick a game and collect stars."));
+        speak(tr("هلا يا بطل! أنا واعي، وبعلّمك كيف تتصرف وقت الخطر. اختر لعبة، واجمع النجوم.",
+            "Hi hero! I am Waei, and I will teach you what to do when there is danger. Pick a game and collect stars."));
     });
 
 

@@ -18,10 +18,6 @@
     </a>
     <div class="k-tools">
         <button type="button" class="lang-toggle">English</button>
-        <div class="k-stars" id="starsBox" aria-live="polite">
-            <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"></path></svg>
-            <span id="starsCount">0</span>
-        </div>
         <button type="button" class="k-sound" id="speakHero" aria-label="اسمع الكلام بصوت" data-en-aria="Listen">
             <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.5 8.5a5 5 0 0 1 0 7"></path><path d="M19 5a10 10 0 0 1 0 14"></path></svg>
         </button>
@@ -41,19 +37,10 @@
         <div id="storiesList" class="k-grid"></div>
     </section>
 
-    <p class="k-note" data-en="&lt;strong&gt;Note for parents:&lt;/strong&gt; Kids mode is for learning only. We don&#x27;t ask for video or collect any data about the child, and the stars disappear when you close the page. Every AI-written story is reviewed by a specialist before it is published."><strong>ملاحظة للأهل:</strong> وضع الأطفال للتعلم فقط. ما نطلب فيديو ولا نجمع أي بيانات عن الطفل، والنجوم تختفي لما تسكّر الصفحة. كل قصة يكتبها الذكاء الاصطناعي يراجعها مختص قبل ما تنشر.</p>
+    <p class="k-note" data-en="&lt;strong&gt;Note for parents:&lt;/strong&gt; Kids mode is for learning only. We don&#x27;t ask for video or collect any data about the child. Every AI-written story is reviewed by a specialist before it is published."><strong>ملاحظة للأهل:</strong> وضع الأطفال للتعلم فقط. ما نطلب فيديو ولا نجمع أي بيانات عن الطفل. كل قصة يكتبها الذكاء الاصطناعي يراجعها مختص قبل ما تنشر.</p>
 </main>
 <script src="/js/api.js"></script>
 <script th:inline="none">
-    // Stars live only in this page (nothing is saved about the child)
-    let stars = 0;
-
-    function addStar() {
-        stars++;
-        document.getElementById("starsCount").textContent = stars;
-        document.getElementById("starsBox").setAttribute("aria-label", tr("عندك " + stars + " نجوم", "You have " + stars + " stars"));
-    }
-
     // Read text out loud with the browser's voice (works offline, nothing is sent anywhere)
     function speak(text) {
         if (!("speechSynthesis" in window)) return;
