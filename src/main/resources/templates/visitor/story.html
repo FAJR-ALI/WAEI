@@ -32,34 +32,32 @@
     </a>
     <div class="k-tools">
         <button type="button" class="lang-toggle">English</button>
-    <button type="button" class="k-sound" id="speakStory" aria-label="اسمع القصة" data-en-aria="Listen to the story">
+    <button type="button" class="k-sound" id="speakStory" disabled aria-label="اسمع القصة" data-en-aria="Listen to the story">
         <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.5 8.5a5 5 0 0 1 0 7"></path><path d="M19 5a10 10 0 0 1 0 14"></path></svg>
     </button>
     </div>
 </header>
 
+<section class="k-main hidden" id="narratorPanel" aria-label="راوي القصص" data-en-aria="Story narrator">
+    <div class="k-card">
+        <h2 data-en="Listen with Waei">اسمع القصة مع واعي</h2>
+        <p data-en="An AI-generated voice reads this Arabic story.">صوت مولّد بالذكاء الاصطناعي يقرأ لك القصة العربية.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px">
+            <button type="button" class="k-btn k-btn-purple" id="narrateStory" data-en="Listen to the story">اسمع القصة</button>
+            <button type="button" class="k-btn hidden" id="replayStory" data-en="Listen again">اسمع من البداية</button>
+        </div>
+        <p id="narratorStatus" role="status" aria-live="polite"></p>
+        <audio id="storyAudio" class="hidden" controls preload="none" style="width: 100%" aria-label="قراءة القصة" data-en-aria="Story narration"></audio>
+    </div>
+</section>
 <main class="k-main" id="storyBox">
     <div class="k-loading" data-en="Loading the story...">نجيب القصة...</div>
 </main>
 
 <script src="/js/api.js"></script>
+<script src="/js/story-narrator.js?v=1"></script>
 <script th:inline="none">
     let story = null;
-
-    function speak(text) {
-        if (!("speechSynthesis" in window)) return;
-        window.speechSynthesis.cancel();
-        const voice = new SpeechSynthesisUtterance(text);
-        voice.lang = "ar-SA";
-        voice.rate = 0.85;
-        window.speechSynthesis.speak(voice);
-    }
-
-    document.getElementById("speakStory").addEventListener("click", function () {
-        if (story) {
-            speak(story.title + ". " + story.content + ". " + (story.lesson || ""));
-        }
-    });
 
     async function loadStory() {
         const box = document.getElementById("storyBox");
@@ -70,6 +68,7 @@
         }
         try {
             story = await apiGet("/kids/stories/" + encodeURIComponent(id));
+            enableStoryNarration(story.id);
             document.title = tr("واعي — ", "Waei — ") + story.title;
 
             // Each line of the story becomes a paragraph

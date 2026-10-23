@@ -2,6 +2,9 @@ package org.fadhel.waeiplatform.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.fadhel.waeiplatform.service.KidsStoryService;
+import org.fadhel.waeiplatform.service.KidsStoryNarrationService;
+import org.springframework.http.CacheControl;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +16,14 @@ import org.springframework.web.bind.annotation.*;
 public class KidsModeController {
 
     private final KidsStoryService kidsStoryService;
+    private final KidsStoryNarrationService kidsStoryNarrationService;
+
+    @GetMapping(value = "/stories/{id}/narration", produces = "audio/wav")
+    public ResponseEntity<byte[]> narrateStory(@PathVariable Long id) {
+        return ResponseEntity.ok().cacheControl(CacheControl.noStore())
+                .contentType(MediaType.parseMediaType("audio/wav"))
+                .body(kidsStoryNarrationService.narrate(id));
+    }
 
     @GetMapping("/stories")
     public ResponseEntity<?> getStories() {

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-en="Waei — Draw safety">واعي — ارسم الأمان</title>
+    <link rel="icon" href="/img/logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/kids.css">
+    <script src="/js/i18n.js"></script>
+    <style>
+        .drawing-tools { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+        .drawing-colors { display: flex; flex-wrap: wrap; gap: 8px; }
+        .drawing-color { width: 48px; height: 48px; border: 4px solid white; border-radius: 50%; background: var(--color); cursor: pointer; box-shadow: 0 0 0 1px #DDD6FE; }
+        .drawing-color[aria-pressed="true"] { box-shadow: 0 0 0 4px #7C3AED; }
+        #drawingCanvas { display: block; width: 100%; height: auto; border: 4px solid #DDD6FE; border-radius: 20px; background: white; touch-action: none; cursor: crosshair; }
+        .drawing-select { font: inherit; font-size: 20px; border: 2px solid #DDD6FE; border-radius: 14px; padding: 8px; max-width: 100%; }
+        .drawing-consent { display: flex; gap: 10px; align-items: flex-start; font-size: 18px; }
+        .drawing-consent input { width: 24px; height: 24px; flex-shrink: 0; accent-color: #7C3AED; }
+        #drawingFeedback { padding: 20px; border-radius: 20px; background: #F3F0FF; font-size: 23px; line-height: 1.6; min-height: 76px; }
+        button:disabled { opacity: 0.55; cursor: wait; }
+    </style>
+</head>
+<body>
+<header class="k-header">
+    <a href="/kids" class="k-back" data-en="Back to games">رجوع للألعاب</a>
+    <div class="k-tools"><button type="button" class="lang-toggle">English</button></div>
+</header>
+<main class="k-main">
+    <section class="k-hero" style="background: #BE185D">
+        <div class="k-hero-text">
+            <span class="k-hello" data-en="Hello, artist!">هلا بالفنان!</span>
+            <h1 data-en="Draw safety">ارسم الأمان</h1>
+            <p data-en="Draw a safe action. Waei will look at your drawing and give you a short comment.">ارسم تصرفًا آمنًا، وواعي يشوف رسمتك ويعطيك تعليقًا قصيرًا.</p>
+        </div>
+        <span aria-hidden="true" style="font-size: 80px">🎨</span>
+    </section>
+    <section class="k-card">
+        <label for="drawingTopic" data-en="What will you draw?">وش تبي ترسم؟</label>
+        <select id="drawingTopic" class="drawing-select">
+            <option value="road" data-en="Crossing safely with an adult">عبور الطريق بأمان مع شخص كبير</option>
+            <option value="home" data-en="Staying away from hazards at home">الابتعاد عن الأخطار في البيت</option>
+            <option value="help" data-en="Asking an adult for help">طلب المساعدة من شخص كبير</option>
+        </select>
+        <div class="drawing-tools">
+            <div class="drawing-colors" role="group" aria-label="ألوان الرسم" data-en-aria="Drawing colors">
+                <button type="button" class="drawing-color" style="--color: #2E1065" data-color="#2E1065" aria-pressed="true" aria-label="بنفسجي" data-en-aria="Purple"></button>
+                <button type="button" class="drawing-color" style="--color: #2563EB" data-color="#2563EB" aria-pressed="false" aria-label="أزرق" data-en-aria="Blue"></button>
+                <button type="button" class="drawing-color" style="--color: #15803D" data-color="#15803D" aria-pressed="false" aria-label="أخضر" data-en-aria="Green"></button>
+                <button type="button" class="drawing-color" style="--color: #DC2626" data-color="#DC2626" aria-pressed="false" aria-label="أحمر" data-en-aria="Red"></button>
+                <button type="button" class="drawing-color" style="--color: #EAB308" data-color="#EAB308" aria-pressed="false" aria-label="أصفر" data-en-aria="Yellow"></button>
+            </div>
+            <button type="button" id="drawingEraser" class="k-btn" aria-pressed="false" data-en="Eraser">ممحاة</button>
+            <button type="button" id="drawingClear" class="k-btn" data-en="Clear drawing">امسح الرسمة</button>
+        </div>
+        <p id="drawingInstructions" data-en="Draw with your mouse or finger. With a keyboard, use the arrow keys; hold Shift to draw.">ارسم بالماوس أو بإصبعك. بالكيبورد، حرّك بالأسهم واضغط معها Shift للرسم.</p>
+        <canvas id="drawingCanvas" width="640" height="400" tabindex="0" aria-label="مساحة الرسم" data-en-aria="Drawing canvas" aria-describedby="drawingInstructions">متصفحك لا يدعم مساحة الرسم.</canvas>
+        <label class="drawing-consent">
+            <input type="checkbox" id="drawingConsent">
+            <span data-en="With my parent's permission, I agree to send this drawing to Google Gemini for AI feedback. Do not draw your name, address, or personal details.">بإذن ولي أمري، أوافق على إرسال الرسمة إلى Google Gemini للتعليق عليها بالذكاء الاصطناعي. لا ترسم اسمك أو عنوانك أو معلوماتك الشخصية.</span>
+        </label>
+        <button type="button" id="drawingReview" class="k-btn k-btn-purple" data-en="Look at my drawing">شوف رسمتي</button>
+        <div id="drawingFeedback" role="status" aria-live="polite" data-en="Ready? Choose a topic and start drawing!">جاهز؟ اختر موضوعًا وابدأ الرسم!</div>
+    </section>
+    <p class="k-note" data-en="For learning only. AI may misunderstand drawings. Waei does not save the drawing in its database or grade artistic skill.">للتعلم فقط. قد يخطئ الذكاء الاصطناعي في فهم الرسم. واعي ما يحفظ الرسمة في قاعدة بياناته ولا يقيّم مهارتك الفنية.</p>
+</main>
+<script src="/js/kids-drawing.js?v=1"></script>
+</body>
+</html>
