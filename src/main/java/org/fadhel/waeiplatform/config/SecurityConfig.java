@@ -85,7 +85,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/login", "/api/v1/payment/webhook/moyasar").permitAll()
                         // Visitor pages (templates) + CSS/JS/images (static) + Spring error page
                         .requestMatchers(HttpMethod.GET, "/", "/login", "/register", "/train", "/programs", "/pricing",
-                                "/kids", "/story", "/call", "/guide", "/guide/detail", "/dashboard/admin",
+                                "/kids", "/kids/stories", "/kids/what-if", "/kids/emergency-number",
+                                "/story", "/call", "/guide", "/guide/detail", "/dashboard/admin",
                                 "/dashboard/beneficiary", "/dashboard/provider").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/img/**", "/error").permitAll()
                         // Visitor endpoints: no login needed

@@ -41,6 +41,22 @@ class PageRoutesIntegrationTests {
     }
 
     @Test
+    void kidsActivitiesRenderWithoutAuthenticationOnSeparatePages() throws Exception {
+        String[][] activities = {
+                {"/kids/stories", "storiesList", "scenarioText", "dialScreen"},
+                {"/kids/what-if", "scenarioText", "storiesList", "dialScreen"},
+                {"/kids/emergency-number", "dialScreen", "storiesList", "scenarioText"}
+        };
+        for (String[] activity : activities) {
+            mockMvc.perform(get(activity[0]))
+                    .andExpect(status().isOk())
+                    .andExpect(content().string(org.hamcrest.Matchers.containsString("id=\"" + activity[1] + "\"")))
+                    .andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("id=\"" + activity[2] + "\""))))
+                    .andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("id=\"" + activity[3] + "\""))));
+        }
+    }
+
+    @Test
     void protectedApiStillRequiresAuthentication() throws Exception {
         mockMvc.perform(get("/api/v1/organization/get"))
                 .andExpect(status().isUnauthorized());

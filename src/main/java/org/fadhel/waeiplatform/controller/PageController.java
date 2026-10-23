@@ -62,6 +62,21 @@ public class PageController {
     }
 
     // Example: /story?id=1
+    @GetMapping("/kids/stories")
+    public String kidsStories() {
+        return "visitor/kids-stories";
+    }
+
+    @GetMapping("/kids/what-if")
+    public String kidsWhatIf() {
+        return "visitor/kids-what-if";
+    }
+
+    @GetMapping("/kids/emergency-number")
+    public String kidsEmergencyNumber() {
+        return "visitor/kids-emergency-number";
+    }
+
     @GetMapping("/story")
     public String story() {
         return "visitor/story";
