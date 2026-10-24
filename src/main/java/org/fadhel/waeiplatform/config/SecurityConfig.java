@@ -47,6 +47,8 @@ public class SecurityConfig {
     // Public requests must not be rejected just because the browser still has an
     // expired token. Protected endpoints keep using the normal JWT resolver below.
     private static final RequestMatcher PUBLIC_REQUESTS = new OrRequestMatcher(
+            // This one endpoint checks its own n8n key in TrainingReminderController.
+            PathPatternRequestMatcher.pathPattern(HttpMethod.POST, "/api/v1/training-reminders/send"),
             PathPatternRequestMatcher.pathPattern(HttpMethod.OPTIONS, "/**"),
             PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/payment/callback"),
             PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/payment/callback/**"),
@@ -166,6 +168,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/training-reminders/send").permitAll()
                         .requestMatchers(HttpMethod.GET, "/payment/callback", "/payment/callback/**").permitAll()
                         .requestMatchers("/api/v1/auth/login", "/api/v1/payment/webhook/moyasar").permitAll()
                         // Visitor pages (templates) + CSS/JS/images (static) + Spring error page
