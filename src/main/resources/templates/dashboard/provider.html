@@ -161,6 +161,19 @@
                     </div>
                     <div id="requestsList" class="panel-state"></div>
                 </div>
+
+                <div class="panel" id="sessionPrepPanel">
+                    <div class="panel-head">
+                        <div>
+                            <h2 data-en="Session prep">جهّز جلستك</h2>
+                            <p data-en="AI suggestions to tailor the program to the organization that requested it.">اقتراحات بالذكاء الاصطناعي تخصّص البرنامج للجهة اللي طلبته.</p>
+                        </div>
+                        <div class="cell-actions">
+                            <button type="button" class="btn btn-ghost btn-sm" id="sessionPrepCopy" hidden data-en="Copy prep">نسخ التجهيز</button>
+                        </div>
+                    </div>
+                    <div id="sessionPrepResult" class="panel-state"></div>
+                </div>
             </section>
 
             <section class="app-section hidden" data-panel="payments">
@@ -316,6 +329,7 @@
     let removeProgramImage = false;
     let imagePreviewObjectUrl = null;
     let weeklySummaryText = null;
+    let sessionPrepText = null;
 
     function latestPayment(request) {
         if (!request.payments || !request.payments.length) {
@@ -609,7 +623,111 @@
             html += meetingStartButton(item);
             html += meetingCopyButton(item);
         }
+        if (canPrepareSession(item)) {
+            html += '<button type="button" class="btn btn-primary btn-sm" data-prep-session="' + item.id + '">' + tr("جهّزني", "Prep me") + '</button>';
+        }
         return html;
+    }
+
+    // ===== Session prep (AI) =====
+    // Available after the provider accepts the request, until the training is finished
+    function canPrepareSession(item) {
+        return item.status === "ACCEPTED" || item.status === "PAYMENT_PENDING"
+            || item.status === "CONFIRMED" || item.status === "IN_PROGRESS";
+    }
+
+    function buildSessionPrepPlainText(result) {
+        const lines = [];
+        lines.push(tr("تجهيز جلسة: ", "Session prep: ") + (result.programTitle || "") + " — " + (result.beneficiaryOrganizationName || ""));
+        if (result.audienceNote) {
+            lines.push(result.audienceNote);
+        }
+        lines.push("");
+        lines.push(tr("ركّز على:", "Focus on:"));
+        (result.focusPoints || []).forEach(function (point) {
+            lines.push("- " + point);
+        });
+        lines.push("");
+        lines.push(tr("سيناريوهات للتطبيق:", "Practice scenarios:"));
+        (result.scenarios || []).forEach(function (scenario, index) {
+            lines.push((index + 1) + ". " + scenario.title + ": " + scenario.description);
+        });
+        if ((result.equipment || []).length) {
+            lines.push("");
+            lines.push(tr("الأدوات: ", "Equipment: ") + result.equipment.join("، "));
+        }
+        if (result.trainerTip) {
+            lines.push("");
+            lines.push(tr("نصيحة: ", "Tip: ") + result.trainerTip);
+        }
+        return lines.join("\n").trim();
+    }
+
+    function renderSessionPrep(result) {
+        sessionPrepText = buildSessionPrepPlainText(result);
+
+        let html = '<div class="ai-summary-body">';
+        html += '<p class="ai-summary-headline">' + escapeHtml(result.programTitle || "") + " — " + escapeHtml(result.beneficiaryOrganizationName || "") + "</p>";
+
+        html += '<div class="cell-actions" style="margin-bottom: 12px">';
+        if (result.beneficiarySector) {
+            html += '<span class="badge badge-muted">' + escapeHtml(tr("المجال", "Sector")) + ": " + escapeHtml(result.beneficiarySector) + "</span>";
+        }
+        html += '<span class="badge badge-muted">' + escapeHtml(tr("المشاركين", "Participants")) + ": " + escapeHtml(String(result.participantCount || 0)) + "</span>";
+        html += '<span class="badge badge-muted">' + escapeHtml(WaeiDashboard.modeLabel(result.deliveryMode)) + "</span>";
+        html += "</div>";
+
+        if (result.audienceNote) {
+            html += '<p class="ai-summary-action">' + escapeHtml(result.audienceNote) + "</p>";
+        }
+
+        html += '<h3 class="prep-title">' + tr("ركّز على", "Focus on") + "</h3>";
+        html += '<ul class="ai-summary-list">' + (result.focusPoints || []).map(function (point) {
+            return "<li>" + escapeHtml(point) + "</li>";
+        }).join("") + "</ul>";
+
+        html += '<h3 class="prep-title">' + tr("سيناريوهات للتطبيق", "Practice scenarios") + "</h3>";
+        html += '<div class="prep-scenarios">' + (result.scenarios || []).map(function (scenario, index) {
+            return '<div class="prep-scenario"><strong>' + (index + 1) + ". " + escapeHtml(scenario.title) + "</strong>"
+                + "<span>" + escapeHtml(scenario.description) + "</span></div>";
+        }).join("") + "</div>";
+
+        if ((result.equipment || []).length) {
+            html += '<h3 class="prep-title">' + tr("جهّز معك", "Bring with you") + "</h3>";
+            html += '<div class="cell-actions" style="margin-bottom: 12px">' + result.equipment.map(function (item) {
+                return '<span class="badge badge-muted">' + escapeHtml(item) + "</span>";
+            }).join("") + "</div>";
+        }
+
+        if (result.trainerTip) {
+            html += '<p class="ai-summary-action">' + escapeHtml(tr("نصيحة: ", "Tip: ") + result.trainerTip) + "</p>";
+        }
+
+        html += '<p class="prep-note">' + escapeHtml(tr("اقتراحات من الذكاء الاصطناعي، راجعها قبل الجلسة.", "AI suggestions, review them before the session.")) + "</p>";
+        html += "</div>";
+
+        document.getElementById("sessionPrepResult").innerHTML = html;
+        document.getElementById("sessionPrepCopy").hidden = !sessionPrepText;
+    }
+
+    async function generateSessionPrep(trainingRequestId) {
+        const target = document.getElementById("sessionPrepResult");
+        const copyButton = document.getElementById("sessionPrepCopy");
+        sessionPrepText = null;
+        copyButton.hidden = true;
+        document.getElementById("sessionPrepPanel").scrollIntoView({ behavior: "smooth", block: "start" });
+        showLoading(target, tr("نقرأ بيانات الجهة ونجهّز اقتراحات الجلسة...", "Reading the organization details and preparing the session..."));
+
+        try {
+            const result = await apiPost("/provider-assistant/session-prep", {
+                trainingRequestId: trainingRequestId,
+                lang: LANG
+            });
+            renderSessionPrep(result);
+        } catch (e) {
+            showError(target, e.message);
+            WaeiDashboard.notify(e.message, "error");
+        }
     }
 
     function requestDaysText(item) {
@@ -722,6 +840,11 @@
         root.querySelectorAll("[data-reject-request]").forEach(function (button) {
             button.addEventListener("click", function () {
                 openReject(Number(button.dataset.rejectRequest));
+            });
+        });
+        root.querySelectorAll("[data-prep-session]").forEach(function (button) {
+            button.addEventListener("click", function () {
+                generateSessionPrep(Number(button.dataset.prepSession));
             });
         });
         bindStartZoom(root);
@@ -980,6 +1103,17 @@
     document.getElementById("requestSearch").addEventListener("input", renderRequests);
 
     document.getElementById("providerWeeklySummaryGenerate").addEventListener("click", generateProviderWeeklySummary);
+    document.getElementById("sessionPrepCopy").addEventListener("click", async function () {
+        if (!sessionPrepText) {
+            return;
+        }
+        try {
+            await WaeiDashboard.copyText(sessionPrepText);
+            WaeiDashboard.notify(tr("تم نسخ التجهيز.", "Prep copied."), "ok");
+        } catch (e) {
+            WaeiDashboard.notify(tr("فشل نسخ التجهيز.", "Failed to copy prep."), "error");
+        }
+    });
     document.getElementById("providerWeeklySummaryCopy").addEventListener("click", async function () {
         if (!weeklySummaryText) {
             return;
@@ -1135,6 +1269,7 @@
         }
         dashboardUser = user;
         showEmpty(document.getElementById("providerWeeklySummary"), tr("اضغط لتوليد ملخص مختصر لأنشطة الأسبوع.", "Click to generate a short weekly activity summary."));
+        showEmpty(document.getElementById("sessionPrepResult"), tr("اضغط \"جهّزني\" على أي طلب مقبول، ونقترح لك كيف تخصّص الجلسة للجهة.", "Click \"Prep me\" on an accepted request to get suggestions tailored to the organization."));
         loadData();
     });
 </script>
