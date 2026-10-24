@@ -428,6 +428,40 @@ body.app-body {
     margin-bottom: 12px;
 }
 
+/* Session prep (provider "جهّزني") */
+.prep-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 14px 0 8px;
+}
+
+.prep-scenarios {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.prep-scenario {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: #F5F6FF;
+    line-height: 1.7;
+}
+
+.prep-scenario span {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.prep-note {
+    color: var(--soft);
+    font-size: 13px;
+    margin: 0;
+}
+
 .toolbar {
     display: flex;
     flex-wrap: wrap;

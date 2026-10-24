@@ -109,7 +109,11 @@ const ARABIC_MESSAGES = {
     "The training date is not set for this request": "تاريخ التدريب غير محدد لهذا الطلب",
     "This training request is not ready for an internal announcement": "طلب التدريب غير جاهز حاليًا لإعلان داخلي",
     "Training request is required": "معرّف طلب التدريب مطلوب",
-    "Unsupported announcement channel": "قناة الإعلان غير مدعومة"
+    "Unsupported announcement channel": "قناة الإعلان غير مدعومة",
+    "Only the training provider can use the session prep assistant": "تجهيز الجلسة متاح لمقدم الخدمة فقط",
+    "Session prep is available after you accept the request": "تجهيز الجلسة متاح بعد ما تقبل الطلب",
+    "AI session prep is not configured": "تجهيز الجلسة بالذكاء الاصطناعي غير مضبوط حاليًا",
+    "AI session prep is unavailable, please try again": "تجهيز الجلسة غير متاح حاليًا، جرّب مرة ثانية"
 };
 
 // In English mode the backend message is shown as it is
