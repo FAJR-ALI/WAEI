@@ -66,6 +66,8 @@ public class GeminiService {
                 + " \"recommendations\": [\"\"], \"safetyNote\": \"\","
                 + " \"quiz\": [{\"question\": \"\", \"optionA\": \"\", \"optionB\": \"\", \"optionC\": \"\", \"correctAnswer\": \"A\", \"explanation\": \"\"}]}";
 
+        String answerText = null;
+
         try {
             Client client = Client.builder().apiKey(apiKey).build();
 
@@ -87,12 +89,23 @@ public class GeminiService {
             GenerateContentResponse response = client.models.generateContent(videoModel, content, config);
             System.out.println("Gemini video evaluation took " + (System.currentTimeMillis() - start) / 1000 + " seconds");
 
+            // Sometimes the model adds text or ```json around the answer: keep only the JSON object
+            answerText = response.text();
+            int jsonStart = answerText.indexOf('{');
+            int jsonEnd = answerText.lastIndexOf('}');
+            if (jsonStart >= 0 && jsonEnd > jsonStart) {
+                answerText = answerText.substring(jsonStart, jsonEnd + 1);
+            }
+
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 
-            return mapper.readValue(response.text(), AiEvaluationResult.class);
+            return mapper.readValue(answerText, AiEvaluationResult.class);
 
         } catch (Exception e) {
+            System.out.println("Gemini video evaluation failed: " + e.getMessage());
+            System.out.println("Gemini answer was: " + answerText);
             throw new ApiException("AI could not evaluate the video, please try again");
         }
     }
