@@ -75,11 +75,11 @@ public class GeminiService {
             );
 
             // To make it faster:
-            // - LOW thinking: the model thinks less before answering (the steps are already given to it as an answer key)
+            // - MINIMAL thinking: the model barely thinks before answering (the steps are already given to it as an answer key)
             // - LOW media resolution: fewer tokens per video frame, still enough to see the hand and body movements
             GenerateContentConfig config = GenerateContentConfig.builder()
                     .responseMimeType("application/json")
-                    .thinkingConfig(ThinkingConfig.builder().thinkingLevel("LOW").build())
+                    .thinkingConfig(ThinkingConfig.builder().thinkingLevel("MINIMAL").build())
                     .mediaResolution("MEDIA_RESOLUTION_LOW")
                     .build();
 
