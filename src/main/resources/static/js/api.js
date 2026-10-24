@@ -98,6 +98,7 @@ const ARABIC_MESSAGES = {
     "Awareness day not found": "اليوم التوعوي غير موجود",
     "Resource not found": "المسار المطلوب غير موجود",
     "Only the training provider can use the weekly summary assistant": "ملخص الأسبوع متاح لمقدم الخدمة فقط",
+    "Only the beneficiary organization can use the weekly summary assistant": "ملخص الأسبوع متاح للجهة المستفيدة فقط",
     "Weekly summary period must be between 1 and 30 days": "فترة ملخص الأسبوع لازم تكون بين 1 و30 يوم",
     "AI weekly summary is not configured": "ملخص الذكاء الاصطناعي غير مضبوط حاليًا",
     "AI weekly summary is unavailable, please try again": "ملخص الذكاء الاصطناعي غير متاح حاليًا، جرّب مرة ثانية"

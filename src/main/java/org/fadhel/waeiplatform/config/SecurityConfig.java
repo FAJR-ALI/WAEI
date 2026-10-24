@@ -219,6 +219,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/organization/**").hasRole("PLATFORM_ADMIN")
                         .requestMatchers("/api/v1/account/**").hasRole("PLATFORM_ADMIN")
                         .requestMatchers("/api/v1/provider-assistant/**").hasRole("ORG_ADMIN")
+                        .requestMatchers("/api/v1/beneficiary-assistant/**").hasRole("ORG_ADMIN")
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .bearerTokenResolver(SecurityConfig::resolveBearerToken)

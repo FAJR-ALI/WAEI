@@ -92,6 +92,20 @@
                 <div class="panel">
                     <div class="panel-head">
                         <div>
+                            <h2 data-en="Weekly summary">ملخص الأسبوع الذكي</h2>
+                            <p data-en="A short summary for your organization's training activity.">ملخص مختصر لنشاط التدريب الخاص بجهتك.</p>
+                        </div>
+                        <div class="cell-actions">
+                            <button type="button" class="btn btn-outline btn-sm" id="beneficiaryWeeklySummaryGenerate" data-en="Generate weekly summary">توليد ملخص الأسبوع</button>
+                            <button type="button" class="btn btn-ghost btn-sm" id="beneficiaryWeeklySummaryCopy" hidden data-en="Copy summary">نسخ الملخص</button>
+                        </div>
+                    </div>
+                    <div id="beneficiaryWeeklySummary" class="panel-state"></div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-head">
+                        <div>
                             <h2 data-en="Upcoming trainings">التدريبات القادمة</h2>
                             <p data-en="Approved and active requests.">الطلبات المعتمدة والنشطة.</p>
                         </div>
@@ -284,6 +298,7 @@
     let paymentStatus = "ALL";
     let editingRequestId = null;
     let cancelRequestId = null;
+    let weeklySummaryText = null;
 
     function nowLocalInput() {
         const now = new Date();
@@ -377,6 +392,90 @@
         return request.payments.slice().sort(function (a, b) {
             return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
         })[0];
+    }
+
+    function beneficiaryWeeklySummaryMetricChip(label, value) {
+        return '<span class="badge badge-muted">' + escapeHtml(label) + ": " + escapeHtml(String(value || 0)) + "</span>";
+    }
+
+    function beneficiaryWeeklySummaryMoneyChip(label, value) {
+        return '<span class="badge badge-muted">' + escapeHtml(label) + ": "
+            + WaeiDashboard.formatMoney(Number(value || 0)) + "</span>";
+    }
+
+    function buildBeneficiaryWeeklySummaryPlainText(summary) {
+        const lines = [];
+        if (summary.headline) {
+            lines.push(summary.headline);
+        }
+        (summary.bullets || []).forEach(function (line) {
+            if (line) {
+                lines.push(line);
+            }
+        });
+        if (summary.nextAction) {
+            lines.push(summary.nextAction);
+        }
+        return lines.join("\n").trim();
+    }
+
+    function renderBeneficiaryWeeklySummary(summary) {
+        weeklySummaryText = buildBeneficiaryWeeklySummaryPlainText(summary || {});
+        const bullets = (summary && summary.bullets) || [];
+        const metrics = (summary && summary.metrics) || {};
+        let html = '<div class="ai-summary-body">';
+        html += '<p class="ai-summary-headline">' + escapeHtml(summary.headline || tr("ملخص الأسبوع", "Weekly summary")) + "</p>";
+        if (bullets.length) {
+            html += '<ul class="ai-summary-list">' + bullets.map(function (line) {
+                return "<li>" + escapeHtml(line) + "</li>";
+            }).join("") + "</ul>";
+        }
+        if (summary.nextAction) {
+            html += '<p class="ai-summary-action">' + escapeHtml(summary.nextAction) + "</p>";
+        }
+        html += '<div class="cell-actions">';
+        html += beneficiaryWeeklySummaryMetricChip(tr("إجمالي الطلبات", "All requests"), metrics.requestCount);
+        html += beneficiaryWeeklySummaryMetricChip(tr("بانتظار موافقة المقدم", "Waiting for provider approval"), metrics.pendingProviderResponseCount);
+        html += beneficiaryWeeklySummaryMetricChip(tr("بانتظار الدفع أو التأكيد", "Waiting for payment"), metrics.awaitingPaymentCount);
+        html += beneficiaryWeeklySummaryMetricChip(tr("تدريبات مجدولة قادمة", "Upcoming scheduled trainings"), metrics.upcomingTrainingCount);
+        html += beneficiaryWeeklySummaryMetricChip(tr("تدريبات نشطة", "Active trainings"), metrics.activeTrainingCount);
+        html += beneficiaryWeeklySummaryMetricChip(tr("تدريبات مكتملة", "Completed trainings"), metrics.completedTrainingCount);
+        html += beneficiaryWeeklySummaryMoneyChip(tr("إجمالي المدفوع خلال الفترة", "Total paid in period"), metrics.paidTrainingAmount);
+        if (Number(metrics.onlineTrainingMissingJoinLinkCount || 0) > 0) {
+            html += '<span class="badge badge-warn">'
+                + escapeHtml(tr("تدريبات أونلاين بدون رابط انضمام", "Online trainings missing a join link")) + ": "
+                + escapeHtml(String(metrics.onlineTrainingMissingJoinLinkCount)) + "</span>";
+        }
+        if (!summary.aiGenerated) {
+            html += '<span class="badge badge-muted">' + escapeHtml(tr("ملخص من أرقام النظام", "Built from system data")) + "</span>";
+        }
+        html += "</div></div>";
+        document.getElementById("beneficiaryWeeklySummary").innerHTML = html;
+        document.getElementById("beneficiaryWeeklySummaryCopy").hidden = !weeklySummaryText;
+    }
+
+    async function generateBeneficiaryWeeklySummary() {
+        const target = document.getElementById("beneficiaryWeeklySummary");
+        const button = document.getElementById("beneficiaryWeeklySummaryGenerate");
+        const copyButton = document.getElementById("beneficiaryWeeklySummaryCopy");
+        const previousLabel = button.textContent;
+
+        weeklySummaryText = null;
+        copyButton.hidden = true;
+        button.disabled = true;
+        button.textContent = tr("جارٍ تحضير الملخص…", "Generating summary…");
+        showLoading(target, tr("نحلل طلباتك وجدول تدريبات هذا الأسبوع...", "Analyzing your requests and this week's training schedule..."));
+
+        try {
+            const summary = await apiGet("/beneficiary-assistant/weekly-summary?lang=" + encodeURIComponent(LANG) + "&days=7");
+            renderBeneficiaryWeeklySummary(summary);
+        } catch (e) {
+            showError(target, e.message);
+            WaeiDashboard.notify(e.message, "error");
+        } finally {
+            button.disabled = false;
+            button.textContent = previousLabel;
+        }
     }
 
     function setStats() {
@@ -885,6 +984,19 @@
     });
 
     document.getElementById("requestSearch").addEventListener("input", renderRequests);
+    document.getElementById("beneficiaryWeeklySummaryGenerate").addEventListener("click", generateBeneficiaryWeeklySummary);
+    document.getElementById("beneficiaryWeeklySummaryCopy").addEventListener("click", async function () {
+        if (!weeklySummaryText) {
+            return;
+        }
+        try {
+            await WaeiDashboard.copyText(weeklySummaryText);
+            WaeiDashboard.notify(tr("تم نسخ الملخص.", "Summary copied."), "ok");
+        } catch (e) {
+            WaeiDashboard.notify(tr("فشل نسخ الملخص.", "Failed to copy summary."), "error");
+        }
+    });
+
     document.getElementById("requestProgram").addEventListener("change", updateRequestSummary);
     document.getElementById("daysCount").addEventListener("input", updateRequestSummary);
     document.getElementById("scheduledStart").addEventListener("input", updateRequestSummary);
@@ -998,6 +1110,7 @@
             return;
         }
         dashboardUser = user;
+        showEmpty(document.getElementById("beneficiaryWeeklySummary"), tr("اضغط لتوليد ملخص مختصر لنشاط جهتك خلال الأسبوع.", "Click to generate a short weekly activity summary for your organization."));
         loadData();
     });
 </script>
