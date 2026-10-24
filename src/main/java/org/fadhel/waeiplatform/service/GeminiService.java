@@ -198,20 +198,33 @@ public class GeminiService {
     }
 
     public AiProviderWeeklySummary summarizeProviderWeek(String facts, String language) {
+        return summarizeWeeklyDashboard("provider", facts, language);
+    }
+
+    public AiProviderWeeklySummary summarizeBeneficiaryWeek(String facts, String language) {
+        return summarizeWeeklyDashboard("beneficiary", facts, language);
+    }
+
+    private AiProviderWeeklySummary summarizeWeeklyDashboard(String audience, String facts, String language) {
         if (apiKey == null || apiKey.isBlank()) {
             throw new ApiException("AI weekly summary is not configured");
         }
 
         boolean english = "en".equalsIgnoreCase(language);
+        String dashboard = audience;
         String languageRule = english
-                ? "Use English. Use simple, professional provider-dashboard language."
-                : "اكتب بالعربية المبسطة المناسبة للوحة مقدم الخدمة.";
+                ? "Use English. Use simple, professional " + dashboard + "-dashboard language."
+                : "اكتب بالعربية المبسطة المناسبة للوحة " + ("provider".equals(dashboard) ? "مقدم الخدمة" : "الجهة المستفيدة") + ".";
+        String dashboardRule = "provider".equals(dashboard)
+                ? "This is for a training provider. Focus on reviewing requests, preparing scheduled trainings, payments received by the provider, and missing Zoom links."
+                : "This is for a beneficiary organization. Focus on training requests it sent, approvals, payments, upcoming scheduled trainings, and missing Zoom links.";
 
-        String prompt = "You are Waei's provider assistant.\n"
-                + "Summarize only the facts below for the provider dashboard.\n"
+        String prompt = "You are Waei's " + dashboard + " assistant.\n"
+                + "Summarize only the facts below for the " + dashboard + " dashboard.\n"
                 + "Do not invent numbers, statuses, names, payments, or actions not supported by the facts.\n"
                 + "Do not give medical advice. Do not mention private personal information.\n"
                 + languageRule + "\n"
+                + dashboardRule + "\n"
                 + "Facts:\n"
                 + facts
                 + "\n\nRules:\n"
@@ -262,7 +275,7 @@ public class GeminiService {
             return result;
 
         } catch (Exception e) {
-            System.out.println("Gemini provider weekly summary failed: " + e.getMessage());
+            System.out.println("Gemini weekly summary failed: " + e.getMessage());
             System.out.println("Gemini answer was: " + answerText);
             throw new ApiException("AI weekly summary is unavailable, please try again");
         }
