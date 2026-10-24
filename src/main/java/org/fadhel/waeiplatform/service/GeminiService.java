@@ -8,6 +8,7 @@ import com.google.genai.types.Content;
 import com.google.genai.types.GenerateContentConfig;
 import com.google.genai.types.GenerateContentResponse;
 import com.google.genai.types.Part;
+import com.google.genai.types.ThinkingConfig;
 import org.fadhel.waeiplatform.api.ApiException;
 import org.fadhel.waeiplatform.dto.ai.AiEvaluationResult;
 import org.fadhel.waeiplatform.dto.ai.AiGuideMatch;
@@ -28,6 +29,10 @@ public class GeminiService {
 
     @Value("${gemini.model}")
     private String model;
+
+    // A fixed (stable) model for the video evaluation, so it does not change when Google updates the "latest" alias
+    @Value("${gemini.video.model}")
+    private String videoModel;
 
     // Sends the video + the correct steps (from the service description) to Gemini and reads the JSON answer
     // The video is sent directly from memory: it is never saved on our server
@@ -69,11 +74,18 @@ public class GeminiService {
                     Part.fromText(prompt)
             );
 
+            // To make it faster:
+            // - LOW thinking: the model thinks less before answering (the steps are already given to it as an answer key)
+            // - LOW media resolution: fewer tokens per video frame, still enough to see the hand and body movements
             GenerateContentConfig config = GenerateContentConfig.builder()
                     .responseMimeType("application/json")
+                    .thinkingConfig(ThinkingConfig.builder().thinkingLevel("LOW").build())
+                    .mediaResolution("MEDIA_RESOLUTION_LOW")
                     .build();
 
-            GenerateContentResponse response = client.models.generateContent(model, content, config);
+            long start = System.currentTimeMillis();
+            GenerateContentResponse response = client.models.generateContent(videoModel, content, config);
+            System.out.println("Gemini video evaluation took " + (System.currentTimeMillis() - start) / 1000 + " seconds");
 
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
