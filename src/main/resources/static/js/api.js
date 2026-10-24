@@ -96,7 +96,11 @@ const ARABIC_MESSAGES = {
     "Date rule must look like FIXED:11-14, NTH_WEEKDAY:09:SATURDAY:2, or LAST_WEEKDAY:01:SUNDAY": "صيغة قاعدة التاريخ غير صحيحة",
     "Year must be between 2000 and 2100": "السنة لازم تكون بين 2000 و2100",
     "Awareness day not found": "اليوم التوعوي غير موجود",
-    "Resource not found": "المسار المطلوب غير موجود"
+    "Resource not found": "المسار المطلوب غير موجود",
+    "Only the training provider can use the weekly summary assistant": "ملخص الأسبوع متاح لمقدم الخدمة فقط",
+    "Weekly summary period must be between 1 and 30 days": "فترة ملخص الأسبوع لازم تكون بين 1 و30 يوم",
+    "AI weekly summary is not configured": "ملخص الذكاء الاصطناعي غير مضبوط حاليًا",
+    "AI weekly summary is unavailable, please try again": "ملخص الذكاء الاصطناعي غير متاح حاليًا، جرّب مرة ثانية"
 };
 
 // In English mode the backend message is shown as it is

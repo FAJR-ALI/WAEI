@@ -101,6 +101,16 @@ class PageRoutesIntegrationTests {
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("data-copy-meeting-link")));
     }
 
+    @Test
+    void providerDashboardExposesWeeklySummaryControls() throws Exception {
+        mockMvc.perform(get("/dashboard/provider"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("providerWeeklySummary")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("providerWeeklySummaryGenerate")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("provider-assistant/weekly-summary")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("تدريبات مجدولة قادمة")));
+    }
+
     private void assertPaymentStatusFilters(String path) throws Exception {
         mockMvc.perform(get(path))
                 .andExpect(status().isOk())
