@@ -128,7 +128,12 @@ class PageRoutesIntegrationTests {
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("beneficiaryWeeklySummary")))
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("beneficiaryWeeklySummaryGenerate")))
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("beneficiary-assistant/weekly-summary")))
-                .andExpect(content().string(org.hamcrest.Matchers.containsString("تدريبات مجدولة قادمة")));
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("تدريبات مجدولة قادمة")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("data-announce-training")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("data-announcement-target=\"requests\"")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("requestsInternalAnnouncementResult")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("internalAnnouncementResult")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("beneficiary-assistant/internal-announcement")));
     }
 
     private void assertPaymentStatusFilters(String path) throws Exception {

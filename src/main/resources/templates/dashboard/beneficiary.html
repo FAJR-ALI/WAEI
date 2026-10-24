@@ -113,6 +113,19 @@
                     </div>
                     <div id="upcomingList" class="panel-state"></div>
                 </div>
+
+                <div class="panel">
+                    <div class="panel-head">
+                        <div>
+                            <h2 data-en="Internal announcement">إعلان داخلي</h2>
+                            <p data-en="Generate a short employee announcement for an upcoming training.">أنشئ إعلانًا مختصرًا للموظفين عن تدريب قادم.</p>
+                        </div>
+                        <div class="cell-actions">
+                            <button type="button" class="btn btn-ghost btn-sm" id="internalAnnouncementCopy" hidden data-en="Copy announcement">نسخ الإعلان</button>
+                        </div>
+                    </div>
+                    <div id="internalAnnouncementResult" class="panel-state"></div>
+                </div>
             </section>
 
             <section class="app-section hidden" data-panel="requests">
@@ -141,6 +154,19 @@
                         </div>
                     </div>
                     <div id="requestsList" class="panel-state"></div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-head">
+                        <div>
+                            <h2 data-en="Internal announcement">إعلان داخلي</h2>
+                            <p data-en="Generate a short employee announcement for a confirmed training.">أنشئ إعلانًا مختصرًا للموظفين عن تدريب مؤكد.</p>
+                        </div>
+                        <div class="cell-actions">
+                            <button type="button" class="btn btn-ghost btn-sm" id="requestsInternalAnnouncementCopy" hidden data-en="Copy announcement">نسخ الإعلان</button>
+                        </div>
+                    </div>
+                    <div id="requestsInternalAnnouncementResult" class="panel-state"></div>
                 </div>
             </section>
 
@@ -299,6 +325,7 @@
     let editingRequestId = null;
     let cancelRequestId = null;
     let weeklySummaryText = null;
+    let internalAnnouncementText = null;
 
     function nowLocalInput() {
         const now = new Date();
@@ -556,6 +583,7 @@
             }
             html += '<button type="button" class="btn btn-danger btn-sm" data-cancel-request="' + item.id + '">' + tr("إلغاء", "Cancel") + '</button>';
         } else if (item.status === "CONFIRMED") {
+            html += '<button type="button" class="btn btn-primary btn-sm" data-announce-training="' + item.id + '" data-announcement-target="requests">' + tr("إعلان داخلي", "Announcement") + '</button>';
             html += meetingJoinButton(item);
             html += '<button type="button" class="btn btn-danger btn-sm" data-cancel-request="' + item.id + '">' + tr("إلغاء واسترداد", "Cancel and refund") + '</button>';
         } else if (item.status === "IN_PROGRESS") {
@@ -637,6 +665,11 @@
                 copyMeetingLink(Number(button.dataset.copyMeetingLink));
             });
         });
+        root.querySelectorAll("[data-announce-training]").forEach(function (button) {
+            button.addEventListener("click", function () {
+                generateInternalAnnouncement(Number(button.dataset.announceTraining), button.dataset.announcementTarget || "overview");
+            });
+        });
     }
 
     function copyMeetingLink(id) {
@@ -651,6 +684,94 @@
             .catch(function (e) {
                 WaeiDashboard.notify(tr("فشل نسخ الرابط.", "Failed to copy link."), "error");
             });
+    }
+
+    function buildInternalAnnouncementPlainText(result) {
+        const lines = [];
+        if (result.subject) {
+            lines.push(result.subject);
+        }
+        if (result.whenLine) {
+            lines.push(result.whenLine);
+        }
+        if (result.message) {
+            lines.push(result.message);
+        }
+        (result.checklist || []).forEach(function (item) {
+            if (item) {
+                lines.push("- " + item);
+            }
+        });
+        if (result.reminder) {
+            lines.push(result.reminder);
+        }
+        if (result.onlineJoinUrl) {
+            lines.push(result.onlineJoinUrl);
+        }
+        return lines.join("\n").trim();
+    }
+
+    function internalAnnouncementPanel(target) {
+        const isRequests = target === "requests";
+        return {
+            result: document.getElementById(isRequests ? "requestsInternalAnnouncementResult" : "internalAnnouncementResult"),
+            copyButton: document.getElementById(isRequests ? "requestsInternalAnnouncementCopy" : "internalAnnouncementCopy")
+        };
+    }
+
+    function clearInternalAnnouncementPanels() {
+        internalAnnouncementPanel("overview").result.innerHTML = "";
+        internalAnnouncementPanel("requests").result.innerHTML = "";
+        internalAnnouncementPanel("overview").copyButton.hidden = true;
+        internalAnnouncementPanel("requests").copyButton.hidden = true;
+    }
+
+    function renderInternalAnnouncement(result, target) {
+        internalAnnouncementText = buildInternalAnnouncementPlainText(result);
+        const checklist = result.checklist || [];
+        let html = '<div class="ai-summary-body">';
+        html += '<p class="ai-summary-headline">' + escapeHtml(result.subject || tr("إعلان داخلي", "Internal announcement")) + "</p>";
+        if (result.whenLine) {
+            html += '<p class="ai-summary-action">' + escapeHtml(result.whenLine) + "</p>";
+        }
+        html += '<p>' + escapeHtml(result.message || "") + "</p>";
+        if (checklist.length) {
+            html += '<ul class="ai-summary-list">' + checklist.map(function (item) {
+                return "<li>" + escapeHtml(item) + "</li>";
+            }).join("") + "</ul>";
+        }
+        if (result.reminder) {
+            html += '<p class="ai-summary-action">' + escapeHtml(result.reminder) + "</p>";
+        }
+        if (result.onlineJoinUrl) {
+            html += '<p><a href="' + escapeHtml(result.onlineJoinUrl) + '" target="_blank" rel="noopener noreferrer">'
+                + escapeHtml(tr("رابط الانضمام", "Join link")) + "</a></p>";
+        }
+        html += '</div>';
+
+        const activePanel = internalAnnouncementPanel(target);
+        clearInternalAnnouncementPanels();
+        activePanel.result.innerHTML = html;
+        activePanel.copyButton.hidden = !internalAnnouncementText;
+    }
+
+    async function generateInternalAnnouncement(trainingRequestId, target) {
+        const panel = internalAnnouncementPanel(target || "overview");
+        internalAnnouncementText = null;
+        clearInternalAnnouncementPanels();
+        showLoading(panel.result, tr("جارٍ كتابة الإعلان بالذكاء الاصطناعي...", "Writing the announcement with AI..."));
+
+        try {
+            const result = await apiPost("/beneficiary-assistant/internal-announcement", {
+                trainingRequestId: trainingRequestId,
+                lang: LANG,
+                channel: "notice"
+            });
+            renderInternalAnnouncement(result, target || "overview");
+        } catch (e) {
+            showError(panel.result, e.message);
+            WaeiDashboard.notify(e.message, "error");
+        }
     }
 
     function renderUpcoming() {
@@ -676,6 +797,7 @@
                 + '<td class="nowrap">' + WaeiDashboard.formatDateTime(item.scheduledStart) + '<small>' + requestDaysText(item) + ' · ' + formatProgramHours(item.hoursPerDay) + '</small></td>'
                 + '<td>' + WaeiDashboard.statusBadge("request", item.status) + '</td>'
                 + '<td><div class="cell-actions"><button type="button" class="btn btn-outline btn-sm" data-view-request="' + item.id + '">' + tr("تفاصيل", "Details") + '</button>'
+                + '<button type="button" class="btn btn-primary btn-sm" data-announce-training="' + item.id + '" data-announcement-target="overview">' + tr("إعلان داخلي", "Announcement") + '</button>'
                 + meetingJoinButton(item) + '</div></td>'
                 + '</tr>';
         });
@@ -997,6 +1119,21 @@
         }
     });
 
+    async function copyInternalAnnouncement() {
+        if (!internalAnnouncementText) {
+            return;
+        }
+        try {
+            await WaeiDashboard.copyText(internalAnnouncementText);
+            WaeiDashboard.notify(tr("تم نسخ الإعلان.", "Announcement copied."), "ok");
+        } catch (e) {
+            WaeiDashboard.notify(tr("فشل نسخ الإعلان.", "Failed to copy announcement."), "error");
+        }
+    }
+
+    document.getElementById("internalAnnouncementCopy").addEventListener("click", copyInternalAnnouncement);
+    document.getElementById("requestsInternalAnnouncementCopy").addEventListener("click", copyInternalAnnouncement);
+
     document.getElementById("requestProgram").addEventListener("change", updateRequestSummary);
     document.getElementById("daysCount").addEventListener("input", updateRequestSummary);
     document.getElementById("scheduledStart").addEventListener("input", updateRequestSummary);
@@ -1111,6 +1248,8 @@
         }
         dashboardUser = user;
         showEmpty(document.getElementById("beneficiaryWeeklySummary"), tr("اضغط لتوليد ملخص مختصر لنشاط جهتك خلال الأسبوع.", "Click to generate a short weekly activity summary for your organization."));
+        showEmpty(document.getElementById("internalAnnouncementResult"), tr("اختر تدريبًا قادمًا واضغط إعلان داخلي.", "Choose an upcoming training and click Announcement."));
+        showEmpty(document.getElementById("requestsInternalAnnouncementResult"), tr("اختر طلبًا مؤكدًا واضغط إعلان داخلي.", "Choose a confirmed request and click Announcement."));
         loadData();
     });
 </script>
