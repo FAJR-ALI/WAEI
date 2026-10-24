@@ -102,7 +102,14 @@ const ARABIC_MESSAGES = {
     "Only the platform administrator can use the weekly summary assistant": "ملخص الأسبوع متاح لإدارة المنصة فقط",
     "Weekly summary period must be between 1 and 30 days": "فترة ملخص الأسبوع لازم تكون بين 1 و30 يوم",
     "AI weekly summary is not configured": "ملخص الذكاء الاصطناعي غير مضبوط حاليًا",
-    "AI weekly summary is unavailable, please try again": "ملخص الذكاء الاصطناعي غير متاح حاليًا، جرّب مرة ثانية"
+    "AI weekly summary is unavailable, please try again": "ملخص الذكاء الاصطناعي غير متاح حاليًا، جرّب مرة ثانية",
+    "Only the beneficiary organization can use the announcement assistant": "الإعلان الداخلي متاح للجهة المستفيدة فقط",
+    "AI announcement is not configured": "الإعلان الذكي غير مضبوط حاليًا",
+    "AI announcement is unavailable, please try again": "الإعلان الذكي غير متاح حاليًا، جرّب مرة ثانية",
+    "The training date is not set for this request": "تاريخ التدريب غير محدد لهذا الطلب",
+    "This training request is not ready for an internal announcement": "طلب التدريب غير جاهز حاليًا لإعلان داخلي",
+    "Training request is required": "معرّف طلب التدريب مطلوب",
+    "Unsupported announcement channel": "قناة الإعلان غير مدعومة"
 };
 
 // In English mode the backend message is shown as it is
