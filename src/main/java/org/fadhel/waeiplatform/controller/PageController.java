@@ -59,6 +59,12 @@ public class PageController {
 
     // Visitor pages (no login needed)
 
+    // All trainings (the home page shows only a few of them)
+    @GetMapping("/trainings")
+    public String trainings() {
+        return "visitor/trainings";
+    }
+
     @GetMapping("/train")
     public String train() {
         return "visitor/train";

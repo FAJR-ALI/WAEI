@@ -99,7 +99,7 @@
             <span data-en="Waei">واعي</span>
         </a>
         <div class="header-actions" style="align-items: center; gap: 16px">
-            <a href="/#trainings" style="font-size: 15px; font-weight: 600; text-decoration: none" data-en="Back to trainings">رجوع للتدريبات</a>
+            <a href="/trainings" style="font-size: 15px; font-weight: 600; text-decoration: none" data-en="Back to trainings">رجوع للتدريبات</a>
             <button type="button" class="lang-toggle">English</button>
         </div>
     </div>
@@ -211,7 +211,7 @@
                 </div>
                 <div class="hero-actions" style="justify-content: center">
                     <button type="button" id="tryAgainBtn" class="btn btn-primary btn-lg" data-en="Upload another video">ارفع فيديو ثاني</button>
-                    <a href="/#trainings" class="btn btn-outline btn-lg" data-en="Choose another training">اختر تدريب ثاني</a>
+                    <a href="/trainings" class="btn btn-outline btn-lg" data-en="Choose another training">اختر تدريب ثاني</a>
                 </div>
             </div>
         </section>
@@ -332,7 +332,7 @@
         const id = getQueryParam("id");
         const message = document.getElementById("pageMessage");
         if (!id) {
-            message.innerHTML = '<div class="error-state">' + tr('اختر تدريب من <a href="/#trainings">صفحة التدريبات</a>.', 'Choose a training from the <a href="/#trainings">trainings page</a>.') + '</div>';
+            message.innerHTML = '<div class="error-state">' + tr('اختر تدريب من <a href="/trainings">صفحة التدريبات</a>.', 'Choose a training from the <a href="/trainings">trainings page</a>.') + '</div>';
             return;
         }
         showLoading(message, tr("نجيب التدريب...", "Loading the training..."));
@@ -344,7 +344,7 @@
             document.getElementById("trainingTitle").textContent = training.title;
             document.getElementById("trainingSteps").textContent = training.description;
             if (!training.isActive) {
-                message.innerHTML = '<div class="error-state">' + tr('هذا التدريب غير متاح حاليًا. <a href="/#trainings" data-en="Choose another training">اختر تدريب ثاني</a>.', 'This training is not available right now. <a href="/#trainings">Choose another training</a>.') + '</div>';
+                message.innerHTML = '<div class="error-state">' + tr('هذا التدريب غير متاح حاليًا. <a href="/trainings" data-en="Choose another training">اختر تدريب ثاني</a>.', 'This training is not available right now. <a href="/trainings">Choose another training</a>.') + '</div>';
                 return;
             }
             showView("uploadView");
@@ -698,7 +698,7 @@
                 + "</div>"
                 + '<div class="hero-actions">'
                 + '<button type="button" class="btn btn-white" onclick="location.reload()">' + tr("تدرّب مرة ثانية", "Practice again") + '</button>'
-                + '<a href="/#trainings" class="btn" style="border-color: var(--line-strong); color: #FFFFFF">' + tr("تدريب جديد", "New training") + '</a>'
+                + '<a href="/trainings" class="btn" style="border-color: var(--line-strong); color: #FFFFFF">' + tr("تدريب جديد", "New training") + '</a>'
                 + "</div></section>";
             window.scrollTo(0, 0);
         } catch (e) {
