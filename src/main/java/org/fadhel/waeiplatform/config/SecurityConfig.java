@@ -199,6 +199,10 @@ public class SecurityConfig {
                                 "/api/v1/kids/drawing/review",
                                 "/api/v1/awareness-session/quiz/submit/*",
                                 "/api/v1/guide/smart-search").permitAll()
+                        // Trainings (awareness services) management: platform admin only
+                        .requestMatchers(HttpMethod.POST, "/api/v1/awareness-service/**").hasRole("PLATFORM_ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/awareness-service/**").hasRole("PLATFORM_ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/awareness-service/**").hasRole("PLATFORM_ADMIN")
                         // Emergency guide management: platform admin only
                         .requestMatchers("/api/v1/guide/**").hasRole("PLATFORM_ADMIN")
                         .requestMatchers(HttpMethod.POST,
