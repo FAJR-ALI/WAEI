@@ -34,6 +34,19 @@ public interface TrainingRequestRepository extends JpaRepository<TrainingRequest
 
     boolean existsByTrainingProgram_Id(Long trainingProgramId);
 
+    // Keep the row lock, using the common MariaDB/MySQL syntax regardless of dialect alias support.
+    @Query(value = """
+            select * from training_requests
+            where status = :status and scheduled_start > :now and scheduled_start <= :until
+              and (provider_reminder_for_start is null or provider_reminder_for_start <> scheduled_start
+                or beneficiary_reminder_for_start is null or beneficiary_reminder_for_start <> scheduled_start)
+            order by scheduled_start, id
+            limit 20 for update
+            """, nativeQuery = true)
+    List<TrainingRequest> findDueReminders(@Param("status") String status,
+                                         @Param("now") LocalDateTime now,
+                                         @Param("until") LocalDateTime until);
+
     @Query("""
             select r.id from TrainingRequest r
             where r.trainingProgram.deliveryMode = :deliveryMode

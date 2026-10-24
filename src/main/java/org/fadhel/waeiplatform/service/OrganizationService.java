@@ -34,6 +34,7 @@ public class OrganizationService {
     private final PasswordEncoder passwordEncoder;
     private final DocumentStorageService documentStorageService;
     private final CurrentUser currentUser;
+    private final OrganizationEmailService organizationEmailService;
 
     private OrganizationDTOOut convertToDTO(Organization organization) {
         OrganizationDTOOut dto = new OrganizationDTOOut();
@@ -142,6 +143,7 @@ public class OrganizationService {
         account.setStatus("PENDING");
         account.setOrganization(organization);
         accountRepository.save(account);
+        organizationEmailService.sendRegistration(organization, account);
 
         return new OrganizationRegistrationResponse(
                 organization.getId(),
@@ -210,7 +212,8 @@ public class OrganizationService {
 
     @Transactional
     public OrganizationRegistrationResponse verifyOrganization(Long id) {
-        Organization organization = findOrganization(id);
+        Organization organization = organizationRepository.findLockedById(id)
+                .orElseThrow(() -> new ApiException("Organization not found"));
 
         if (organization.getVerificationStatus() == OrganizationVerificationStatus.VERIFIED) {
             throw new ApiException("Organization is already verified");
@@ -228,6 +231,7 @@ public class OrganizationService {
                 .forEach(account -> account.setStatus("ACTIVE"));
 
         organizationRepository.save(organization);
+        organizationEmailService.sendVerification(organization, findOrganizationAdmin(id));
 
         return new OrganizationRegistrationResponse(
                 organization.getId(),
@@ -256,6 +260,7 @@ public class OrganizationService {
                 .forEach(account -> account.setStatus("SUSPENDED"));
 
         organizationRepository.save(organization);
+        organizationEmailService.sendRejection(organization, findOrganizationAdmin(id), reason);
 
         return new OrganizationRegistrationResponse(
                 organization.getId(),

@@ -58,6 +58,11 @@ public class TrainingRequest {
 
     @Column
     private LocalDateTime scheduledEnd;
+
+    // Each value is the scheduledStart for which that manager received a reminder.
+    // Nullable fields also work with existing requests and allow a new reminder after rescheduling.
+    private LocalDateTime providerReminderForStart;
+    private LocalDateTime beneficiaryReminderForStart;
     private LocalDateTime acceptedAt;
 
     private LocalDateTime completedAt;

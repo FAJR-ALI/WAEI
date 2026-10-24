@@ -1,0 +1,23 @@
+{
+  "name": "WAEI - Check 24-hour reminders",
+  "active": false,
+  "nodes": [
+    {
+      "id": "reminder-schedule", "name": "Every 5 minutes",
+      "type": "n8n-nodes-base.scheduleTrigger", "typeVersion": 1.2, "position": [0, 0],
+      "parameters": { "rule": { "interval": [{ "field": "minutes", "minutesInterval": 5 }] } }
+    },
+    {
+      "id": "reminder-request", "name": "Ask WAEI to send reminders",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [280, 0],
+      "parameters": {
+        "method": "POST", "url": "http://localhost:8080/api/v1/training-reminders/send",
+        "authentication": "genericCredentialType", "genericAuthType": "httpHeaderAuth",
+        "options": { "timeout": 600000 }
+      }
+    }
+  ],
+  "connections": { "Every 5 minutes": { "main": [[{ "node": "Ask WAEI to send reminders", "type": "main", "index": 0 }]] } },
+  "settings": { "executionOrder": "v1", "timezone": "Asia/Riyadh" },
+  "pinData": {}
+}

@@ -10,6 +10,11 @@ import java.util.List;
 @Repository
 public interface OrganizationRepository extends JpaRepository<Organization, Long> {
 
+    // Explicit FOR UPDATE works with MariaDB as well as MySQL (without an OF alias clause).
+    @org.springframework.data.jpa.repository.Query(
+            value = "select * from organization where id = :id for update", nativeQuery = true)
+    java.util.Optional<Organization> findLockedById(@org.springframework.data.repository.query.Param("id") Long id);
+
     Organization findOrganizationByEmail(String email);
 
     List<Organization> findByVerificationStatusOrderBySubmittedAtAsc(OrganizationVerificationStatus verificationStatus);
