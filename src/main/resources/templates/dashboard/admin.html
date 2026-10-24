@@ -103,6 +103,20 @@
                 <div class="panel">
                     <div class="panel-head">
                         <div>
+                            <h2 data-en="Weekly summary">ملخص الأسبوع الذكي</h2>
+                            <p data-en="A short summary of platform activity for the last and next 7 days.">ملخص مختصر لنشاط المنصة لآخر 7 أيام و7 أيام قادمة.</p>
+                        </div>
+                        <div class="cell-actions">
+                            <button type="button" class="btn btn-outline btn-sm" id="adminWeeklySummaryGenerate" data-en="Generate weekly summary">توليد ملخص الأسبوع</button>
+                            <button type="button" class="btn btn-ghost btn-sm" id="adminWeeklySummaryCopy" hidden data-en="Copy summary">نسخ الملخص</button>
+                        </div>
+                    </div>
+                    <div id="adminWeeklySummary" class="panel-state"></div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-head">
+                        <div>
                             <h2 data-en="Latest pending applications">أحدث طلبات التسجيل المعلقة</h2>
                             <p data-en="Organizations waiting for document review.">جهات بانتظار مراجعة المستند.</p>
                         </div>
@@ -292,6 +306,7 @@
     let paymentStatus = "ALL";
     let selectedRegistration = null;
     let dashboardUser = null;
+    let weeklySummaryText = null;
 
     function sortByDate(items, field) {
         return items.slice().sort(function (a, b) {
@@ -303,6 +318,89 @@
         return items.reduce(function (sum, payment) {
             return sum + Number(payment[field] || 0);
         }, 0);
+    }
+
+    function adminWeeklySummaryMetricChip(label, value) {
+        return '<span class="badge badge-muted">' + escapeHtml(label) + ": " + escapeHtml(String(value || 0)) + "</span>";
+    }
+
+    function adminWeeklySummaryMoneyChip(label, value) {
+        return '<span class="badge badge-muted">' + escapeHtml(label) + ": "
+            + WaeiDashboard.formatMoney(Number(value || 0)) + "</span>";
+    }
+
+    function buildAdminWeeklySummaryPlainText(summary) {
+        const lines = [];
+        if (summary.headline) {
+            lines.push(summary.headline);
+        }
+        (summary.bullets || []).forEach(function (line) {
+            if (line) {
+                lines.push(line);
+            }
+        });
+        if (summary.nextAction) {
+            lines.push(summary.nextAction);
+        }
+        return lines.join("\n").trim();
+    }
+
+    function renderAdminWeeklySummary(summary) {
+        weeklySummaryText = buildAdminWeeklySummaryPlainText(summary || {});
+        const bullets = (summary && summary.bullets) || [];
+        const metrics = (summary && summary.metrics) || {};
+        let html = '<div class="ai-summary-body">';
+        html += '<p class="ai-summary-headline">' + escapeHtml(summary.headline || tr("ملخص الأسبوع", "Weekly summary")) + "</p>";
+        if (bullets.length) {
+            html += '<ul class="ai-summary-list">' + bullets.map(function (line) {
+                return "<li>" + escapeHtml(line) + "</li>";
+            }).join("") + "</ul>";
+        }
+        if (summary.nextAction) {
+            html += '<p class="ai-summary-action">' + escapeHtml(summary.nextAction) + "</p>";
+        }
+        html += '<div class="cell-actions">';
+        html += adminWeeklySummaryMetricChip(tr("طلبات جهات للمراجعة", "Organizations to review"), metrics.pendingOrganizationReviewCount);
+        html += adminWeeklySummaryMetricChip(tr("طلبات تدريب جديدة", "New training requests"), metrics.newRequestCount);
+        html += adminWeeklySummaryMetricChip(tr("بانتظار رد المقدم", "Waiting for provider"), metrics.pendingProviderResponseCount);
+        html += adminWeeklySummaryMetricChip(tr("تدريبات مجدولة قادمة", "Upcoming scheduled trainings"), metrics.upcomingTrainingCount);
+        html += adminWeeklySummaryMoneyChip(tr("عمولة المنصة", "Platform commission"), metrics.platformCommissionAmount);
+        html += adminWeeklySummaryMoneyChip(tr("مدفوعات خلال الفترة", "Paid in period"), metrics.paidAmount);
+        if (Number(metrics.onlineTrainingMissingJoinLinkCount || 0) > 0) {
+            html += '<span class="badge badge-warn">'
+                + escapeHtml(tr("تدريبات أونلاين بدون رابط انضمام", "Online trainings missing a join link")) + ": "
+                + escapeHtml(String(metrics.onlineTrainingMissingJoinLinkCount)) + "</span>";
+        }
+        if (!summary.aiGenerated) {
+            html += '<span class="badge badge-muted">' + escapeHtml(tr("ملخص من أرقام النظام", "Built from system data")) + "</span>";
+        }
+        html += "</div></div>";
+        document.getElementById("adminWeeklySummary").innerHTML = html;
+        document.getElementById("adminWeeklySummaryCopy").hidden = !weeklySummaryText;
+    }
+
+    async function generateAdminWeeklySummary() {
+        const target = document.getElementById("adminWeeklySummary");
+        const button = document.getElementById("adminWeeklySummaryGenerate");
+        const copyButton = document.getElementById("adminWeeklySummaryCopy");
+        const previousLabel = button.textContent;
+
+        weeklySummaryText = null;
+        copyButton.hidden = true;
+        button.disabled = true;
+        button.textContent = tr("جارٍ تحضير الملخص…", "Generating summary…");
+        showLoading(target, tr("نحلل نشاط الجهات والطلبات والمدفوعات...", "Analyzing organizations, requests, and payments..."));
+
+        try {
+            const summary = await apiGet("/admin-assistant/weekly-summary?lang=" + encodeURIComponent(LANG) + "&days=7");
+            renderAdminWeeklySummary(summary);
+        } catch (e) {
+            showError(target, e.message);
+            WaeiDashboard.notify(e.message, "error");
+        } finally {
+            button.disabled = false;
+            button.textContent = previousLabel;
+        }
     }
 
     function setStats() {
@@ -749,6 +847,19 @@
     document.getElementById("registrationSearch").addEventListener("input", renderRegistrations);
     document.getElementById("organizationSearch").addEventListener("input", renderOrganizations);
     document.getElementById("paymentSearch").addEventListener("input", renderPayments);
+    document.getElementById("adminWeeklySummaryGenerate").addEventListener("click", generateAdminWeeklySummary);
+    document.getElementById("adminWeeklySummaryCopy").addEventListener("click", async function () {
+        if (!weeklySummaryText) {
+            return;
+        }
+        try {
+            await WaeiDashboard.copyText(weeklySummaryText);
+            WaeiDashboard.notify(tr("تم نسخ الملخص.", "Summary copied."), "ok");
+        } catch (e) {
+            WaeiDashboard.notify(tr("فشل نسخ الملخص.", "Failed to copy summary."), "error");
+        }
+    });
+
     document.querySelectorAll("[data-refresh]").forEach(function (button) {
         button.addEventListener("click", loadData);
     });
@@ -812,6 +923,7 @@
             return;
         }
         dashboardUser = user;
+        showEmpty(document.getElementById("adminWeeklySummary"), tr("اضغط لتوليد ملخص مختصر لنشاط المنصة خلال الأسبوع.", "Click to generate a short weekly platform activity summary."));
         loadData();
     });
 </script>

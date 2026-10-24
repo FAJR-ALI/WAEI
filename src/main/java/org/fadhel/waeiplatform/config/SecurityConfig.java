@@ -218,6 +218,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/v1/organization/**").hasRole("PLATFORM_ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/organization/**").hasRole("PLATFORM_ADMIN")
                         .requestMatchers("/api/v1/account/**").hasRole("PLATFORM_ADMIN")
+                        .requestMatchers("/api/v1/admin-assistant/**").hasRole("PLATFORM_ADMIN")
                         .requestMatchers("/api/v1/provider-assistant/**").hasRole("ORG_ADMIN")
                         .requestMatchers("/api/v1/beneficiary-assistant/**").hasRole("ORG_ADMIN")
                         .anyRequest().authenticated())
