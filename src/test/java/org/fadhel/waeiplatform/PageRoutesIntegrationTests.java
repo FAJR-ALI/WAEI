@@ -112,6 +112,16 @@ class PageRoutesIntegrationTests {
     }
 
     @Test
+    void adminDashboardExposesWeeklySummaryControls() throws Exception {
+        mockMvc.perform(get("/dashboard/admin"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("adminWeeklySummary")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("adminWeeklySummaryGenerate")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("admin-assistant/weekly-summary")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("تدريبات مجدولة قادمة")));
+    }
+
+    @Test
     void beneficiaryDashboardExposesWeeklySummaryControls() throws Exception {
         mockMvc.perform(get("/dashboard/beneficiary"))
                 .andExpect(status().isOk())
