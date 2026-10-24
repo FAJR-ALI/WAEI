@@ -19,7 +19,7 @@
             <span data-en="Waei">واعي</span>
         </a>
         <nav class="nav" aria-label="القائمة الرئيسية" data-en-aria="Main menu">
-            <a href="#trainings" data-en="Trainings">التدريبات</a>
+            <a href="/trainings" data-en="Trainings">التدريبات</a>
             <a href="/guide" data-en="Emergency guide">دليل الطوارئ</a>
             <a href="#numbers" data-en="Emergency numbers">أرقام الطوارئ</a>
             <a href="/calendar" data-en="Awareness calendar">التقويم التوعوي</a>
@@ -155,7 +155,7 @@
                     <h2 class="section-title" data-en="Choose your training">اختر تدريبك</h2>
                     <p class="section-sub" data-en="Every training has correct steps written by a specialist, and the AI rates you against them.">كل تدريب له خطوات صحيحة كتبها مختص، والذكاء الاصطناعي يقيّمك عليها.</p>
                 </div>
-                <div id="categoryFilters" class="filters" role="group" aria-label="تصفية التدريبات" data-en-aria="Filter trainings"></div>
+                <a href="/trainings" class="btn btn-outline" data-en="View all trainings">عرض كل التدريبات</a>
             </div>
             <div id="trainingsList" class="grid grid-cards"></div>
         </div>
@@ -221,8 +221,8 @@
         ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
     );
 
-    let allTrainings = [];
-    let selectedCategory = "ALL";
+    // The home page shows only a few trainings, the full list is in /trainings
+    const HOME_TRAININGS_LIMIT = 3;
 
     const EVENT_CATEGORIES = {
         FIRST_AID: ["إسعافات أولية", "First aid"],
@@ -255,46 +255,15 @@
         const list = document.getElementById("trainingsList");
         showLoading(list, tr("نجيب التدريبات...", "Loading trainings..."));
         try {
-            allTrainings = await apiGet("/awareness-service/get-active");
-            renderFilters();
-            renderTrainings();
+            const trainings = await apiGet("/awareness-service/get-active");
+            renderTrainings(trainings.slice(0, HOME_TRAININGS_LIMIT));
         } catch (e) {
             showError(list, e.message);
         }
     }
 
-    function renderFilters() {
-        const box = document.getElementById("categoryFilters");
-        const categories = [];
-        for (const t of allTrainings) {
-            if (!categories.includes(t.category)) {
-                categories.push(t.category);
-            }
-        }
-        if (categories.length < 2) {
-            box.innerHTML = "";
-            return;
-        }
-        let html = '<button type="button" class="chip" data-category="ALL" aria-pressed="' + (selectedCategory === "ALL") + '">' + tr("الكل", "All") + "</button>";
-        for (const c of categories) {
-            html += '<button type="button" class="chip" data-category="' + escapeHtml(c) + '" aria-pressed="' + (selectedCategory === c) + '">' + escapeHtml(c) + "</button>";
-        }
-        box.innerHTML = html;
-        box.querySelectorAll(".chip").forEach(function (button) {
-            button.addEventListener("click", function () {
-                selectedCategory = button.dataset.category;
-                renderFilters();
-                renderTrainings();
-            });
-        });
-    }
-
-    function renderTrainings() {
+    function renderTrainings(trainings) {
         const list = document.getElementById("trainingsList");
-        let trainings = allTrainings;
-        if (selectedCategory !== "ALL") {
-            trainings = allTrainings.filter(function (t) { return t.category === selectedCategory; });
-        }
         if (trainings.length === 0) {
             showEmpty(list, tr("ما فيه تدريبات متاحة حاليًا.", "No trainings available right now."));
             return;

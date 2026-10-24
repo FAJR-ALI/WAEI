@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-en="Waei — All trainings">واعي — كل التدريبات</title>
+    <link rel="icon" href="/img/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/i18n.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="container">
+        <a href="/" class="brand">
+            <img src="/img/logo.png" alt="شعار واعي" data-en-alt="Waei logo">
+            <span data-en="Waei">واعي</span>
+        </a>
+        <nav class="nav" aria-label="القائمة الرئيسية" data-en-aria="Main menu">
+            <a href="/trainings" class="active" aria-current="page" data-en="Trainings">التدريبات</a>
+            <a href="/guide" data-en="Emergency guide">دليل الطوارئ</a>
+            <a href="/#numbers" data-en="Emergency numbers">أرقام الطوارئ</a>
+            <a href="/calendar" data-en="Awareness calendar">التقويم التوعوي</a>
+        </nav>
+        <div class="header-actions">
+            <a href="/kids" class="pill pill-kids" data-en="Kids mode">وضع الأطفال</a>
+            <a href="/login" id="headerLogin" class="pill pill-outline" data-en="Join Waei">انضم لواعي</a>
+            <button type="button" class="lang-toggle">English</button>
+        </div>
+    </div>
+</header>
+
+<main class="section" style="padding-top: 40px">
+    <div class="container stack">
+
+        <div class="row-between" style="align-items: center">
+            <div>
+                <h1 class="section-title" data-en="All trainings">كل التدريبات</h1>
+                <p class="section-sub" data-en="Every training has correct steps written by a specialist, and the AI rates you against them.">كل تدريب له خطوات صحيحة كتبها مختص، والذكاء الاصطناعي يقيّمك عليها.</p>
+                <p class="section-sub" id="countText"></p>
+            </div>
+            <div id="categoryFilters" class="filters" role="group" aria-label="تصفية التدريبات" data-en-aria="Filter trainings"></div>
+        </div>
+
+        <div class="filters" style="align-items: center">
+            <label for="nameSearch" class="sr-only" data-en="Search by name">ابحث باسم التدريب</label>
+            <input id="nameSearch" class="input" style="max-width: 420px" type="search"
+                   placeholder="ابحث باسم التدريب: إنعاش، اختناق، نزيف…" data-en-placeholder="Search by name: CPR, choking, bleeding…">
+        </div>
+
+        <div id="trainingsList" class="grid grid-cards"></div>
+    </div>
+</main>
+
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-brand">
+            <img src="/img/logo-dark.png" alt="">
+            <span data-en="Because awareness.. saves lives">لأن الوعي.. ينقذ حياة</span>
+        </div>
+        <span style="font-size: 14px" data-en="© Waei">© واعي</span>
+    </div>
+</footer>
+
+<script src="/js/api.js"></script>
+<script th:inline="none">
+    let allTrainings = [];
+    let selectedCategory = "ALL";
+    let searchText = "";
+
+    async function loadTrainings() {
+        const list = document.getElementById("trainingsList");
+        showLoading(list, tr("نجيب التدريبات...", "Loading trainings..."));
+        try {
+            allTrainings = await apiGet("/awareness-service/get-active");
+            renderFilters();
+            renderTrainings();
+        } catch (e) {
+            showError(list, e.message);
+        }
+    }
+
+    function renderFilters() {
+        const box = document.getElementById("categoryFilters");
+        const categories = [];
+        for (const t of allTrainings) {
+            if (!categories.includes(t.category)) {
+                categories.push(t.category);
+            }
+        }
+        if (categories.length < 2) {
+            box.innerHTML = "";
+            return;
+        }
+        let html = '<button type="button" class="chip" data-category="ALL" aria-pressed="' + (selectedCategory === "ALL") + '">' + tr("الكل", "All") + "</button>";
+        for (const c of categories) {
+            html += '<button type="button" class="chip" data-category="' + escapeHtml(c) + '" aria-pressed="' + (selectedCategory === c) + '">' + escapeHtml(c) + "</button>";
+        }
+        box.innerHTML = html;
+        box.querySelectorAll(".chip").forEach(function (button) {
+            button.addEventListener("click", function () {
+                selectedCategory = button.dataset.category;
+                renderFilters();
+                renderTrainings();
+            });
+        });
+    }
+
+    function renderTrainings() {
+        const list = document.getElementById("trainingsList");
+        let trainings = allTrainings;
+        if (selectedCategory !== "ALL") {
+            trainings = trainings.filter(function (t) { return t.category === selectedCategory; });
+        }
+        if (searchText !== "") {
+            trainings = trainings.filter(function (t) { return t.title.toLowerCase().includes(searchText); });
+        }
+
+        document.getElementById("countText").textContent = tr(trainings.length + " تدريب", trainings.length + " trainings");
+
+        if (trainings.length === 0) {
+            showEmpty(list, tr("ما فيه تدريبات تطابق بحثك.", "No trainings match your search."));
+            return;
+        }
+        let html = "";
+        for (const t of trainings) {
+            const meta = t.officialVideoUrl
+                ? tr("معه فيديو رسمي", "Has an official video")
+                : tr("فيديو حتى دقيقة", "Video up to 1 minute");
+            html += '<article class="training-card">'
+                + '<span class="tag">' + escapeHtml(t.category) + "</span>"
+                + "<h3>" + escapeHtml(t.title) + "</h3>"
+                + "<p>" + escapeHtml(t.description) + "</p>"
+                + '<div class="card-footer">'
+                + '<span class="meta">' + meta + "</span>"
+                + '<a class="btn btn-primary" style="min-height: 44px; font-size: 15px" href="/train?id=' + t.id + '">' + tr("ابدأ", "Start") + "</a>"
+                + "</div></article>";
+        }
+        list.innerHTML = html;
+    }
+
+    document.getElementById("nameSearch").addEventListener("input", function (e) {
+        searchText = e.target.value.trim().toLowerCase();
+        renderTrainings();
+    });
+
+    loadTrainings();
+</script>
+</body>
+</html>

@@ -58,6 +58,7 @@ public class SecurityConfig {
             PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/train"),
             PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/programs"),
             PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/pricing"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/trainings"),
             PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/kids"),
             PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/kids/detective"),
             PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/kids/drawing"),
@@ -171,7 +172,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET,
                                 "/", "/login", "/register",
                                 "/register/beneficiary", "/register/provider",
-                                "/train", "/programs", "/pricing",
+                                "/train", "/trainings", "/programs", "/pricing",
                                 "/kids", "/kids/stories", "/kids/what-if",
                                 "/kids/emergency-number", "/kids/detective", "/kids/drawing",
                                 "/story", "/call", "/guide", "/guide/detail",
@@ -199,6 +200,10 @@ public class SecurityConfig {
                                 "/api/v1/kids/drawing/review",
                                 "/api/v1/awareness-session/quiz/submit/*",
                                 "/api/v1/guide/smart-search").permitAll()
+                        // Trainings (awareness services) management: platform admin only
+                        .requestMatchers(HttpMethod.POST, "/api/v1/awareness-service/**").hasRole("PLATFORM_ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/awareness-service/**").hasRole("PLATFORM_ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/awareness-service/**").hasRole("PLATFORM_ADMIN")
                         // Emergency guide management: platform admin only
                         .requestMatchers("/api/v1/guide/**").hasRole("PLATFORM_ADMIN")
                         .requestMatchers(HttpMethod.POST,

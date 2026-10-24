@@ -21,7 +21,6 @@ public class GuideInitializer implements CommandLineRunner {
         if (emergencyGuideRepository.count() > 0) {
             return;
         }
-
         add("توقف القلب", "FIRST_AID", "HEART", true,
                 "شخص طاح وما يستجيب وما يتنفس طبيعي. ابدأ الإنعاش فورًا.",
                 "ما يستجيب لما تكلمه أو تهزه من كتفه\nما يتنفس أو يشهق شهقات متقطعة\nطاح فجأة",
