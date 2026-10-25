@@ -67,7 +67,7 @@ public class KidsStoryDataSeeder implements CommandLineRunner {
         story.setTopic(topic);
         story.setContent(content);
         story.setLesson(lesson);
-        // Publish predefined library stories; child-created stories are temporary and stored separately from this library.
+        // These predefined stories are published; AI-generated stories still require review.
         story.setStatus("APPROVED");
         story.setPublishedAt(LocalDateTime.now());
         kidsStoryRepository.save(story);

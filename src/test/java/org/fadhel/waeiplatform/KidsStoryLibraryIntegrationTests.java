@@ -22,14 +22,14 @@ class KidsStoryLibraryIntegrationTests {
     private RequestMappingHandlerMapping mappings;
 
     @Test
-    void adminStoryManagementRoutesAreRemovedButChildGenerationAndReadingRemain() throws Exception {
+    void adminStoryManagementAndChildGenerationAndReadingRemain() throws Exception {
         var paths = mappings.getHandlerMethods().keySet().stream()
                 .flatMap(info -> info.getPatternValues().stream()).toList();
-        assertFalse(paths.stream().anyMatch(path -> path.startsWith("/api/v1/kids-story/")));
+        assertTrue(paths.contains("/api/v1/kids-story/get"));
         assertTrue(paths.contains("/api/v1/kids/stories/create"));
         assertTrue(paths.contains("/api/v1/kids/stories/{id}/narration"));
         mvc.perform(get("/api/v1/kids-story/get").with(user("admin").roles("PLATFORM_ADMIN")))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isOk());
     }
 
     @Test
