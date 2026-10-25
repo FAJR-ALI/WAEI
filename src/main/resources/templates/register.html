@@ -57,16 +57,6 @@
                 <p data-en="All fields are required unless marked optional. The login account is for the organization administrator.">جميع الحقول مطلوبة إلا إذا ذُكر أنها اختيارية. حساب الدخول يكون لمدير الجهة.</p>
             </header>
 
-            <div class="register-type-banner">
-                <span class="register-type-label">
-                    <span data-en="Registering as">تسجيل كـ</span>
-                    <strong th:if="${isProvider}" data-en="Training provider">مقدم خدمة تدريبية</strong>
-                    <strong th:unless="${isProvider}" data-en="Beneficiary organization">جهة مستفيدة</strong>
-                </span>
-                <a th:if="${isProvider}" href="/register/beneficiary" data-en="Switch to beneficiary organization">التبديل إلى جهة مستفيدة</a>
-                <a th:unless="${isProvider}" href="/register/provider" data-en="Switch to training provider">التبديل إلى مقدم خدمة تدريبية</a>
-            </div>
-
             <div class="register-type-note">
                 <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5"></path><path d="M12 8h.01"></path></svg>
                 <p th:if="${isProvider}" data-en="After approval, you can log in to publish training programs, set prices, control availability and receive beneficiary requests.">بعد الموافقة، يمكنك تسجيل الدخول لنشر البرامج التدريبية وتحديد الأسعار والتحكم بالإتاحة واستقبال طلبات الجهات المستفيدة.</p>

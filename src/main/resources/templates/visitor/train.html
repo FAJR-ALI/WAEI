@@ -490,7 +490,7 @@
         const consent = document.getElementById("consentCheck").checked;
         if (!selectedFile) {
             button.disabled = true;
-            button.textContent = tr("اختر الفيديو أول", "Choose a video first");
+            button.textContent = tr("اختر الفيديو أولًا", "Choose a video first");
         } else if (!age || !consent) {
             button.disabled = true;
             button.textContent = tr("أكّد عمرك ووافق عشان نحلل الفيديو", "Confirm your age and agree so we can analyze the video");

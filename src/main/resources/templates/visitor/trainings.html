@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-en="Waei — All trainings">واعي — كل التدريبات</title>
+    <title data-en="Waei — Trainings">واعي — التدريبات</title>
     <link rel="icon" href="/img/logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -37,7 +37,7 @@
 
         <div class="row-between" style="align-items: center">
             <div>
-                <h1 class="section-title" data-en="All trainings">كل التدريبات</h1>
+                <h1 class="section-title" data-en="Trainings">التدريبات</h1>
                 <p class="section-sub" data-en="Every training has correct steps written by a specialist, and the AI rates you against them.">كل تدريب له خطوات صحيحة كتبها مختص، والذكاء الاصطناعي يقيّمك عليها.</p>
                 <p class="section-sub" id="countText"></p>
             </div>
@@ -148,7 +148,7 @@
         }
         let html = '<button type="button" class="chip" data-category="ALL" aria-pressed="' + (selectedCategory === "ALL") + '">' + tr("الكل", "All") + "</button>";
         for (const c of categories) {
-            html += '<button type="button" class="chip" data-category="' + escapeHtml(c) + '" aria-pressed="' + (selectedCategory === c) + '">' + escapeHtml(c) + "</button>";
+            html += '<button type="button" class="chip ' + categoryTagClass(c).replace("tag-", "chip-") + '" data-category="' + escapeHtml(c) + '" aria-pressed="' + (selectedCategory === c) + '">' + escapeHtml(c) + "</button>";
         }
         box.innerHTML = html;
         box.querySelectorAll(".chip").forEach(function (button) {
@@ -178,17 +178,7 @@
         }
         let html = "";
         for (const t of trainings) {
-            const meta = t.officialVideoUrl
-                ? tr("معه فيديو رسمي", "Has an official video")
-                : tr("فيديو حتى دقيقة", "Video up to 1 minute");
-            html += '<article class="training-card">'
-                + '<span class="tag">' + escapeHtml(t.category) + "</span>"
-                + "<h3>" + escapeHtml(t.title) + "</h3>"
-                + "<p>" + escapeHtml(t.description) + "</p>"
-                + '<div class="card-footer">'
-                + '<span class="meta">' + meta + "</span>"
-                + '<a class="btn btn-primary" style="min-height: 44px; font-size: 15px" href="/train?id=' + t.id + '">' + tr("ابدأ", "Start") + "</a>"
-                + "</div></article>";
+            html += trainingCardHtml(t);
         }
         list.innerHTML = html;
     }

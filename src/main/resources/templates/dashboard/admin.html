@@ -176,6 +176,39 @@
                 </div>
             </section>
 
+            <section class="app-section hidden" data-panel="trainings">
+                <div class="page-intro">
+                    <div>
+                        <h2 data-en="Video trainings">التدريبات بالفيديو</h2>
+                        <p data-en="The trainings visitors practice on. The AI rates them against the correct steps you write here.">التدريبات اللي يتدرب عليها الزوار، والذكاء الاصطناعي يقيّمهم على الخطوات الصحيحة المكتوبة هنا.</p>
+                    </div>
+                    <div class="toolbar">
+                        <button type="button" class="btn btn-primary btn-sm" id="newTraining" data-en="Add training">إضافة تدريب</button>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div id="trainingsAdminList" class="panel-state"></div>
+                </div>
+            </section>
+
+            <section class="app-section hidden" data-panel="guide">
+                <div class="page-intro">
+                    <div>
+                        <h2 data-en="Emergency guide">دليل الطوارئ</h2>
+                        <p data-en="Emergency cases shown to visitors. Only published cases appear in the guide.">حالات الطوارئ اللي تظهر للزوار. الحالات المنشورة بس تطلع في الدليل.</p>
+                    </div>
+                    <div class="toolbar">
+                        <button type="button" class="btn btn-primary btn-sm" id="newGuide" data-en="Add case">إضافة حالة</button>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel-head">
+                        <div class="toolbar" id="guideFilters"></div>
+                    </div>
+                    <div id="guideAdminList" class="panel-state"></div>
+                </div>
+            </section>
+
             <section class="app-section hidden" data-panel="payments">
                 <div class="page-intro">
                     <div>
@@ -233,6 +266,126 @@
         </main>
     </div>
 </div>
+
+<dialog id="trainingDialog" class="app-dialog wide">
+    <form id="trainingForm" novalidate>
+        <div class="dialog-head">
+            <div>
+                <h2 id="trainingDialogTitle">إضافة تدريب</h2>
+                <p data-en="Write the correct steps carefully: the AI uses them to rate the visitor's video.">اكتب الخطوات الصحيحة بدقة: الذكاء الاصطناعي يقيّم فيديو الزائر عليها.</p>
+            </div>
+            <button type="button" class="dialog-close" data-close-dialog aria-label="إغلاق" data-en-aria="Close">
+                <svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        <div class="dialog-body">
+            <div id="trainingError"></div>
+            <div class="form-grid">
+                <div class="field">
+                    <label for="trainingTitle" data-en="Training title">اسم التدريب</label>
+                    <input id="trainingTitle" class="input" type="text" minlength="3" maxlength="100" required>
+                </div>
+                <div class="field">
+                    <label for="trainingCategory" data-en="Category">التصنيف</label>
+                    <input id="trainingCategory" class="input" type="text" maxlength="50" list="trainingCategoryList" required placeholder="إسعافات أولية" data-en-placeholder="First aid">
+                    <datalist id="trainingCategoryList"></datalist>
+                </div>
+                <div class="field full">
+                    <label for="trainingDescription" data-en="Correct steps">الخطوات الصحيحة</label>
+                    <textarea id="trainingDescription" class="input" rows="9" minlength="20" maxlength="5000" required></textarea>
+                    <span class="field-hint" data-en="One step per line, numbered: 1. … 2. … You can start with a title line like “Correct steps:”.">كل خطوة في سطر ومرقمة: 1. … 2. … وتقدر تبدأ بسطر عنوان مثل "الخطوات الصحيحة:".</span>
+                </div>
+                <div class="field full">
+                    <label for="trainingVideo" data-en="Official video link (optional)">رابط الفيديو الرسمي (اختياري)</label>
+                    <input id="trainingVideo" class="input" type="url" maxlength="255" dir="ltr" placeholder="https://">
+                </div>
+                <label class="check full">
+                    <input type="checkbox" id="trainingActive" checked>
+                    <span data-en="Available to visitors">متاح للزوار</span>
+                </label>
+            </div>
+        </div>
+        <div class="dialog-footer">
+            <button type="button" class="btn btn-outline btn-sm" data-close-dialog data-en="Cancel">إلغاء</button>
+            <button type="submit" id="trainingSubmit" class="btn btn-primary btn-sm" data-en="Save training">حفظ التدريب</button>
+        </div>
+    </form>
+</dialog>
+
+<dialog id="guideDialog" class="app-dialog wide">
+    <form id="guideForm" novalidate>
+        <div class="dialog-head">
+            <div>
+                <h2 id="guideDialogTitle">إضافة حالة</h2>
+                <p data-en="Write each list item on its own line.">اكتب كل عنصر في القوائم في سطر لحاله.</p>
+            </div>
+            <button type="button" class="dialog-close" data-close-dialog aria-label="إغلاق" data-en-aria="Close">
+                <svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        <div class="dialog-body">
+            <div id="guideError"></div>
+            <div class="form-grid">
+                <div class="field full">
+                    <label for="guideTitle" data-en="Case title">اسم الحالة</label>
+                    <input id="guideTitle" class="input" type="text" minlength="3" maxlength="100" required>
+                </div>
+                <div class="field">
+                    <label for="guideCategory" data-en="Category">التصنيف</label>
+                    <select id="guideCategory" class="input" required></select>
+                </div>
+                <div class="field">
+                    <label for="guideIcon" data-en="Icon">الأيقونة</label>
+                    <select id="guideIcon" class="input"></select>
+                </div>
+                <div class="field full">
+                    <label for="guideSummary" data-en="Short summary">ملخص قصير</label>
+                    <input id="guideSummary" class="input" type="text" maxlength="255" required placeholder="مثال: إذا شخص طاح وما يتنفس" data-en-placeholder="Example: someone collapsed and isn't breathing">
+                </div>
+                <div class="field">
+                    <label for="guideSigns" data-en="Signs (one per line)">العلامات (كل وحدة في سطر)</label>
+                    <textarea id="guideSigns" class="input" rows="5" maxlength="3000" required></textarea>
+                </div>
+                <div class="field">
+                    <label for="guideSteps" data-en="What to do (one step per line)">وش تسوي (كل خطوة في سطر)</label>
+                    <textarea id="guideSteps" class="input" rows="5" maxlength="5000" required></textarea>
+                </div>
+                <div class="field">
+                    <label for="guideDonts" data-en="Don'ts (optional)">لا تسوي (اختياري)</label>
+                    <textarea id="guideDonts" class="input" rows="4" maxlength="3000"></textarea>
+                </div>
+                <div class="field">
+                    <label for="guideWhenToCall" data-en="When to call (optional)">متى تتصل (اختياري)</label>
+                    <textarea id="guideWhenToCall" class="input" rows="4" maxlength="3000"></textarea>
+                </div>
+                <div class="field">
+                    <label for="guideSourceName" data-en="Source name (optional)">اسم المصدر (اختياري)</label>
+                    <input id="guideSourceName" class="input" type="text" maxlength="150" placeholder="الهلال الأحمر السعودي" data-en-placeholder="Saudi Red Crescent">
+                </div>
+                <div class="field">
+                    <label for="guideSourceUrl" data-en="Source link (optional)">رابط المصدر (اختياري)</label>
+                    <input id="guideSourceUrl" class="input" type="url" maxlength="255" dir="ltr" placeholder="https://">
+                </div>
+                <div class="field full">
+                    <label for="guideTraining" data-en="Linked video training (optional)">تدريب فيديو مرتبط (اختياري)</label>
+                    <select id="guideTraining" class="input"></select>
+                </div>
+                <label class="check">
+                    <input type="checkbox" id="guideUrgent">
+                    <span data-en="Urgent case">حالة عاجلة</span>
+                </label>
+                <label class="check">
+                    <input type="checkbox" id="guidePublished" checked>
+                    <span data-en="Published to visitors">منشورة للزوار</span>
+                </label>
+            </div>
+        </div>
+        <div class="dialog-footer">
+            <button type="button" class="btn btn-outline btn-sm" data-close-dialog data-en="Cancel">إلغاء</button>
+            <button type="submit" id="guideSubmit" class="btn btn-primary btn-sm" data-en="Save case">حفظ الحالة</button>
+        </div>
+    </form>
+</dialog>
 
 <dialog id="registrationDialog" class="app-dialog wide">
     <div class="dialog-head">
@@ -301,6 +454,11 @@
     let programs = [];
     let requests = [];
     let payments = [];
+    let trainings = [];
+    let guides = [];
+    let guideCategory = "ALL";
+    let editingTrainingId = null;
+    let editingGuideId = null;
     let registrationStatus = "PENDING";
     let organizationType = "ALL";
     let paymentStatus = "ALL";
@@ -813,6 +971,7 @@
             renderRegistrations();
             renderOrganizations();
             renderPayments();
+            loadContent();
         } catch (e) {
             showError(pendingRoot, e.message);
             WaeiDashboard.notify(e.message, "error");
@@ -862,6 +1021,334 @@
             WaeiDashboard.notify(tr("تم نسخ الملخص.", "Summary copied."), "ok");
         } catch (e) {
             WaeiDashboard.notify(tr("فشل نسخ الملخص.", "Failed to copy summary."), "error");
+        }
+    });
+
+    // ===== Video trainings =====
+    function renderTrainingsAdmin() {
+        const target = document.getElementById("trainingsAdminList");
+        if (!trainings.length) {
+            showEmpty(target, tr("ما فيه تدريبات للحين. أضف أول تدريب.", "No trainings yet. Add the first one."));
+            return;
+        }
+        let html = '<div class="admin-tile-grid">';
+        trainings.forEach(function (t) {
+            const status = t.isActive
+                ? '<span class="badge badge-status badge-ok">' + tr("متاح", "Active") + '</span>'
+                : '<span class="badge badge-status badge-muted">' + tr("موقوف", "Inactive") + '</span>';
+            html += '<article class="admin-tile">'
+                + '<div class="admin-tile-top"><span class="badge ' + categoryTagClass(t.category) + '">' + escapeHtml(t.category) + '</span>' + status + '</div>'
+                + '<h3>' + escapeHtml(t.title) + '</h3>'
+                + '<div class="steps-wrap">' + stepsPreviewHtml(t.description, 3) + '</div>'
+                + '<div class="admin-tile-footer">'
+                + (t.officialVideoUrl
+                    ? '<a href="' + escapeHtml(t.officialVideoUrl) + '" target="_blank" rel="noopener">' + tr("الفيديو الرسمي", "Official video") + '</a>'
+                    : '<span class="soft">' + tr("بدون فيديو رسمي", "No official video") + '</span>')
+                + '<div class="cell-actions">'
+                + '<button type="button" class="btn btn-outline btn-sm" data-edit-training="' + t.id + '">' + tr("تعديل", "Edit") + '</button>'
+                + '<button type="button" class="btn btn-ghost btn-sm" data-toggle-training="' + t.id + '">' + (t.isActive ? tr("إيقاف", "Deactivate") : tr("تفعيل", "Activate")) + '</button>'
+                + '<button type="button" class="btn btn-danger btn-sm" data-delete-training="' + t.id + '">' + tr("حذف", "Delete") + '</button>'
+                + '</div></div></article>';
+        });
+        html += '</div>';
+        target.innerHTML = html;
+        target.querySelectorAll("[data-edit-training]").forEach(function (b) {
+            b.addEventListener("click", function () { openTrainingForm(Number(b.dataset.editTraining)); });
+        });
+        target.querySelectorAll("[data-toggle-training]").forEach(function (b) {
+            b.addEventListener("click", function () { toggleTraining(Number(b.dataset.toggleTraining)); });
+        });
+        target.querySelectorAll("[data-delete-training]").forEach(function (b) {
+            b.addEventListener("click", function () { deleteTraining(Number(b.dataset.deleteTraining)); });
+        });
+    }
+
+    function openTrainingForm(id) {
+        editingTrainingId = id || null;
+        const t = id ? trainings.find(function (row) { return row.id === id; }) : null;
+        document.getElementById("trainingError").innerHTML = "";
+        document.getElementById("trainingDialogTitle").textContent = t ? tr("تعديل التدريب", "Edit training") : tr("إضافة تدريب", "Add training");
+        document.getElementById("trainingTitle").value = t ? t.title : "";
+        document.getElementById("trainingCategory").value = t ? t.category : "";
+        document.getElementById("trainingDescription").value = t ? t.description : tr("الخطوات الصحيحة:\n1. ", "Correct steps:\n1. ");
+        document.getElementById("trainingVideo").value = t && t.officialVideoUrl ? t.officialVideoUrl : "";
+        document.getElementById("trainingActive").checked = t ? Boolean(t.isActive) : true;
+        const cats = [];
+        trainings.forEach(function (row) { if (row.category && cats.indexOf(row.category) === -1) cats.push(row.category); });
+        ["إسعافات أولية", "سلامة"].forEach(function (c) { if (cats.indexOf(c) === -1) cats.push(c); });
+        document.getElementById("trainingCategoryList").innerHTML = cats.map(function (c) { return '<option value="' + escapeHtml(c) + '"></option>'; }).join("");
+        WaeiDashboard.openDialog("trainingDialog");
+        document.getElementById("trainingTitle").focus();
+    }
+
+    async function toggleTraining(id) {
+        const t = trainings.find(function (row) { return row.id === id; });
+        if (!t) return;
+        const ask = t.isActive ? ["إيقاف التدريب؟ ما راح يظهر للزوار.", "Deactivate this training? Visitors won't see it."]
+                               : ["تفعيل التدريب للزوار؟", "Activate this training for visitors?"];
+        if (!WaeiDashboard.confirmAction(ask[0], ask[1])) return;
+        try {
+            await apiPut("/awareness-service/change-status/" + id);
+            WaeiDashboard.notify(tr("تم تحديث حالة التدريب.", "Training status updated."), "ok");
+            await loadContent();
+        } catch (e) { WaeiDashboard.notify(e.message, "error"); }
+    }
+
+    async function deleteTraining(id) {
+        if (!WaeiDashboard.confirmAction("حذف التدريب نهائيًا؟", "Delete this training permanently?")) return;
+        try {
+            await apiDelete("/awareness-service/delete/" + id);
+            WaeiDashboard.notify(tr("تم حذف التدريب.", "Training deleted."), "ok");
+            await loadContent();
+        } catch (e) { WaeiDashboard.notify(e.message, "error"); }
+    }
+
+    // ===== Emergency guide =====
+    const GUIDE_CATEGORIES = {
+        FIRST_AID: ["إسعافات أولية", "First aid"],
+        KIDS: ["أطفال", "Kids"],
+        FIRE: ["حرائق", "Fire"],
+        CHRONIC: ["أمراض مزمنة", "Chronic conditions"],
+        WEATHER: ["بيئة وطقس", "Environment & weather"]
+    };
+    const GUIDE_ICONS = {
+        HEART: ["قلب", "Heart", "#FEE2E2", "#B91C1C", '<path d="M19.5 13.5 12 21l-7.5-7.5A5 5 0 0 1 12 6.5a5 5 0 0 1 7.5 7z"></path>'],
+        THROAT: ["حلق", "Throat", "#FEF3C7", "#B45309", '<circle cx="12" cy="8" r="4"></circle><path d="M8 14h8l-1 7H9z"></path>'],
+        BRAIN: ["دماغ", "Brain", "#EDE9FE", "#6D28D9", '<path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 3 5 3 3 0 0 0 5 1V4.5A2.5 2.5 0 0 0 9 4z"></path><path d="M15 4a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-3 5 3 3 0 0 1-5 1"></path>'],
+        FLAME: ["لهب", "Flame", "#FFEDD5", "#C2410C", '<path d="M12 2c1 4 5 5 5 10a5 5 0 0 1-10 0c0-3 2-4 2-7 2 1 3 3 3 5"></path>'],
+        PULSE: ["نبض", "Pulse", "#FCE7F3", "#BE185D", '<path d="M3 12h4l2-5 4 10 2-5h6"></path>'],
+        SUN: ["شمس", "Sun", "#FEF9C3", "#A16207", '<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5 19 19M5 19l1.5-1.5M17.5 6.5 19 5"></path>'],
+        DROP: ["قطرة", "Drop", "#E0F2FE", "#0369A1", '<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"></path>'],
+        BABY: ["طفل", "Baby", "#FCE7F3", "#BE185D", '<circle cx="12" cy="7" r="4"></circle><path d="M6 21v-3a6 6 0 0 1 12 0v3"></path>']
+    };
+
+    function guideIconHtml(icon) {
+        const ic = GUIDE_ICONS[icon] || ["", "", "#EEF2FF", "#4F46E5", '<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6l-8-3z"></path>'];
+        return '<span class="guide-icon" style="background:' + ic[2] + ';color:' + ic[3] + '"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + ic[4] + '</svg></span>';
+    }
+
+    function renderGuideFilters() {
+        const box = document.getElementById("guideFilters");
+        const entries = [["ALL", ["الكل", "All"]]].concat(Object.entries(GUIDE_CATEGORIES));
+        box.innerHTML = entries.map(function (e) {
+            return '<button type="button" class="filter-chip" data-guide-cat="' + e[0] + '" aria-pressed="' + (guideCategory === e[0]) + '">' + tr(e[1][0], e[1][1]) + '</button>';
+        }).join("");
+        box.querySelectorAll("[data-guide-cat]").forEach(function (b) {
+            b.addEventListener("click", function () {
+                guideCategory = b.dataset.guideCat;
+                renderGuideFilters();
+                renderGuidesAdmin();
+            });
+        });
+    }
+
+    function renderGuidesAdmin() {
+        const target = document.getElementById("guideAdminList");
+        const rows = guides.filter(function (g) { return guideCategory === "ALL" || g.category === guideCategory; });
+        if (!rows.length) {
+            showEmpty(target, tr("ما فيه حالات في هذا التصنيف.", "No cases in this category."));
+            return;
+        }
+        let html = '<div class="table-wrap"><table class="data-table"><thead><tr>'
+            + '<th>' + tr("الحالة", "Case") + '</th>'
+            + '<th>' + tr("التصنيف", "Category") + '</th>'
+            + '<th>' + tr("للزوار", "Visibility") + '</th>'
+            + '<th>' + tr("آخر تحديث", "Updated") + '</th>'
+            + '<th>' + tr("الإجراءات", "Actions") + '</th>'
+            + '</tr></thead><tbody>';
+        rows.forEach(function (g) {
+            const cat = GUIDE_CATEGORIES[g.category];
+            html += '<tr>'
+                + '<td><div class="guide-cell">' + guideIconHtml(g.icon) + '<div><strong>' + escapeHtml(g.title)
+                + (g.isUrgent ? ' <span class="badge badge-bad">' + tr("عاجلة", "Urgent") + '</span>' : '')
+                + '</strong><small>' + escapeHtml(g.summary || "") + '</small></div></div></td>'
+                + '<td>' + escapeHtml(cat ? tr(cat[0], cat[1]) : g.category) + '</td>'
+                + '<td>' + (g.isPublished
+                    ? '<span class="badge badge-status badge-ok">' + tr("منشورة", "Published") + '</span>'
+                    : '<span class="badge badge-status badge-muted">' + tr("مسودة", "Draft") + '</span>') + '</td>'
+                + '<td class="nowrap">' + WaeiDashboard.formatDate(g.updatedAt) + '</td>'
+                + '<td><div class="cell-actions">'
+                + '<button type="button" class="btn btn-outline btn-sm" data-edit-guide="' + g.id + '">' + tr("تعديل", "Edit") + '</button>'
+                + '<button type="button" class="btn btn-ghost btn-sm" data-toggle-guide="' + g.id + '">' + (g.isPublished ? tr("إخفاء", "Unpublish") : tr("نشر", "Publish")) + '</button>'
+                + '<button type="button" class="btn btn-danger btn-sm" data-delete-guide="' + g.id + '">' + tr("حذف", "Delete") + '</button>'
+                + '</div></td></tr>';
+        });
+        html += '</tbody></table></div>';
+        target.innerHTML = html;
+        target.querySelectorAll("[data-edit-guide]").forEach(function (b) {
+            b.addEventListener("click", function () { openGuideForm(Number(b.dataset.editGuide)); });
+        });
+        target.querySelectorAll("[data-toggle-guide]").forEach(function (b) {
+            b.addEventListener("click", function () { toggleGuide(Number(b.dataset.toggleGuide)); });
+        });
+        target.querySelectorAll("[data-delete-guide]").forEach(function (b) {
+            b.addEventListener("click", function () { deleteGuide(Number(b.dataset.deleteGuide)); });
+        });
+    }
+
+    function linesToText(value) {
+        if (Array.isArray(value)) return value.join("\n");
+        return value || "";
+    }
+
+    function openGuideForm(id) {
+        editingGuideId = id || null;
+        const g = id ? guides.find(function (row) { return row.id === id; }) : null;
+        document.getElementById("guideError").innerHTML = "";
+        document.getElementById("guideDialogTitle").textContent = g ? tr("تعديل الحالة", "Edit case") : tr("إضافة حالة", "Add case");
+        document.getElementById("guideCategory").innerHTML = Object.entries(GUIDE_CATEGORIES).map(function (e) {
+            return '<option value="' + e[0] + '">' + tr(e[1][0], e[1][1]) + '</option>';
+        }).join("");
+        document.getElementById("guideIcon").innerHTML = '<option value="">' + tr("بدون", "None") + '</option>' + Object.entries(GUIDE_ICONS).map(function (e) {
+            return '<option value="' + e[0] + '">' + tr(e[1][0], e[1][1]) + '</option>';
+        }).join("");
+        document.getElementById("guideTraining").innerHTML = '<option value="">' + tr("بدون", "None") + '</option>' + trainings.map(function (t) {
+            return '<option value="' + t.id + '">' + escapeHtml(t.title) + '</option>';
+        }).join("");
+        document.getElementById("guideTitle").value = g ? g.title : "";
+        document.getElementById("guideCategory").value = g ? g.category : "FIRST_AID";
+        document.getElementById("guideIcon").value = g && g.icon ? g.icon : "";
+        document.getElementById("guideSummary").value = g ? (g.summary || "") : "";
+        document.getElementById("guideSigns").value = g ? linesToText(g.signs) : "";
+        document.getElementById("guideSteps").value = g ? linesToText(g.steps) : "";
+        document.getElementById("guideDonts").value = g ? linesToText(g.donts) : "";
+        document.getElementById("guideWhenToCall").value = g ? linesToText(g.whenToCall) : "";
+        document.getElementById("guideSourceName").value = g ? (g.sourceName || "") : "";
+        document.getElementById("guideSourceUrl").value = g ? (g.sourceUrl || "") : "";
+        document.getElementById("guideTraining").value = g && g.awarenessServiceId ? String(g.awarenessServiceId) : "";
+        document.getElementById("guideUrgent").checked = g ? Boolean(g.isUrgent) : false;
+        document.getElementById("guidePublished").checked = g ? Boolean(g.isPublished) : true;
+        WaeiDashboard.openDialog("guideDialog");
+        document.getElementById("guideTitle").focus();
+    }
+
+    async function toggleGuide(id) {
+        const g = guides.find(function (row) { return row.id === id; });
+        if (!g) return;
+        const ask = g.isPublished ? ["إخفاء الحالة من الدليل؟", "Hide this case from the guide?"]
+                                  : ["نشر الحالة للزوار؟", "Publish this case to visitors?"];
+        if (!WaeiDashboard.confirmAction(ask[0], ask[1])) return;
+        try {
+            await apiPut("/guide/change-publish/" + id);
+            WaeiDashboard.notify(tr("تم تحديث الحالة.", "Case updated."), "ok");
+            await loadContent();
+        } catch (e) { WaeiDashboard.notify(e.message, "error"); }
+    }
+
+    async function deleteGuide(id) {
+        if (!WaeiDashboard.confirmAction("حذف الحالة نهائيًا؟", "Delete this case permanently?")) return;
+        try {
+            await apiDelete("/guide/delete/" + id);
+            WaeiDashboard.notify(tr("تم حذف الحالة.", "Case deleted."), "ok");
+            await loadContent();
+        } catch (e) { WaeiDashboard.notify(e.message, "error"); }
+    }
+
+    async function loadContent() {
+        const tRoot = document.getElementById("trainingsAdminList");
+        const gRoot = document.getElementById("guideAdminList");
+        try {
+            const results = await Promise.all([apiGet("/awareness-service/get"), apiGet("/guide/get")]);
+            trainings = results[0];
+            guides = results[1];
+            renderTrainingsAdmin();
+            renderGuideFilters();
+            renderGuidesAdmin();
+        } catch (e) {
+            showError(tRoot, e.message);
+            showError(gRoot, e.message);
+        }
+    }
+
+    function formError(rootId, message) {
+        document.getElementById(rootId).innerHTML = '<div class="alert alert-error" role="alert">' + escapeHtml(message) + "</div>";
+    }
+
+    document.getElementById("newTraining").addEventListener("click", function () { openTrainingForm(null); });
+    document.getElementById("newGuide").addEventListener("click", function () { openGuideForm(null); });
+
+    document.getElementById("trainingForm").addEventListener("submit", async function (event) {
+        event.preventDefault();
+        document.getElementById("trainingError").innerHTML = "";
+        const payload = {
+            title: document.getElementById("trainingTitle").value.trim(),
+            category: document.getElementById("trainingCategory").value.trim(),
+            description: document.getElementById("trainingDescription").value.trim(),
+            officialVideoUrl: document.getElementById("trainingVideo").value.trim() || null,
+            isActive: document.getElementById("trainingActive").checked
+        };
+        if (payload.title.length < 3 || !payload.category) {
+            formError("trainingError", tr("اكتب اسم التدريب (3 أحرف على الأقل) والتصنيف.", "Enter a title (at least 3 characters) and a category."));
+            return;
+        }
+        if (payload.description.length < 20) {
+            formError("trainingError", tr("اكتب الخطوات الصحيحة (20 حرف على الأقل).", "Write the correct steps (at least 20 characters)."));
+            return;
+        }
+        if (payload.officialVideoUrl && payload.officialVideoUrl.indexOf("https://") !== 0) {
+            formError("trainingError", tr("رابط الفيديو لازم يبدأ بـ https://", "The video link must start with https://"));
+            return;
+        }
+        const button = document.getElementById("trainingSubmit");
+        button.disabled = true;
+        try {
+            if (editingTrainingId) {
+                await apiPut("/awareness-service/update/" + editingTrainingId, payload);
+            } else {
+                await apiPost("/awareness-service/add", payload);
+            }
+            WaeiDashboard.closeDialog("trainingDialog");
+            WaeiDashboard.notify(editingTrainingId ? tr("تم تحديث التدريب.", "Training updated.") : tr("تمت إضافة التدريب.", "Training added."), "ok");
+            await loadContent();
+        } catch (e) {
+            formError("trainingError", e.message);
+        } finally {
+            button.disabled = false;
+        }
+    });
+
+    document.getElementById("guideForm").addEventListener("submit", async function (event) {
+        event.preventDefault();
+        document.getElementById("guideError").innerHTML = "";
+        const trainingId = document.getElementById("guideTraining").value;
+        const payload = {
+            title: document.getElementById("guideTitle").value.trim(),
+            category: document.getElementById("guideCategory").value,
+            icon: document.getElementById("guideIcon").value,
+            summary: document.getElementById("guideSummary").value.trim(),
+            signs: document.getElementById("guideSigns").value.trim(),
+            steps: document.getElementById("guideSteps").value.trim(),
+            donts: document.getElementById("guideDonts").value.trim(),
+            whenToCall: document.getElementById("guideWhenToCall").value.trim(),
+            sourceName: document.getElementById("guideSourceName").value.trim(),
+            sourceUrl: document.getElementById("guideSourceUrl").value.trim(),
+            awarenessServiceId: trainingId ? Number(trainingId) : null,
+            isUrgent: document.getElementById("guideUrgent").checked,
+            isPublished: document.getElementById("guidePublished").checked
+        };
+        if (payload.title.length < 3 || !payload.summary || !payload.signs || !payload.steps) {
+            formError("guideError", tr("عبّئ اسم الحالة والملخص والعلامات والخطوات.", "Fill in the title, summary, signs and steps."));
+            return;
+        }
+        if (payload.sourceUrl && payload.sourceUrl.indexOf("https://") !== 0) {
+            formError("guideError", tr("رابط المصدر لازم يبدأ بـ https://", "The source link must start with https://"));
+            return;
+        }
+        const button = document.getElementById("guideSubmit");
+        button.disabled = true;
+        try {
+            if (editingGuideId) {
+                await apiPut("/guide/update/" + editingGuideId, payload);
+            } else {
+                await apiPost("/guide/add", payload);
+            }
+            WaeiDashboard.closeDialog("guideDialog");
+            WaeiDashboard.notify(editingGuideId ? tr("تم تحديث الحالة.", "Case updated.") : tr("تمت إضافة الحالة.", "Case added."), "ok");
+            await loadContent();
+        } catch (e) {
+            formError("guideError", e.message);
+        } finally {
+            button.disabled = false;
         }
     });
 
@@ -921,6 +1408,8 @@
             { id: "overview", ar: "نظرة عامة", en: "Overview", icon: "grid" },
             { id: "registrations", ar: "طلبات التسجيل", en: "Applications", icon: "clipboard", badge: true },
             { id: "organizations", ar: "الجهات", en: "Organizations", icon: "building" },
+            { id: "trainings", ar: "التدريبات", en: "Trainings", icon: "play" },
+            { id: "guide", ar: "دليل الطوارئ", en: "Emergency guide", icon: "shield" },
             { id: "payments", ar: "المدفوعات", en: "Payments", icon: "card" }
         ]
     }).then(function (user) {
