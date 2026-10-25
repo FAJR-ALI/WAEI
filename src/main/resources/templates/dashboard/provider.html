@@ -234,7 +234,7 @@
                     <select id="programCategory" class="input" required></select>
                 </div>
                 <div class="field">
-                    <label for="programPrice" data-en="Daily price (SAR)">السعر اليومي (ر.س)</label>
+                    <label for="programPrice"><span data-en="Daily price">السعر اليومي</span> (<span class="sar" role="img" aria-label="ريال سعودي" data-en-aria="Saudi riyal"></span>)</label>
                     <input id="programPrice" class="input" type="number" min="1" step="0.01" dir="ltr" required>
                 </div>
                 <div class="field">
@@ -358,7 +358,7 @@
         document.getElementById("kpiPending").textContent = WaeiDashboard.formatNumber(pending);
         document.getElementById("kpiInProgress").textContent = WaeiDashboard.formatNumber(inProgress);
         document.getElementById("kpiCompleted").textContent = WaeiDashboard.formatNumber(completed);
-        document.getElementById("kpiRevenue").textContent = WaeiDashboard.formatMoney(revenue);
+        document.getElementById("kpiRevenue").innerHTML = WaeiDashboard.formatMoney(revenue);
         WaeiDashboard.setNavBadge("requests", pending);
     }
 
@@ -896,11 +896,16 @@
         return '<div class="detail-row"><span>' + escapeHtml(label) + '</span><span>' + escapeHtml(value || "—") + '</span></div>';
     }
 
+    // Like detailRow, but the value is money HTML from formatMoney (has the riyal symbol)
+    function moneyRow(label, moneyHtml) {
+        return '<div class="detail-row"><span>' + escapeHtml(label) + '</span><span>' + moneyHtml + '</span></div>';
+    }
+
     function refundDetailRows(payment) {
         if (!payment || payment.status !== "REFUNDED") {
             return "";
         }
-        return detailRow(tr("المبلغ المسترد", "Refunded amount"), WaeiDashboard.formatMoney(payment.refundedAmount))
+        return moneyRow(tr("المبلغ المسترد", "Refunded amount"), WaeiDashboard.formatMoney(payment.refundedAmount))
             + detailRow(tr("تاريخ الاسترداد", "Refunded at"), WaeiDashboard.formatDateTime(payment.refundedAt));
     }
 
@@ -918,8 +923,8 @@
             + detailRow(tr("عدد المشاركين", "Participants"), WaeiDashboard.formatNumber(item.participantCount))
             + detailRow(tr("عدد الأيام", "Days"), requestDaysText(item))
             + detailRow(tr("الساعات في اليوم", "Hours per day"), formatProgramHours(item.hoursPerDay))
-            + detailRow(tr("السعر اليومي", "Daily price"), item.dailyPrice ? WaeiDashboard.formatMoney(item.dailyPrice) : "—")
-            + detailRow(tr("السعر الإجمالي", "Total price"), WaeiDashboard.formatMoney(item.programPrice))
+            + moneyRow(tr("السعر اليومي", "Daily price"), item.dailyPrice ? WaeiDashboard.formatMoney(item.dailyPrice) : "—")
+            + moneyRow(tr("السعر الإجمالي", "Total price"), WaeiDashboard.formatMoney(item.programPrice))
             + detailRow(tr("حالة الطلب", "Request status"), WaeiDashboard.statusLabel("request", item.status))
             + meetingDetailRows(item)
             + detailRow(tr("تاريخ الطلب", "Requested at"), WaeiDashboard.formatDateTime(item.requestedAt))

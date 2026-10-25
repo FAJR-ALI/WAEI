@@ -76,7 +76,12 @@ const WaeiDashboard = (function () {
         return Number(value).toLocaleString(locale(), {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
-        }) + " " + tr("ر.س", "SAR");
+        }) + " " + riyalSymbol();
+    }
+
+    // New Saudi Riyal symbol (HTML, so set it with innerHTML not textContent)
+    function riyalSymbol() {
+        return '<span class="sar" role="img" aria-label="' + tr("ريال سعودي", "Saudi riyal") + '"></span>';
     }
 
     function formatDate(value) {
@@ -454,6 +459,7 @@ const WaeiDashboard = (function () {
         roleLabel: roleLabel,
         formatNumber: formatNumber,
         formatMoney: formatMoney,
+        riyalSymbol: riyalSymbol,
         formatDate: formatDate,
         formatDateTime: formatDateTime,
         formatFileSize: formatFileSize,

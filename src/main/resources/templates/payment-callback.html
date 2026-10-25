@@ -37,7 +37,7 @@
                 </div>
                 <div class="detail-row">
                     <span data-en="Amount">المبلغ</span>
-                    <span th:text="${#numbers.formatDecimal(payment.amount, 1, 2) + ' SAR'}">0.00 SAR</span>
+                    <span><span th:text="${#numbers.formatDecimal(payment.amount, 1, 2)}">0.00</span> <span class="sar" role="img" aria-label="ريال سعودي" data-en-aria="Saudi riyal"></span></span>
                 </div>
                 <div class="detail-row">
                     <span data-en="Training request">طلب التدريب</span>
