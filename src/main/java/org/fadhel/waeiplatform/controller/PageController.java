@@ -91,6 +91,11 @@ public class PageController {
         return "visitor/kids-stories";
     }
 
+    @GetMapping("/kids/stories/create")
+    public String kidsStoryBuilder() {
+        return "visitor/kids-story-builder";
+    }
+
     @GetMapping("/kids/what-if")
     public String kidsWhatIf() {
         return "visitor/kids-what-if";

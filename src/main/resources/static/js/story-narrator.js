@@ -6,6 +6,7 @@ function enableStoryNarration(storyId) {
     const replay = document.getElementById("replayStory");
     const status = document.getElementById("narratorStatus");
     const audio = document.getElementById("storyAudio");
+    window.addEventListener("kids-voice-start", function () { audio.pause(); });
     let objectUrl = null;
     let request = null;
     panel.classList.remove("hidden");
@@ -56,6 +57,7 @@ function enableStoryNarration(storyId) {
         }
         try {
             if (audio.ended) audio.currentTime = 0;
+            window.dispatchEvent(new Event("kids-story-audio-start"));
             await audio.play();
         } catch (error) {
             status.textContent = tr("الصوت جاهز، اضغط تشغيل للاستماع.", "Audio is ready. Press play to listen.");

@@ -7,7 +7,7 @@
     <link rel="icon" href="/img/logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/kids.css">
+    <link rel="stylesheet" href="/css/kids.css?v=art-1">
     <script src="/js/i18n.js"></script>
     <style>
         .call-box { display: flex; flex-direction: column; gap: 12px; padding: 24px; border-radius: 32px; background: #FFFFFF; }
@@ -31,18 +31,20 @@
     </a>
     <div class="k-tools">
         <button type="button" class="lang-toggle">English</button>
-    <button type="button" class="k-sound" id="speakIntro" aria-label="اسمع التعليمات" data-en-aria="Listen to the instructions">
+    <button type="button" class="k-sound" id="speakIntro" data-kids-speak=".k-hero-text" aria-label="اسمع التعليمات" data-en-aria="Listen to the instructions">
         <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.5 8.5a5 5 0 0 1 0 7"></path><path d="M19 5a10 10 0 0 1 0 14"></path></svg>
     </button>
     </div>
 </header>
 
 <main class="k-main">
-    <section class="k-hero" style="background: #15803D">
+    <section class="k-hero k-art-hero" data-activity="call">
         <div class="k-hero-text">
             <h1 data-en="Your grandma fell and is not answering you!">جدتك طاحت وما ترد عليك!</h1>
             <p data-en="You called 997. Put your words in order: tap the sentences in the right order.">اتصلت على 997. رتّب كلامك: اضغط الجمل بالترتيب الصح.</p>
         </div>
+
+        <img class="k-hero-art" src="/img/kids-activities/call-v1.png" width="1254" height="1254" alt="طفل يتدرب على الكلام بالهاتف مع أمه" data-en-alt="A child practicing a phone conversation with his mother" decoding="async">
     </section>
 
     <section class="call-box" aria-label="المكالمة" data-en-aria="The call">
@@ -54,8 +56,10 @@
     </section>
 
     <div id="hintBox" role="status"></div>
+<button type="button" class="k-listen" data-kids-speak="#cardsBox,#hintBox" data-en="🔊 Listen to the sentences and hint">🔊 اسمع الجمل والتلميح</button>
     <div id="cardsBox" class="cards"></div>
 
+<button type="button" class="k-listen" data-kids-speak="#saidList" data-en="🔊 Listen to the ordered call">🔊 اسمع المكالمة المرتبة</button>
     <section id="doneBox" class="k-hero hidden" role="status" style="flex-direction: column; text-align: center; justify-content: center">
         <h2 style="font-size: 34px; font-weight: 800" data-en="Hero! A perfect call">بطل! مكالمة مثالية</h2>
         <p style="font-size: 22px; color: #EDE9FE" data-en="The ambulance knows what happened and where to come. The most important thing: your address.">الإسعاف عرف وش صار ووين يجون. أهم شي: عنوانك.</p>
@@ -65,6 +69,7 @@
     <p class="k-note" data-en="&lt;strong&gt;For parents:&lt;/strong&gt; Teach your child your home address, neighborhood name and a nearby landmark. We never ask the child to type their address here."><strong>للأهل:</strong> علّموا طفلكم عنوان البيت واسم الحي ومعلَم قريب منه. ما نطلب من الطفل يكتب عنوانه هنا.</p>
 </main>
 
+<script src="/js/kids-voice.js?v=2"></script>
 <script th:inline="none">
     const LINES = tr([
         "السلام عليكم، أبي إسعاف",
@@ -137,16 +142,7 @@
         render("");
     });
 
-    document.getElementById("speakIntro").addEventListener("click", function () {
-        if (!("speechSynthesis" in window)) return;
-        window.speechSynthesis.cancel();
-        const voice = new SpeechSynthesisUtterance(tr(
-            "جدتك طاحت وما ترد عليك! اتصلت على تسعة تسعة سبعة. رتّب كلامك: اضغط الجمل بالترتيب الصح.",
-            "Your grandma fell and is not answering you! You called 997. Put your words in order: tap the sentences in the right order."));
-        voice.lang = tr("ar-SA", "en-US");
-        voice.rate = 0.9;
-        window.speechSynthesis.speak(voice);
-    });
+
 
     render("");
 </script>

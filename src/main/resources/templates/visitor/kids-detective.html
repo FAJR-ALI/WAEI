@@ -6,23 +6,24 @@
     <title data-en="Waei — Safety detective">واعي — محقق السلامة</title>
     <link rel="icon" href="/img/logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/kids.css">
+    <link rel="stylesheet" href="/css/kids.css?v=art-1">
     <link rel="stylesheet" href="/css/kids-detective.css">
     <script src="/js/i18n.js"></script>
 </head>
 <body>
 <header class="k-header">
     <a href="/kids" class="k-back" data-en="Back to games">رجوع للألعاب</a>
-    <div class="k-tools"><button type="button" class="lang-toggle">English</button></div>
+    <div class="k-tools"><button type="button" class="lang-toggle">English</button><button type="button" class="k-sound" data-kids-speak=".k-hero-text" aria-label="اسمع التعليمات" data-en-aria="Listen to instructions">🔊</button></div>
 </header>
 <main class="k-main">
-    <section class="k-hero">
+    <section class="k-hero k-art-hero" data-activity="detective">
         <div class="k-hero-text">
             <span class="k-hello" data-en="Look carefully, detective!">ركّز يا محقق!</span>
             <h1 data-en="Safety detective">محقق السلامة</h1>
             <p data-en="Find three hazards in the room. Tap an object and Waei will explain your choice.">اكتشف ثلاثة أخطار في الغرفة. اضغط على الشيء وواعي يشرح لك اختيارك.</p>
         </div>
-        <span class="detective-badge" aria-hidden="true">🔍</span>
+
+        <img class="k-hero-art" src="/img/kids-activities/detective-v1.png" width="1254" height="1254" alt="محقق صغير يحمل عدسة مكبرة" data-en-alt="A young detective with a magnifying glass" decoding="async">
     </section>
 
     <section class="k-card">
@@ -47,6 +48,7 @@
             </button>
         </div>
         <p class="k-note" data-en="Tap the drawing, or use Tab and Enter to choose an object.">اضغط على الرسم، أو استخدم Tab وEnter لاختيار شيء.</p>
+        <button type="button" class="k-listen" data-kids-speak="#detectiveFeedback" data-en="🔊 Listen to Waei’s feedback">🔊 اسمع تعليق واعي</button>
         <div id="detectiveFeedback" class="detective-feedback" role="status" aria-live="polite" data-en="I'm Waei. Choose an object and let's investigate!">أنا واعي، اختر شيئًا وخلّنا نحقق!</div>
         <div id="detectiveFinished" class="hidden">
             <h2 data-en="Great detective! You found all three hazards.">محقق بطل! اكتشفت الأخطار الثلاثة.</h2>
@@ -57,5 +59,6 @@
     <p class="k-note" data-en="For learning only. AI explains the choices; never touch real hazards. We do not ask for your name, photos, or voice.">للتعلم فقط. الذكاء الاصطناعي يشرح الاختيارات؛ لا تلمس الأخطار في الحقيقة. ما نطلب اسمك أو صورك أو صوتك.</p>
 </main>
 <script src="/js/kids-detective.js?v=3"></script>
+<script src="/js/kids-voice.js?v=2"></script>
 </body>
 </html>
