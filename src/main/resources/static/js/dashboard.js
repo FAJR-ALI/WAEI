@@ -9,6 +9,8 @@ const WaeiDashboard = (function () {
         book: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>',
         calendar: '<rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path>',
         card: '<rect x="2" y="5" width="20" height="14" rx="2"></rect><path d="M2 10h20"></path>',
+        play: '<rect x="2" y="5" width="20" height="14" rx="2"></rect><path d="m10 9 5 3-5 3z"></path>',
+        shield: '<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6l-8-3z"></path><path d="M12 9v6M9 12h6"></path>',
         home: '<path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9.5V21h14V9.5"></path><path d="M9 21v-6h6v6"></path>',
         external: '<path d="M14 3h7v7M10 14 21 3"></path><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"></path>'
     };
@@ -21,11 +23,11 @@ const WaeiDashboard = (function () {
         },
         request: {
             PENDING: ['قيد الانتظار', 'Pending', 'warn'],
-            ACCEPTED: ['بانتظار الدفع', 'Awaiting payment', 'warn'],
+            ACCEPTED: ['بانتظار الدفع', 'Awaiting payment', 'orange'],
             REJECTED: ['مرفوض', 'Rejected', 'bad'],
-            PAYMENT_PENDING: ['الدفع قيد المعالجة', 'Payment in progress', 'warn'],
-            CONFIRMED: ['مؤكد', 'Confirmed', 'ok'],
-            IN_PROGRESS: ['قيد التنفيذ', 'In progress', 'neutral'],
+            PAYMENT_PENDING: ['الدفع قيد المعالجة', 'Payment in progress', 'blue'],
+            CONFIRMED: ['مؤكد', 'Confirmed', 'teal'],
+            IN_PROGRESS: ['قيد التنفيذ', 'In progress', 'purple'],
             COMPLETED: ['مكتمل', 'Completed', 'ok'],
             CANCELLED: ['ملغي', 'Cancelled', 'muted']
         },
@@ -33,7 +35,7 @@ const WaeiDashboard = (function () {
             PENDING: ['قيد المعالجة', 'Pending', 'warn'],
             PAID: ['مدفوع', 'Paid', 'ok'],
             FAILED: ['فشل', 'Failed', 'bad'],
-            REFUNDED: ['مسترد', 'Refunded', 'neutral'],
+            REFUNDED: ['مسترد', 'Refunded', 'blue'],
             CANCELLED: ['ملغي', 'Cancelled', 'muted']
         }
     };
@@ -141,7 +143,7 @@ const WaeiDashboard = (function () {
     function statusBadge(kind, status) {
         const entry = STATUS[kind] && STATUS[kind][status];
         const tone = entry ? entry[2] : "muted";
-        return '<span class="badge badge-' + tone + '">' + escapeHtml(statusLabel(kind, status)) + "</span>";
+        return '<span class="badge badge-status badge-' + tone + '">' + escapeHtml(statusLabel(kind, status)) + "</span>";
     }
 
     function typeLabel(type) {
