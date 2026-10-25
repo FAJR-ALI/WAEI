@@ -422,16 +422,16 @@
         const pendingCount = document.getElementById("paymentKpiPending");
         const refunded = document.getElementById("paymentKpiRefunded");
         if (collected) {
-            collected.textContent = WaeiDashboard.formatMoney(sumPaymentField(paidPayments, "amount"));
+            collected.innerHTML = WaeiDashboard.formatMoney(sumPaymentField(paidPayments, "amount"));
         }
         if (commission) {
-            commission.textContent = WaeiDashboard.formatMoney(sumPaymentField(paidPayments, "commissionAmount"));
+            commission.innerHTML = WaeiDashboard.formatMoney(sumPaymentField(paidPayments, "commissionAmount"));
         }
         if (pendingCount) {
             pendingCount.textContent = WaeiDashboard.formatNumber(pendingPayments.length);
         }
         if (refunded) {
-            refunded.textContent = WaeiDashboard.formatMoney(sumPaymentField(refundedPayments, "refundedAmount"));
+            refunded.innerHTML = WaeiDashboard.formatMoney(sumPaymentField(refundedPayments, "refundedAmount"));
         }
     }
 
@@ -558,6 +558,11 @@
 
     function detailRow(label, value) {
         return '<div class="detail-row"><span>' + escapeHtml(label) + '</span><span>' + escapeHtml(value || "—") + '</span></div>';
+    }
+
+    // Like detailRow, but the value is money HTML from formatMoney (has the riyal symbol)
+    function moneyRow(label, moneyHtml) {
+        return '<div class="detail-row"><span>' + escapeHtml(label) + '</span><span>' + moneyHtml + '</span></div>';
     }
 
     function openRegistration(id) {
@@ -747,14 +752,14 @@
         return '<div class="detail-grid">'
             + detailRow(tr("رقم الدفع", "Payment ID"), payment.id)
             + detailRow(tr("الحالة", "Status"), WaeiDashboard.statusLabel("payment", payment.status))
-            + detailRow(tr("المبلغ", "Amount"), WaeiDashboard.formatMoney(payment.amount))
+            + moneyRow(tr("المبلغ", "Amount"), WaeiDashboard.formatMoney(payment.amount))
             + detailRow(tr("العملة", "Currency"), payment.currency)
             + detailRow(tr("نسبة العمولة", "Commission rate"), payment.commissionRatePercent !== null && payment.commissionRatePercent !== undefined
                 ? WaeiDashboard.formatNumber(payment.commissionRatePercent) + "%"
                 : "—")
-            + detailRow(tr("عمولة المنصة", "Platform commission"), WaeiDashboard.formatMoney(payment.commissionAmount))
-            + detailRow(tr("صافي مقدم الخدمة", "Provider net"), WaeiDashboard.formatMoney(payment.providerAmount))
-            + detailRow(tr("المبلغ المسترد", "Refunded amount"), payment.refundedAmount !== null && payment.refundedAmount !== undefined
+            + moneyRow(tr("عمولة المنصة", "Platform commission"), WaeiDashboard.formatMoney(payment.commissionAmount))
+            + moneyRow(tr("صافي مقدم الخدمة", "Provider net"), WaeiDashboard.formatMoney(payment.providerAmount))
+            + moneyRow(tr("المبلغ المسترد", "Refunded amount"), payment.refundedAmount !== null && payment.refundedAmount !== undefined
                 ? WaeiDashboard.formatMoney(payment.refundedAmount)
                 : "—")
             + detailRow(tr("تاريخ الاسترداد", "Refunded at"), WaeiDashboard.formatDateTime(payment.refundedAt))
