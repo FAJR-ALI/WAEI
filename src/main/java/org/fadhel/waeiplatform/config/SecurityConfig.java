@@ -65,6 +65,9 @@ public class SecurityConfig {
             PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/kids/detective"),
             PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/kids/drawing"),
             PathPatternRequestMatcher.pathPattern(HttpMethod.POST, "/api/v1/kids/drawing/review"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/kids/stories/create"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.POST, "/api/v1/kids/stories/create"),
+            PathPatternRequestMatcher.pathPattern(HttpMethod.POST, "/api/v1/kids/voice"),
             PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/story"),
             PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/call"),
             PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/guide"),
@@ -177,7 +180,7 @@ public class SecurityConfig {
                                 "/register/beneficiary", "/register/provider",
                                 "/train", "/trainings", "/programs", "/pricing",
                                 "/kids", "/kids/stories", "/kids/what-if",
-                                "/kids/emergency-number", "/kids/detective", "/kids/drawing",
+                                "/kids/emergency-number", "/kids/detective", "/kids/drawing", "/kids/stories/create",
                                 "/story", "/call", "/guide", "/guide/detail",
                                 "/calendar",
                                 "/dashboard/admin", "/dashboard/beneficiary",
@@ -201,6 +204,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST,
                                 "/api/v1/awareness-session/evaluate/*",
                                 "/api/v1/kids/drawing/review",
+                                "/api/v1/kids/stories/create", "/api/v1/kids/voice",
                                 "/api/v1/awareness-session/quiz/submit/*",
                                 "/api/v1/guide/smart-search").permitAll()
                         // Trainings (awareness services) management: platform admin only

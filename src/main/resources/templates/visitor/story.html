@@ -7,7 +7,7 @@
     <link rel="icon" href="/img/logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/kids.css">
+    <link rel="stylesheet" href="/css/kids.css?v=art-1">
     <script src="/js/i18n.js"></script>
     <style>
         .story-scene { display: flex; flex-direction: column; gap: 18px; padding: 32px; border-radius: 36px; background: #FEF3C7; }
@@ -54,8 +54,10 @@
     <div class="k-loading" data-en="Loading the story...">نجيب القصة...</div>
 </main>
 
+<div class="k-main"><button type="button" class="k-listen" data-kids-speak="#storyBox .lesson" data-en="🔊 Listen to the lesson" data-voice-lang="ar">🔊 اسمع الدرس المستفاد</button></div>
+<script src="/js/kids-voice.js?v=2"></script>
 <script src="/js/api.js"></script>
-<script src="/js/story-narrator.js?v=1"></script>
+<script src="/js/story-narrator.js?v=3"></script>
 <script th:inline="none">
     let story = null;
 
@@ -93,6 +95,7 @@
 
             // The story itself is always in Arabic
             box.innerHTML = '<article class="story-scene" lang="ar" dir="rtl">'
+                + '<img class="k-story-art" src="/img/kids-activities/stories-v1.png" width="1254" height="1254" alt="" aria-hidden="true">'
                 + "<h1>" + escapeHtml(story.title) + "</h1>"
                 + paragraphs
                 + "</article>"
@@ -101,7 +104,7 @@
                 + '<a href="/kids/stories" class="k-btn k-btn-purple">' + tr("قصة ثانية", "Another story") + '</a>'
                 + '<a href="/kids/what-if" class="k-btn">' + tr("العب لعبة", "Play a game") + '</a>'
                 + "</div>"
-                + '<p class="k-note" style="text-align: center">' + tr("كتب القصة الذكاء الاصطناعي وراجعها مختص قبل النشر.", "This story was written by AI and reviewed by a specialist before publishing.") + '</p>';
+                + '<p class="k-note" style="text-align: center">' + tr("قصة توعوية للتعلم. اقرأها مع شخص كبير.", "A safety-awareness story for learning. Read it with an adult.") + '</p>';
         } catch (e) {
             box.innerHTML = '<div class="k-empty">' + tr('ما لقينا القصة. <a href="/kids/stories">ارجع للقصص</a>', 'Story not found. <a href="/kids/stories">Back to stories</a>') + '</div>';
         }

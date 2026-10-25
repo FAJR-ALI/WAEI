@@ -7,7 +7,7 @@
     <link rel="icon" href="/img/logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/kids.css">
+    <link rel="stylesheet" href="/css/kids.css?v=art-1">
     <script src="/js/i18n.js"></script>
 </head>
 <body>
@@ -22,22 +22,27 @@
             <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"></path></svg>
             <span id="starsCount">0</span>
         </div>
-        <button type="button" class="k-sound" id="speakHero" aria-label="اسمع الكلام بصوت" data-en-aria="Listen">
+        <button type="button" class="k-sound" id="speakHero" data-kids-speak="#scenarioText,#choicesList" aria-label="اسمع الكلام بصوت" data-en-aria="Listen">
             <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.5 8.5a5 5 0 0 1 0 7"></path><path d="M19 5a10 10 0 0 1 0 14"></path></svg>
         </button>
     </div>
 </header>
-<main class="k-main"><section class="k-hero"><div class="k-hero-text"><h1 id="heroTitle" data-en="What would you do?">وش تسوي لو...؟</h1></div></section>
+<main class="k-main"><section class="k-hero k-art-hero" data-activity="what-if"><div class="k-hero-text"><h1 id="heroTitle" data-en="What would you do?">وش تسوي لو...؟</h1></div>
+        <img class="k-hero-art" src="/img/kids-activities/what-if-v1.png" width="1254" height="1254" alt="طفل يفكر في الاختيار الآمن" data-en-alt="A child thinking about a safe choice" decoding="async">
+    </section>
         <section id="whatIf" class="k-card" style="flex: 3 1 560px; min-width: 0" aria-label="وش تسوي لو" data-en-aria="What would you do">
             <span class="k-label" data-en="What would you do?">وش تسوي لو...؟</span>
+<button type="button" class="k-listen" data-kids-speak="#scenarioText,#choicesList" data-en="🔊 Listen to the situation and choices">🔊 اسمع الموقف والاختيارات</button>
             <h2 id="scenarioText"></h2>
             <div class="k-choices" id="choicesList"></div>
             <div id="whatIfFeedback" role="status"></div>
+<button type="button" class="k-listen" data-kids-speak="#whatIfFeedback" data-en="🔊 Listen to the explanation">🔊 اسمع التوضيح</button>
         </section>
 
-    <p class="k-note" data-en="&lt;strong&gt;Note for parents:&lt;/strong&gt; Kids mode is for learning only. We don&#x27;t ask for video or collect any data about the child, and the stars disappear when you close the page. Every AI-written story is reviewed by a specialist before it is published."><strong>ملاحظة للأهل:</strong> وضع الأطفال للتعلم فقط. ما نطلب فيديو ولا نجمع أي بيانات عن الطفل، والنجوم تختفي لما تسكّر الصفحة. كل قصة يكتبها الذكاء الاصطناعي يراجعها مختص قبل ما تنشر.</p>
+    <p class="k-note" data-en="&lt;strong&gt;Note for parents:&lt;/strong&gt; Kids mode is for learning only. We don&#x27;t ask for video or collect any data about the child, and the stars disappear when you close the page. Read the stories with an adult."><strong>ملاحظة للأهل:</strong> وضع الأطفال للتعلم فقط. ما نطلب فيديو ولا نجمع أي بيانات عن الطفل، والنجوم تختفي لما تسكّر الصفحة. اقرأ القصص مع شخص كبير.</p>
 </main>
 <script src="/js/api.js"></script>
+<script src="/js/kids-voice.js?v=2"></script>
 <script th:inline="none">
     // Stars live only in this page (nothing is saved about the child)
     let stars = 0;
@@ -48,19 +53,7 @@
         document.getElementById("starsBox").setAttribute("aria-label", tr("عندك " + stars + " نجوم", "You have " + stars + " stars"));
     }
 
-    // Read text out loud with the browser's voice (works offline, nothing is sent anywhere)
-    function speak(text) {
-        if (!("speechSynthesis" in window)) return;
-        window.speechSynthesis.cancel();
-        const voice = new SpeechSynthesisUtterance(text);
-        voice.lang = tr("ar-SA", "en-US");
-        voice.rate = 0.9;
-        window.speechSynthesis.speak(voice);
-    }
 
-    document.getElementById("speakHero").addEventListener("click", function () {
-        speak(document.getElementById("heroTitle").textContent);
-    });
 
 
     const ICONS = {

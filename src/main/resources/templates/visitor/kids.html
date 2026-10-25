@@ -21,7 +21,7 @@
         <button type="button" class="lang-toggle">English</button>
         <button type="button" class="k-motion-toggle" id="motionToggle" aria-pressed="false" data-en="Play character">تشغيل الشخصية</button>
 
-        <button type="button" class="k-sound" id="speakHero" aria-label="اسمع الكلام بصوت" data-en-aria="Listen">
+        <button type="button" class="k-sound" id="speakHero" data-kids-speak=".k-hero-text" aria-label="اسمع الكلام بصوت" data-en-aria="Listen">
             <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.5 8.5a5 5 0 0 1 0 7"></path><path d="M19 5a10 10 0 0 1 0 14"></path></svg>
         </button>
     </div>
@@ -51,43 +51,45 @@
         </div>
     </section>
 
+<button type="button" class="k-listen" data-kids-speak=".k-grid .title,.k-grid .text" data-en="🔊 Listen to the activities">🔊 اسمع الألعاب المتاحة</button>
     <!-- Activities -->
     <section class="k-grid" aria-label="الألعاب" data-en-aria="Games">
-        <a href="/kids/drawing" class="k-activity" style="background: #FCE7F3; color: #831843">
-            <span class="ic" aria-hidden="true" style="font-size: 34px">🎨</span>
+        <a href="/kids/drawing" class="k-activity" data-activity="drawing">
+            <img class="k-activity-art" src="/img/kids-activities/drawing-v1.png" width="1254" height="1254" alt="" aria-hidden="true" loading="lazy" decoding="async">
             <span class="title" data-en="Draw safety">ارسم الأمان</span>
             <span class="text" data-en="Draw a safe action and show Waei">ارسم تصرفًا آمنًا وورّه لواعي</span>
         </a>
-        <a href="/kids/detective" class="k-activity" style="background: #DDD6FE; color: #4C1D95">
-            <span class="ic" aria-hidden="true" style="font-size: 34px">🔍</span>
+        <a href="/kids/detective" class="k-activity" data-activity="detective">
+            <img class="k-activity-art" src="/img/kids-activities/detective-v1.png" width="1254" height="1254" alt="" aria-hidden="true" loading="lazy" decoding="async">
             <span class="title" data-en="Safety detective">محقق السلامة</span>
             <span class="text" data-en="Find three hazards with Waei">اكتشف ثلاثة أخطار مع واعي</span>
         </a>
-        <a href="/kids/stories" class="k-activity" style="background: #FCD34D; color: #451A03">
-            <span class="ic" style="color: #B45309"><svg aria-hidden="true" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14zM20 17v4H6.5A2.5 2.5 0 0 1 4 18.5"></path></svg></span>
+        <a href="/kids/stories" class="k-activity" data-activity="stories">
+            <img class="k-activity-art" src="/img/kids-activities/stories-v1.png" width="1254" height="1254" alt="" aria-hidden="true" loading="lazy" decoding="async">
             <span class="title" data-en="Hero stories">قصص الأبطال</span>
             <span class="text" data-en="Short stories to learn from">قصص قصيرة تتعلم منها</span>
         </a>
-        <a href="/kids/what-if" class="k-activity" style="background: #FECACA; color: #7F1D1D">
-            <span class="ic" style="color: #B91C1C"><svg aria-hidden="true" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"></path></svg></span>
+        <a href="/kids/what-if" class="k-activity" data-activity="what-if">
+            <img class="k-activity-art" src="/img/kids-activities/what-if-v1.png" width="1254" height="1254" alt="" aria-hidden="true" loading="lazy" decoding="async">
             <span class="title" data-en="What would you do?">وش تسوي لو...؟</span>
             <span class="text" data-en="Situations: pick the right move">مواقف وتختار الصح</span>
         </a>
-        <a href="/kids/emergency-number" class="k-activity" style="background: #BFDBFE; color: #1E3A8A">
-            <span class="ic" style="color: #1D4ED8"><svg aria-hidden="true" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"></path></svg></span>
+        <a href="/kids/emergency-number" class="k-activity" data-activity="emergency-number">
+            <img class="k-activity-art" src="/img/kids-activities/emergency-number-v1.png" width="1254" height="1254" alt="" aria-hidden="true" loading="lazy" decoding="async">
             <span class="title" data-en="Emergency number">رقم الطوارئ</span>
             <span class="text" data-en="Learn 997 by playing">احفظ 997 باللعب</span>
         </a>
-        <a href="/call" class="k-activity" style="background: #BBF7D0; color: #14532D">
-            <span class="ic" style="color: #15803D"><svg aria-hidden="true" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"></path></svg></span>
+        <a href="/call" class="k-activity" data-activity="call">
+            <img class="k-activity-art" src="/img/kids-activities/call-v1.png" width="1254" height="1254" alt="" aria-hidden="true" loading="lazy" decoding="async">
             <span class="title" data-en="What do I say when I call?">وش أقول لما أتصل؟</span>
             <span class="text" data-en="Put your words in order like a hero">رتّب كلامك مثل الأبطال</span>
         </a>
     </section>
 
-    <p class="k-note" data-en="&lt;strong&gt;Note for parents:&lt;/strong&gt; Kids mode is for learning only. We don&#x27;t ask for video or collect any data about the child, and the stars disappear when you close the page. Every AI-written story is reviewed by a specialist before it is published."><strong>ملاحظة للأهل:</strong> وضع الأطفال للتعلم فقط. ما نطلب فيديو ولا نجمع أي بيانات عن الطفل، والنجوم تختفي لما تسكّر الصفحة. كل قصة يكتبها الذكاء الاصطناعي يراجعها مختص قبل ما تنشر.</p>
+    <p class="k-note" data-en="&lt;strong&gt;Note for parents:&lt;/strong&gt; Kids mode is for learning only. We don&#x27;t ask for video or collect any data about the child, and the stars disappear when you close the page. Read the stories with an adult."><strong>ملاحظة للأهل:</strong> وضع الأطفال للتعلم فقط. ما نطلب فيديو ولا نجمع أي بيانات عن الطفل، والنجوم تختفي لما تسكّر الصفحة. اقرأ القصص مع شخص كبير.</p>
 </main>
 <script src="/js/api.js"></script>
+<script src="/js/kids-voice.js?v=2"></script>
 <script th:inline="none">
     const mascot = document.querySelector(".k-mascot");
     const motionToggle = document.getElementById("motionToggle");
@@ -113,20 +115,7 @@
         document.getElementById("starsBox").setAttribute("aria-label", tr("عندك " + stars + " نجوم", "You have " + stars + " stars"));
     }
 
-    // Read text out loud with the browser's voice (works offline, nothing is sent anywhere)
-    function speak(text) {
-        if (!("speechSynthesis" in window)) return;
-        window.speechSynthesis.cancel();
-        const voice = new SpeechSynthesisUtterance(text);
-        voice.lang = tr("ar-SA", "en-US");
-        voice.rate = 0.9;
-        window.speechSynthesis.speak(voice);
-    }
 
-    document.getElementById("speakHero").addEventListener("click", function () {
-        speak(tr("هلا يا بطل! أنا واعي، وبعلّمك كيف تتصرف وقت الخطر. اختر لعبة، واجمع النجوم.",
-            "Hi hero! I am Waei, and I will teach you what to do when there is danger. Pick a game and collect stars."));
-    });
 
 
 </script>

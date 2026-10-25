@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -14,6 +16,7 @@ import java.util.Locale;
 
 @Service
 public class GeminiSpeechService {
+    private static final Logger log = LoggerFactory.getLogger(GeminiSpeechService.class);
     @Value("${gemini.api.key:}")
     private String apiKey;
     @Value("${gemini.tts.model:gemini-3.8-flash-tts}")
@@ -22,14 +25,20 @@ public class GeminiSpeechService {
     private String voice;
 
     public byte[] narrate(String text, String ageGroup) {
+        return narrate(text, ageGroup, "ar");
+    }
+
+    public byte[] narrate(String text, String ageGroup, String language) {
         if (apiKey == null || apiKey.isBlank()) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Story narrator is not configured");
         }
         try (Client client = Client.builder().apiKey(apiKey)
-                .httpOptions(HttpOptions.builder().timeout(60000).build()).build()) {
+                .httpOptions(HttpOptions.builder().timeout(45000)
+                        .retryOptions(HttpRetryOptions.builder().attempts(1).build()).build()).build()) {
             Part transcript = Part.builder().text(text)
                     .speechMetadata(SpeechMetadata.builder()
-                            .style("Read in clear Arabic with a warm, gentle storytelling voice for children aged "
+                            .style("Read the transcript verbatim in " + (language.equals("en") ? "clear English" : "clear Arabic")
+                                    + " with a warm, gentle voice for children aged "
                                     + ageGroup + ". Speak slowly with natural pauses, without adding words.")
                             .build()).build();
             GenerateContentConfig config = GenerateContentConfig.builder()
@@ -45,10 +54,24 @@ public class GeminiSpeechService {
                 }
             }
             throw new IllegalStateException("No audio returned");
+        } catch (com.google.genai.errors.ApiException e) {
+            log.warn("Speech provider failure: HTTP {} (model {})", e.code(), model);
+            throw providerFailure(e.code());
         } catch (Exception e) {
+            log.warn("Speech generation failed: {}", e.getClass().getSimpleName());
             // Never expose provider errors, credentials, or story content to the client.
             throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Story narration is unavailable, please try again");
         }
+    }
+
+    static ResponseStatusException providerFailure(int code) {
+        return switch (code) {
+            case 429 -> new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "Speech quota exceeded");
+            case 401, 403 -> new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Speech provider denied access");
+            case 404 -> new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Speech model is unavailable");
+            case 400 -> new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Speech provider rejected the narration request");
+            default -> new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Speech provider is unavailable");
+        };
     }
 
     static byte[] asWav(byte[] data, String mimeType) {

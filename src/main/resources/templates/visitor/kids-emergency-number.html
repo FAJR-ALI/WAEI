@@ -7,7 +7,7 @@
     <link rel="icon" href="/img/logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/kids.css">
+    <link rel="stylesheet" href="/css/kids.css?v=art-1">
     <script src="/js/i18n.js"></script>
 </head>
 <body>
@@ -22,22 +22,26 @@
             <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"></path></svg>
             <span id="starsCount">0</span>
         </div>
-        <button type="button" class="k-sound" id="speakHero" aria-label="اسمع الكلام بصوت" data-en-aria="Listen">
+        <button type="button" class="k-sound" id="speakHero" data-kids-speak=".k-hero-text,#dial > h2,#dial > p" aria-label="اسمع الكلام بصوت" data-en-aria="Listen">
             <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.5 8.5a5 5 0 0 1 0 7"></path><path d="M19 5a10 10 0 0 1 0 14"></path></svg>
         </button>
     </div>
 </header>
-<main class="k-main"><section class="k-hero"><div class="k-hero-text"><h1 id="heroTitle" data-en="Emergency number">رقم الطوارئ</h1></div></section>
+<main class="k-main"><section class="k-hero k-art-hero" data-activity="emergency-number"><div class="k-hero-text"><h1 id="heroTitle" data-en="Emergency number">رقم الطوارئ</h1></div>
+        <img class="k-hero-art" src="/img/kids-activities/emergency-number-v1.png" width="1254" height="1254" alt="طفلة تتدرب على هاتف لعبة" data-en-alt="A child practicing with a toy telephone" decoding="async">
+    </section>
         <section id="dial" class="k-dial" aria-label="اتصل على الإسعاف" data-en-aria="Call the ambulance">
             <h2 style="font-size: 30px; font-weight: 800" data-en="Call the ambulance">اتصل على الإسعاف</h2>
             <p style="font-size: 19px; font-weight: 600" data-en="Dial the ambulance number">اضغط رقم الإسعاف</p>
             <div class="k-dial-screen" id="dialScreen" aria-live="polite">_ _ _</div>
             <div class="k-keys" id="keys"></div>
             <span id="dialStatus" role="status"></span>
+<button type="button" class="k-listen" data-kids-speak="#dialStatus" data-en="🔊 Listen to the result">🔊 اسمع النتيجة</button>
         </section>
-    <p class="k-note" data-en="&lt;strong&gt;Note for parents:&lt;/strong&gt; Kids mode is for learning only. We don&#x27;t ask for video or collect any data about the child, and the stars disappear when you close the page. Every AI-written story is reviewed by a specialist before it is published."><strong>ملاحظة للأهل:</strong> وضع الأطفال للتعلم فقط. ما نطلب فيديو ولا نجمع أي بيانات عن الطفل، والنجوم تختفي لما تسكّر الصفحة. كل قصة يكتبها الذكاء الاصطناعي يراجعها مختص قبل ما تنشر.</p>
+    <p class="k-note" data-en="&lt;strong&gt;Note for parents:&lt;/strong&gt; Kids mode is for learning only. We don&#x27;t ask for video or collect any data about the child, and the stars disappear when you close the page. Read the stories with an adult."><strong>ملاحظة للأهل:</strong> وضع الأطفال للتعلم فقط. ما نطلب فيديو ولا نجمع أي بيانات عن الطفل، والنجوم تختفي لما تسكّر الصفحة. اقرأ القصص مع شخص كبير.</p>
 </main>
 <script src="/js/api.js"></script>
+<script src="/js/kids-voice.js?v=2"></script>
 <script th:inline="none">
     // Stars live only in this page (nothing is saved about the child)
     let stars = 0;
@@ -48,19 +52,7 @@
         document.getElementById("starsBox").setAttribute("aria-label", tr("عندك " + stars + " نجوم", "You have " + stars + " stars"));
     }
 
-    // Read text out loud with the browser's voice (works offline, nothing is sent anywhere)
-    function speak(text) {
-        if (!("speechSynthesis" in window)) return;
-        window.speechSynthesis.cancel();
-        const voice = new SpeechSynthesisUtterance(text);
-        voice.lang = tr("ar-SA", "en-US");
-        voice.rate = 0.9;
-        window.speechSynthesis.speak(voice);
-    }
 
-    document.getElementById("speakHero").addEventListener("click", function () {
-        speak(document.getElementById("heroTitle").textContent);
-    });
 
 
     let dial = "";
