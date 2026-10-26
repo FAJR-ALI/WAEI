@@ -57,6 +57,7 @@
 <div class="k-main"><button type="button" class="k-listen" data-kids-speak="#storyBox .lesson" data-en="🔊 Listen to the lesson" data-voice-lang="ar">🔊 اسمع الدرس المستفاد</button></div>
 <script src="/js/kids-voice.js?v=2"></script>
 <script src="/js/api.js"></script>
+<script src="/js/seed-content-en.js"></script>
 <script src="/js/story-narrator.js?v=3"></script>
 <script th:inline="none">
     let story = null;
@@ -69,7 +70,9 @@
             return;
         }
         try {
-            story = await apiGet("/kids/stories/" + encodeURIComponent(id));
+            story = localizeStory(await apiGet("/kids/stories/" + encodeURIComponent(id)));
+            // A translated story is shown in English (left to right); other stories stay Arabic
+            const storyLang = story.isTranslated ? ' lang="en" dir="ltr"' : ' lang="ar" dir="rtl"';
             enableStoryNarration(story.id);
             document.title = tr("واعي — ", "Waei — ") + story.title;
 
@@ -83,7 +86,7 @@
 
             let lesson = "";
             if (story.lesson) {
-                lesson = '<section class="lesson" lang="ar" dir="rtl" aria-label="' + tr("الدرس", "Lesson") + '">'
+                lesson = '<section class="lesson"' + storyLang + ' aria-label="' + tr("الدرس", "Lesson") + '">'
                     + '<div aria-hidden="true" style="color: #FCD34D; display: flex; gap: 6px">'
                     + '<svg width="44" height="44" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"></path></svg>'
                     + '<svg width="44" height="44" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"></path></svg>'
@@ -93,8 +96,8 @@
                     + "<p>" + escapeHtml(story.lesson) + "</p></section>";
             }
 
-            // The story itself is always in Arabic
-            box.innerHTML = '<article class="story-scene" lang="ar" dir="rtl">'
+            // The story is in Arabic, or in English when it is a translated seeded story
+            box.innerHTML = '<article class="story-scene"' + storyLang + '>'
                 + '<img class="k-story-art" src="/img/kids-activities/stories-v1.png" width="1254" height="1254" alt="" aria-hidden="true">'
                 + "<h1>" + escapeHtml(story.title) + "</h1>"
                 + paragraphs

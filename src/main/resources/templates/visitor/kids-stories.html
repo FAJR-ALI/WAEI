@@ -45,6 +45,7 @@
     <p class="k-note" data-en="&lt;strong&gt;Note for parents:&lt;/strong&gt; Kids mode is for learning only. We don&#x27;t ask for video or collect any data about the child. Every AI-written story is reviewed by a specialist before it is published."><strong>ملاحظة للأهل:</strong> وضع الأطفال للتعلم فقط. ما نطلب فيديو ولا نجمع أي بيانات عن الطفل. كل قصة يكتبها الذكاء الاصطناعي يراجعها مختص قبل ما تنشر.</p>
 </main>
 <script src="/js/api.js"></script>
+<script src="/js/seed-content-en.js"></script>
 <script src="/js/kids-voice.js?v=2"></script>
 <script th:inline="none">
 
@@ -63,7 +64,7 @@
         const list = document.getElementById("storiesList");
         list.innerHTML = '<div class="k-loading">' + tr("نجيب القصص...", "Loading stories...") + '</div>';
         try {
-            allStories = await apiGet("/kids/stories");
+            allStories = (await apiGet("/kids/stories")).map(localizeStory);
             renderStories();
         } catch (e) {
             list.innerHTML = '<div class="k-empty">' + tr("ما قدرنا نجيب القصص الحين، جرّب بعدين.", "We couldn't load the stories now, try later.") + '</div>';

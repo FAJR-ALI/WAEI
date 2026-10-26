@@ -1211,6 +1211,44 @@
         }
     }
 
+    // ===== Notifications (built from the data already loaded) =====
+    function buildNotifications() {
+        const items = [];
+        myRequests.forEach(function (request) {
+            const program = request.trainingProgramTitle || "";
+            const provider = request.providerOrganizationName || "";
+            if (request.status === "ACCEPTED") {
+                items.push({ id: "req:" + request.id + ":ACCEPTED", title: tr("تم قبول طلبك، أكمل الدفع", "Request accepted, complete the payment"),
+                    text: program + " · " + provider, time: request.acceptedAt || request.requestedAt, panel: "requests", tone: "warn" });
+            } else if (request.status === "REJECTED" && WaeiDashboard.daysSince(request.requestedAt) <= 30) {
+                items.push({ id: "req:" + request.id + ":REJECTED", title: tr("تم رفض طلبك", "Your request was rejected"),
+                    text: program + " · " + provider, time: request.requestedAt, panel: "requests", tone: "bad" });
+            } else if (request.status === "CONFIRMED") {
+                const soon = WaeiDashboard.daysUntil(request.scheduledStart);
+                if (soon >= 0 && soon <= 3) {
+                    items.push({ id: "req:" + request.id + ":SOON", title: tr("تدريبك قريب", "Your training is coming up"),
+                        text: program + " · " + WaeiDashboard.formatDateTime(request.scheduledStart), time: request.scheduledStart, panel: "requests", tone: "info" });
+                } else {
+                    items.push({ id: "req:" + request.id + ":CONFIRMED", title: tr("تأكد التدريب", "Training confirmed"),
+                        text: program + " · " + provider, time: request.acceptedAt || request.requestedAt, panel: "requests", tone: "ok" });
+                }
+            } else if (request.status === "COMPLETED" && WaeiDashboard.daysSince(request.completedAt) <= 14) {
+                items.push({ id: "req:" + request.id + ":COMPLETED", title: tr("اكتمل التدريب", "Training completed"),
+                    text: program, time: request.completedAt, panel: "requests", tone: "ok" });
+            } else if (request.status === "CANCELLED" && WaeiDashboard.daysSince(request.cancelledAt) <= 14) {
+                items.push({ id: "req:" + request.id + ":CANCELLED", title: tr("تم إلغاء طلب", "A request was cancelled"),
+                    text: program, time: request.cancelledAt, panel: "requests", tone: "bad" });
+            }
+        });
+        myPayments.forEach(function (payment) {
+            if (payment.status === "FAILED" && WaeiDashboard.daysSince(payment.updatedAt || payment.createdAt) <= 14) {
+                items.push({ id: "pay:" + payment.id + ":FAILED", title: tr("فشلت عملية الدفع", "Payment failed"),
+                    textHtml: WaeiDashboard.formatMoney(payment.amount), time: payment.updatedAt || payment.createdAt, panel: "payments", tone: "bad" });
+            }
+        });
+        WaeiDashboard.setNotifications(items);
+    }
+
     async function loadData() {
         if (!dashboardUser) {
             return;
@@ -1238,6 +1276,7 @@
             renderRequests();
             renderCourses();
             renderPayments();
+            buildNotifications();
         } catch (e) {
             showError(root, e.message);
             WaeiDashboard.notify(e.message, "error");

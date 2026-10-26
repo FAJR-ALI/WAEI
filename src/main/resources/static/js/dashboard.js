@@ -383,6 +383,165 @@ const WaeiDashboard = (function () {
         });
     }
 
+    // ===== Notifications bell =====
+    // Each dashboard builds its notifications from the data it already loads and passes them here:
+    // { id, title, text, time, panel, tone }. "Seen" ids are remembered in this browser per account,
+    // so a notification counts as new until the bell is opened. When the status changes the id changes,
+    // so the change shows up as a new notification.
+    let notifItems = [];
+
+    function notifStorageKey() {
+        const user = state.user || {};
+        return "waeiSeenNotifs:" + (user.email || user.id || "me");
+    }
+
+    function readSeen() {
+        try {
+            return new Set(JSON.parse(localStorage.getItem(notifStorageKey()) || "[]"));
+        } catch (e) {
+            return new Set();
+        }
+    }
+
+    function saveSeen(ids) {
+        try {
+            localStorage.setItem(notifStorageKey(), JSON.stringify(Array.from(ids).slice(-300)));
+        } catch (e) {
+            // Storage blocked: the bell still works for this visit
+        }
+    }
+
+    function timeAgo(value) {
+        if (!value) return "";
+        const diff = Date.now() - new Date(value).getTime();
+        if (isNaN(diff)) return "";
+        const future = diff < 0;
+        const minutes = Math.round(Math.abs(diff) / 60000);
+        let ar, en;
+        if (minutes < 60) { ar = minutes + " د"; en = minutes + " min"; }
+        else if (minutes < 1440) { const h = Math.round(minutes / 60); ar = h + " س"; en = h + " h"; }
+        else { const d = Math.round(minutes / 1440); ar = d + " يوم"; en = d + (d === 1 ? " day" : " days"); }
+        if (minutes < 1) return tr("الحين", "now");
+        return future ? tr("بعد " + ar, "in " + en) : tr("قبل " + ar, en + " ago");
+    }
+
+    function ensureBell() {
+        let wrap = document.getElementById("notifWrap");
+        if (wrap) return wrap;
+        const actions = document.querySelector(".topbar-actions");
+        if (!actions) return null;
+        wrap = document.createElement("div");
+        wrap.id = "notifWrap";
+        wrap.className = "notif-wrap";
+        wrap.innerHTML = '<button type="button" class="icon-btn notif-btn" id="notifBtn" aria-haspopup="true" aria-expanded="false" aria-controls="notifPanel">'
+            + '<svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>'
+            + '<span class="notif-count hidden" id="notifCount"></span></button>'
+            + '<div class="notif-panel hidden" id="notifPanel" role="region">'
+            + '<div class="notif-head"><strong>' + tr("الإشعارات", "Notifications") + '</strong></div>'
+            + '<div class="notif-list" id="notifList"></div></div>';
+        const lang = actions.querySelector(".lang-toggle");
+        actions.insertBefore(wrap, lang || actions.firstChild);
+
+        const button = wrap.querySelector("#notifBtn");
+        const panel = wrap.querySelector("#notifPanel");
+        panel.setAttribute("aria-label", tr("الإشعارات", "Notifications"));
+        button.addEventListener("click", function (event) {
+            event.stopPropagation();
+            const open = panel.classList.contains("hidden");
+            panel.classList.toggle("hidden", !open);
+            button.setAttribute("aria-expanded", open ? "true" : "false");
+            if (open) {
+                renderNotifList(readSeen());
+                // Opening the bell marks everything as seen
+                const seen = readSeen();
+                notifItems.forEach(function (item) { seen.add(item.id); });
+                saveSeen(seen);
+                renderNotifCount();
+            }
+        });
+        document.addEventListener("click", function (event) {
+            if (!wrap.contains(event.target)) closeNotifPanel();
+        });
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") closeNotifPanel();
+        });
+        return wrap;
+    }
+
+    function closeNotifPanel() {
+        const panel = document.getElementById("notifPanel");
+        const button = document.getElementById("notifBtn");
+        if (!panel || panel.classList.contains("hidden")) return;
+        panel.classList.add("hidden");
+        button.setAttribute("aria-expanded", "false");
+    }
+
+    function renderNotifCount() {
+        const seen = readSeen();
+        const unread = notifItems.filter(function (item) { return !seen.has(item.id); }).length;
+        const count = document.getElementById("notifCount");
+        const button = document.getElementById("notifBtn");
+        if (!count) return;
+        count.textContent = unread > 9 ? "9+" : String(unread);
+        count.classList.toggle("hidden", !unread);
+        button.setAttribute("aria-label", unread
+            ? tr("الإشعارات، " + unread + " جديدة", "Notifications, " + unread + " new")
+            : tr("الإشعارات", "Notifications"));
+    }
+
+    function renderNotifList(seen) {
+        const list = document.getElementById("notifList");
+        if (!list) return;
+        if (!notifItems.length) {
+            list.innerHTML = '<p class="notif-empty">' + tr("ما فيه إشعارات حاليًا.", "No notifications right now.") + "</p>";
+            return;
+        }
+        list.innerHTML = notifItems.map(function (item, i) {
+            const isNew = !seen.has(item.id);
+            return '<button type="button" class="notif-item tone-' + (item.tone || "info") + (isNew ? " is-new" : "") + '" data-notif="' + i + '">'
+                + '<span class="notif-dot" aria-hidden="true"></span>'
+                + '<span class="notif-body"><strong>' + escapeHtml(item.title) + "</strong>"
+                // textHtml is trusted markup we build ourselves (e.g. the riyal symbol from formatMoney)
+                + (item.textHtml ? "<span>" + item.textHtml + "</span>" : (item.text ? "<span>" + escapeHtml(item.text) + "</span>" : ""))
+                + (item.time ? '<small>' + timeAgo(item.time) + "</small>" : "")
+                + "</span>"
+                + (isNew ? '<span class="sr-only">' + tr("جديد", "New") + "</span>" : "")
+                + "</button>";
+        }).join("");
+        list.querySelectorAll("[data-notif]").forEach(function (button) {
+            button.addEventListener("click", function () {
+                const item = notifItems[Number(button.dataset.notif)];
+                closeNotifPanel();
+                if (item && item.panel) {
+                    window.location.hash = item.panel;
+                    setPanel(item.panel);
+                }
+                if (item && typeof item.onClick === "function") item.onClick();
+            });
+        });
+    }
+
+    function setNotifications(items) {
+        notifItems = (items || []).filter(Boolean).sort(function (a, b) {
+            return new Date(b.time || 0) - new Date(a.time || 0);
+        }).slice(0, 25);
+        if (!ensureBell()) return;
+        renderNotifCount();
+        const panel = document.getElementById("notifPanel");
+        if (panel && !panel.classList.contains("hidden")) renderNotifList(readSeen());
+    }
+
+    // Small date helpers for the dashboards' notification rules
+    function daysSince(value) {
+        if (!value) return Infinity;
+        return (Date.now() - new Date(value).getTime()) / 86400000;
+    }
+
+    function daysUntil(value) {
+        if (!value) return Infinity;
+        return (new Date(value).getTime() - Date.now()) / 86400000;
+    }
+
     async function init(config) {
         state.config = config;
         if (!getToken()) {
@@ -449,6 +608,9 @@ const WaeiDashboard = (function () {
         icon: icon,
         setPanel: setPanel,
         setNavBadge: setNavBadge,
+        setNotifications: setNotifications,
+        daysSince: daysSince,
+        daysUntil: daysUntil,
         notify: notify,
         copyText: copyText,
         openDialog: openDialog,

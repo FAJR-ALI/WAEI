@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-en="Waei — Contact us">واعي — تواصل معنا</title>
+    <link rel="icon" href="/img/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/i18n.js"></script>
+    <style>
+        .legal { max-width: 820px; display: flex; flex-direction: column; gap: 22px; }
+        .legal h1 { font-size: 40px; line-height: 1.3; }
+        .legal .updated { font-size: 14px; color: var(--soft); }
+        .legal section { display: flex; flex-direction: column; gap: 10px; }
+        .legal h2 { font-size: 22px; }
+        .legal p, .legal li { font-size: 16px; line-height: 1.9; color: var(--muted); }
+        .legal ul { margin: 0; padding-inline-start: 22px; display: flex; flex-direction: column; gap: 6px; }
+        .legal a { color: var(--primary); }
+        .contact-layout { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+        .contact-form { flex: 999 1 480px; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+        .contact-side { flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+        .contact-form label { font-weight: 600; font-size: 15px; }
+        .contact-field { display: flex; flex-direction: column; gap: 6px; }
+        .contact-form textarea { min-height: 150px; resize: vertical; font-family: inherit; }
+        .type-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+        .contact-email { font-size: 18px; font-weight: 700; color: var(--primary); direction: ltr; unicode-bidi: embed; }
+    </style>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="container">
+        <a href="/" class="brand">
+            <img src="/img/logo.png" alt="شعار واعي" data-en-alt="Waei logo">
+            <span data-en="Waei">واعي</span>
+        </a>
+        <nav class="nav" aria-label="القائمة الرئيسية" data-en-aria="Main menu">
+            <a href="/trainings" data-en="Trainings">التدريبات</a>
+            <a href="/guide" data-en="Emergency guide">دليل الطوارئ</a>
+            <a href="/#numbers" data-en="Emergency numbers">أرقام الطوارئ</a>
+            <a href="/calendar" data-en="Awareness calendar">التقويم التوعوي</a>
+        </nav>
+        <div class="header-actions">
+            <a href="/login" id="headerLogin" class="pill pill-outline" data-en="Join Waei">انضم لواعي</a>
+            <button type="button" class="lang-toggle">English</button>
+        </div>
+    </div>
+</header>
+
+<main class="section">
+    <div class="container stack" style="gap: 28px">
+        <div class="legal" style="gap: 10px">
+            <h1 data-en="Contact the Waei team">تواصل مع فريق واعي</h1>
+            <p data-en="A question, a complaint or a suggestion? Write to us and we will get back to you.">عندك استفسار أو شكوى أو اقتراح؟ اكتب لنا ونرد عليك.</p>
+        </div>
+
+        <div class="contact-layout">
+            <form id="contactForm" class="card contact-form" novalidate>
+                <div class="contact-field">
+                    <span style="font-weight: 600; font-size: 15px" id="typeLabel" data-en="Message type">نوع الرسالة</span>
+                    <div class="type-chips" role="group" aria-labelledby="typeLabel">
+                        <button type="button" class="chip" data-type="inquiry" aria-pressed="true" data-en="Inquiry">استفسار</button>
+                        <button type="button" class="chip" data-type="complaint" aria-pressed="false" data-en="Complaint">شكوى</button>
+                        <button type="button" class="chip" data-type="suggestion" aria-pressed="false" data-en="Suggestion">اقتراح</button>
+                        <button type="button" class="chip" data-type="partnership" aria-pressed="false" data-en="Partnership">شراكة</button>
+                    </div>
+                </div>
+                <div class="contact-field">
+                    <label for="contactName" data-en="Name">الاسم</label>
+                    <input id="contactName" class="input" type="text" maxlength="80" required>
+                </div>
+                <div class="contact-field">
+                    <label for="contactOrg" data-en="Organization (optional)">الجهة (اختياري)</label>
+                    <input id="contactOrg" class="input" type="text" maxlength="120">
+                </div>
+                <div class="contact-field">
+                    <label for="contactMessage" data-en="Message">الرسالة</label>
+                    <textarea id="contactMessage" class="input" maxlength="2000" required></textarea>
+                </div>
+                <div id="contactAlert" aria-live="polite"></div>
+                <button type="submit" class="btn btn-primary" style="align-self: flex-start" data-en="Send">إرسال</button>
+            </form>
+
+            <aside class="contact-side">
+                <div class="card" style="display: flex; flex-direction: column; gap: 8px">
+                    <h2 style="font-size: 20px" data-en="Waei email">إيميل واعي</h2>
+                    <a class="contact-email" id="contactEmailLink" href="mailto:contact@waei.sa">contact@waei.sa</a>
+                </div>
+            </aside>
+        </div>
+    </div>
+</main>
+
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-about">
+                <a href="/" class="footer-brand">
+                    <img src="/img/logo-dark.png" alt="">
+                    <span class="footer-brand-name">
+                        <strong data-en="Waei">واعي</strong>
+                        <small>WAEI</small>
+                    </span>
+                </a>
+                <p class="footer-tagline" data-en="Because awareness.. saves lives.">لأن الوعي.. ينقذ حياة.</p>
+                <p data-en="Free awareness trainings for everyone, no sign-in needed.">تدريبات توعوية مجانية للجميع، بدون تسجيل دخول.</p>
+            </div>
+
+            <nav class="footer-col" aria-label="روابط تهمك" data-en-aria="Useful links">
+                <h3 data-en="Useful links">روابط تهمك</h3>
+                <div class="footer-row">
+                    <a href="/trainings" data-en="Trainings">التدريبات</a>
+                    <span class="footer-dot" aria-hidden="true">·</span>
+                    <a href="/guide" data-en="Emergency guide">دليل الطوارئ</a>
+                </div>
+                <div class="footer-row">
+                    <a href="/#numbers" data-en="Emergency numbers">أرقام الطوارئ</a>
+                    <span class="footer-dot" aria-hidden="true">·</span>
+                    <a href="/calendar" data-en="Awareness calendar">التقويم التوعوي</a>
+                </div>
+                <div class="footer-row">
+                    <a href="/kids" data-en="Kids mode">وضع الأطفال</a>
+                </div>
+            </nav>
+
+            <nav class="footer-col" aria-label="للجهات" data-en-aria="For organizations">
+                <h3 data-en="For organizations">للجهات</h3>
+                <div class="footer-row">
+                    <a href="/register/beneficiary" data-en="Register a beneficiary organization">تسجيل جهة مستفيدة</a>
+                    <span class="footer-dot" aria-hidden="true">·</span>
+                    <a href="/register/provider" data-en="Training provider">مقدم تدريب</a>
+                </div>
+                <div class="footer-row">
+                    <a href="/login" data-en="Organization login">دخول الجهات</a>
+                </div>
+                <div class="footer-row">
+                    <a href="/contact" class="footer-contact">
+                        <span data-en="Contact the Waei team">تواصل مع فريق واعي</span>
+                        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg>
+                    </a>
+                </div>
+            </nav>
+        </div>
+
+        <div class="footer-bottom">
+            <span data-en="© 2026 Waei. All rights reserved.">© 2026 واعي. جميع الحقوق محفوظة.</span>
+            <div class="footer-row">
+                <a href="/privacy" data-en="Privacy policy">سياسة الخصوصية</a>
+                <span class="footer-dot" aria-hidden="true">·</span>
+                <a href="/terms" data-en="Terms of use">شروط الاستخدام</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="/js/api.js"></script>
+<script th:inline="none">
+    // Temporary team email: change it here when the real one is ready
+    const WAEI_CONTACT_EMAIL = "contact@waei.sa";
+    const CONTACT_TYPES = {
+        inquiry: tr("استفسار", "Inquiry"),
+        complaint: tr("شكوى", "Complaint"),
+        suggestion: tr("اقتراح", "Suggestion"),
+        partnership: tr("شراكة", "Partnership")
+    };
+    let contactType = "inquiry";
+
+    // A link like /contact?type=complaint opens the form on that type
+    const typeFromUrl = new URLSearchParams(window.location.search).get("type");
+    if (typeFromUrl && CONTACT_TYPES[typeFromUrl]) contactType = typeFromUrl;
+
+    function renderTypes() {
+        document.querySelectorAll(".type-chips .chip").forEach(function (chip) {
+            chip.setAttribute("aria-pressed", chip.dataset.type === contactType ? "true" : "false");
+        });
+    }
+    document.querySelectorAll(".type-chips .chip").forEach(function (chip) {
+        chip.addEventListener("click", function () {
+            contactType = chip.dataset.type;
+            renderTypes();
+        });
+    });
+    renderTypes();
+
+    document.getElementById("contactForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+        const name = document.getElementById("contactName").value.trim();
+        const org = document.getElementById("contactOrg").value.trim();
+        const message = document.getElementById("contactMessage").value.trim();
+        const alertBox = document.getElementById("contactAlert");
+        if (!name || message.length < 5) {
+            alertBox.innerHTML = '<div class="alert alert-error">' + tr("اكتب اسمك والرسالة.", "Please write your name and message.") + "</div>";
+            return;
+        }
+        alertBox.innerHTML = "";
+        const subject = CONTACT_TYPES[contactType] + " — " + name + (org ? " (" + org + ")" : "");
+        const body = tr("الاسم: ", "Name: ") + name + "\n"
+            + (org ? tr("الجهة: ", "Organization: ") + org + "\n" : "")
+            + tr("النوع: ", "Type: ") + CONTACT_TYPES[contactType] + "\n\n"
+            + message;
+        window.location.href = "mailto:" + WAEI_CONTACT_EMAIL
+            + "?subject=" + encodeURIComponent(subject)
+            + "&body=" + encodeURIComponent(body);
+        alertBox.innerHTML = '<div class="alert alert-ok">' + tr("فتحنا لك الإيميل، اضغط إرسال من تطبيق الإيميل.", "Your email app is open, press send there.") + "</div>";
+    });
+</script>
+</body>
+</html>
