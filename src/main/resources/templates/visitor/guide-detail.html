@@ -81,7 +81,7 @@
                     <a href="/login" data-en="Organization login">دخول الجهات</a>
                 </div>
                 <div class="footer-row">
-                    <a href="#" class="footer-contact">
+                    <a href="/contact" class="footer-contact">
                         <span data-en="Contact the Waei team">تواصل مع فريق واعي</span>
                         <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg>
                     </a>
@@ -92,9 +92,9 @@
         <div class="footer-bottom">
             <span data-en="© 2026 Waei. All rights reserved.">© 2026 واعي. جميع الحقوق محفوظة.</span>
             <div class="footer-row">
-                <a href="#" data-en="Privacy policy">سياسة الخصوصية</a>
+                <a href="/privacy" data-en="Privacy policy">سياسة الخصوصية</a>
                 <span class="footer-dot" aria-hidden="true">·</span>
-                <a href="#" data-en="Terms of use">شروط الاستخدام</a>
+                <a href="/terms" data-en="Terms of use">شروط الاستخدام</a>
             </div>
         </div>
     </div>
@@ -103,8 +103,6 @@
 <script src="/js/api.js"></script>
 <script src="/js/guide.js"></script>
 <script th:inline="none">
-    const PHONE_SVG = '<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"></path></svg>';
-
     function listItems(items, makeItem) {
         let html = "";
         items.forEach(function (text, i) {
@@ -122,7 +120,10 @@
         }
 
         try {
-            const g = await apiGet("/guide/published/" + encodeURIComponent(id));
+            const g = localizeGuide(await apiGet("/guide/published/" + encodeURIComponent(id)));
+            const color = guideColor(g);
+            box.style.setProperty("--case", color.fg);
+            box.style.setProperty("--case-bg", color.bg);
             document.title = tr("واعي — ", "Waei — ") + g.title;
 
             // Signs
@@ -143,10 +144,10 @@
                     + "</ul></section>";
             }
 
-            // When to call 997
+            // When the case needs emergency help (info only, no call button)
             let when = "";
             if (g.whenToCall.length > 0) {
-                when = '<section class="card g-box g-when"><h2>' + tr("اتصل 997 فورًا إذا", "Call 997 right away if") + '</h2><ul class="g-donts">'
+                when = '<section class="card g-box g-when"><h2>' + tr("تحتاج إسعاف إذا", "Needs emergency help if") + '</h2><ul class="g-donts">'
                     + listItems(g.whenToCall, function (s) { return "<li><span>• " + s + "</span></li>"; })
                     + "</ul></section>";
             }
@@ -173,16 +174,15 @@
             box.innerHTML = '<nav aria-label="' + tr("مسار الصفحة", "Breadcrumb") + '" style="font-size: 14px; color: var(--soft)">'
                 + '<a href="/guide">' + tr("دليل الطوارئ", "Emergency guide") + "</a> / " + categoryLabel(g.category) + "</nav>"
 
-                + '<div class="row-between" style="align-items: center">'
+                + '<div class="case-head">' + guideCaseIconHtml(g, 30)
                 + '<div style="display: flex; flex-direction: column; gap: 8px; flex: 1 1 520px; min-width: 0">'
                 + '<div style="display: flex; flex-wrap: wrap; gap: 8px">'
-                + '<span class="tag">' + categoryLabel(g.category) + "</span>"
+                + '<span class="tag case-tag">' + categoryLabel(g.category) + "</span>"
                 + (g.isUrgent ? '<span class="tag" style="background: var(--bad-bg); color: var(--bad)">' + tr("طارئ جدًا", "Very urgent") + "</span>" : "")
                 + "</div>"
                 + '<h1 id="guideTitle" style="font-size: 40px; line-height: 1.3">' + escapeHtml(g.title) + "</h1>"
                 + '<p id="guideSummary" style="font-size: 17px; line-height: 1.8; color: var(--muted)">' + escapeHtml(g.summary) + "</p>"
                 + "</div>"
-                + '<a href="tel:997" class="btn-call btn-call-lg">' + PHONE_SVG + tr("اتصل 997", "Call 997") + "</a>"
                 + "</div>"
 
                 + '<div class="g-layout">'

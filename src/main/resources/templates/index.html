@@ -110,14 +110,14 @@
         <div class="container stack">
             <div class="org-join-head">
                 <h2 id="organizations-title" class="section-title" data-en="Join Waei as an organization">انضم إلى واعي كجهة</h2>
-                <p class="section-sub" data-en="Whether you're a beneficiary organization looking to train your team or a training provider looking to deliver your programs, start by registering your organization.">سواء كنت جهة مستفيدة تبحث عن تدريب فريقك، أو مقدم خدمة تدريبية تريد نشر برامجك، ابدأ بتسجيل جهتك.</p>
+                <p class="section-sub" data-en="Whether you're a school, a company or any organization looking to train your team, or a training provider looking to deliver your programs, start by registering your organization.">سواء كنت مدرسة أو شركة أو أي جهة تبحث عن تدريب فريقها، أو مقدم خدمة تدريبية تريد نشر برامجك، ابدأ بتسجيل جهتك.</p>
             </div>
             <div class="org-join-grid">
                 <article class="org-join-card">
                     <span class="org-join-icon" aria-hidden="true">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V7l7-4 7 4v14"></path><path d="M9 21v-4h6v4"></path><path d="M9 10h.01M15 10h.01M9 14h.01M15 14h.01"></path></svg>
                     </span>
-                    <h3 data-en="Beneficiary organization">جهة مستفيدة</h3>
+                    <h3 data-en="A school, a company, or a beneficiary organization?">مدرسة أو شركة أو جهة مستفيدة؟</h3>
                     <p data-en="Request training programs for your team and follow approvals and payments from one dashboard.">اطلب البرامج التدريبية لفريقك، وتابع الموافقات والمدفوعات من لوحة واحدة.</p>
                     <a href="/register/beneficiary" class="btn btn-primary org-join-cta">
                         <span data-en="Register now">سجّل الآن</span>
@@ -128,7 +128,7 @@
                     <span class="org-join-icon" aria-hidden="true">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"></rect><path d="M12 16v4M8 20h8"></path><path d="m8 10 2 2 4-4"></path></svg>
                     </span>
-                    <h3 data-en="Training provider">مقدم خدمة تدريبية</h3>
+                    <h3 data-en="A training center or a training service provider?">مركز تدريب أو مقدم خدمة تدريبية؟</h3>
                     <p data-en="Publish your training programs and receive requests from beneficiary organizations.">انشر برامجك التدريبية واستقبل طلبات الجهات المستفيدة.</p>
                     <a href="/register/provider" class="btn btn-primary org-join-cta">
                         <span data-en="Register as a provider">سجّل كمقدم خدمة</span>
@@ -272,7 +272,7 @@
                     <a href="/login" data-en="Organization login">دخول الجهات</a>
                 </div>
                 <div class="footer-row">
-                    <a href="#" class="footer-contact">
+                    <a href="/contact" class="footer-contact">
                         <span data-en="Contact the Waei team">تواصل مع فريق واعي</span>
                         <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg>
                     </a>
@@ -283,15 +283,16 @@
         <div class="footer-bottom">
             <span data-en="© 2026 Waei. All rights reserved.">© 2026 واعي. جميع الحقوق محفوظة.</span>
             <div class="footer-row">
-                <a href="#" data-en="Privacy policy">سياسة الخصوصية</a>
+                <a href="/privacy" data-en="Privacy policy">سياسة الخصوصية</a>
                 <span class="footer-dot" aria-hidden="true">·</span>
-                <a href="#" data-en="Terms of use">شروط الاستخدام</a>
+                <a href="/terms" data-en="Terms of use">شروط الاستخدام</a>
             </div>
         </div>
     </div>
 </footer>
 
 <script src="/js/api.js"></script>
+<script src="/js/seed-content-en.js"></script>
 <script th:inline="none">
     const MONTHS = tr(
         ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"],
@@ -332,7 +333,7 @@
         const list = document.getElementById("trainingsList");
         showLoading(list, tr("نجيب التدريبات...", "Loading trainings..."));
         try {
-            const trainings = await apiGet("/awareness-service/get-active");
+            const trainings = (await apiGet("/awareness-service/get-active")).map(localizeTraining);
             renderTrainings(trainings.slice(0, HOME_TRAININGS_LIMIT));
         } catch (e) {
             showError(list, e.message);
