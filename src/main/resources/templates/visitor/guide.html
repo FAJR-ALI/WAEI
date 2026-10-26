@@ -32,17 +32,6 @@
     </div>
 </header>
 
-<!-- Call first -->
-<div class="call-strip">
-    <div class="container">
-        <span data-en="In an emergency right now? Call first, read later.">في موقف طوارئ الحين؟ اتصل أول، وبعدها اقرأ.</span>
-        <a href="tel:997" class="btn-call">
-            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"></path></svg>
-            <span data-en="Call 997">اتصل 997</span>
-        </a>
-    </div>
-</div>
-
 <!-- Hero + smart search -->
 <section class="g-hero">
     <div class="container">
@@ -134,7 +123,7 @@
                     <a href="/login" data-en="Organization login">دخول الجهات</a>
                 </div>
                 <div class="footer-row">
-                    <a href="#" class="footer-contact">
+                    <a href="/contact" class="footer-contact">
                         <span data-en="Contact the Waei team">تواصل مع فريق واعي</span>
                         <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg>
                     </a>
@@ -145,9 +134,9 @@
         <div class="footer-bottom">
             <span data-en="© 2026 Waei. All rights reserved.">© 2026 واعي. جميع الحقوق محفوظة.</span>
             <div class="footer-row">
-                <a href="#" data-en="Privacy policy">سياسة الخصوصية</a>
+                <a href="/privacy" data-en="Privacy policy">سياسة الخصوصية</a>
                 <span class="footer-dot" aria-hidden="true">·</span>
-                <a href="#" data-en="Terms of use">شروط الاستخدام</a>
+                <a href="/terms" data-en="Terms of use">شروط الاستخدام</a>
             </div>
         </div>
     </div>
@@ -166,7 +155,7 @@
         const list = document.getElementById("guidesList");
         showLoading(list, tr("نجيب الحالات...", "Loading cases..."));
         try {
-            allGuides = await apiGet("/guide/published");
+            allGuides = (await apiGet("/guide/published")).map(localizeGuide);
             const withVideo = allGuides.filter(function (g) { return g.hasTraining; }).length;
             document.getElementById("countText").textContent = tr(
                 allGuides.length + " حالة · " + withVideo + " منها لها تدريب بالفيديو",
@@ -206,22 +195,24 @@
         const guides = allGuides.filter(function (g) {
             if (selectedCategory !== "ALL" && g.category !== selectedCategory) return false;
             if (videoOnly && !g.hasTraining) return false;
-            if (text && !(g.title.includes(text) || g.summary.includes(text))) return false;
+            const q = text.toLowerCase();
+            if (q && !(g.title.toLowerCase().includes(q) || g.summary.toLowerCase().includes(q))) return false;
             return true;
         });
 
         if (guides.length === 0) {
-            showEmpty(list, tr("ما لقينا حالة. جرّب البحث الذكي فوق، ولو الموقف طارئ اتصل على 997.",
-                "No case found. Try the smart search above, and if it is an emergency call 997."));
+            showEmpty(list, tr("ما لقينا حالة. جرّب البحث الذكي فوق.",
+                "No case found. Try the smart search above."));
             return;
         }
 
         let html = "";
         for (const g of guides) {
-            html += '<a class="guide-card" href="/guide/detail?id=' + g.id + '">'
-                + '<div class="guide-top">' + guideIconHtml(g.icon, 26)
+            const color = guideColor(g);
+            html += '<a class="guide-card" href="/guide/detail?id=' + g.id + '" style="--case: ' + color.fg + "; --case-bg: " + color.bg + '">'
+                + '<div class="guide-top">' + guideCaseIconHtml(g, 26)
                 + '<div style="display: flex; flex-direction: column; gap: 4px">'
-                + '<span class="tag">' + categoryLabel(g.category) + "</span>"
+                + '<span class="tag case-tag">' + categoryLabel(g.category) + "</span>"
                 + '<span class="title">' + escapeHtml(g.title) + "</span>"
                 + "</div></div>"
                 + "<p>" + escapeHtml(g.summary) + "</p>"
@@ -257,23 +248,26 @@
         button.disabled = true;
         showLoading(box, tr("نشوف أقرب حالة...", "Finding the closest case..."));
         try {
-            const result = await apiPost("/guide/smart-search", { description: description });
+            const raw = await apiPost("/guide/smart-search", { description: description });
+            const result = localizeGuide(raw);
+            // The AI reason is written in Arabic: in English show the case summary instead
+            if (LANG === "en" && result.title !== raw.title) result.reason = result.summary;
             if (result.matched) {
-                box.innerHTML = '<div class="ai-result">'
-                    + '<span class="badge-ai">' + tr("أقرب حالة", "Closest case") + "</span>"
+                const color = guideColor(result);
+                box.innerHTML = '<div class="ai-result" style="border-color: ' + color.fg + '">'
+                    + guideCaseIconHtml(result, 24)
+                    + '<span class="badge-ai" style="background: ' + color.bg + "; color: " + color.fg + '">' + tr("أقرب حالة", "Closest case") + "</span>"
                     + '<div style="flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 6px">'
                     + '<strong id="aiTitle" style="font-size: 20px">' + escapeHtml(result.title) + "</strong>"
                     + '<span id="aiReason" style="color: var(--muted); line-height: 1.7">' + escapeHtml(result.reason || result.summary) + "</span>"
                     + "</div>"
-                    + (result.isUrgent ? '<a href="tel:997" class="btn-call">' + tr("اتصل 997", "Call 997") + "</a>" : "")
                     + '<a href="/guide/detail?id=' + result.guideId + '" class="btn btn-primary">' + tr("افتح الحالة", "Open the case") + "</a>"
                     + "</div>";
             } else {
                 box.innerHTML = '<div class="ai-result no-match">'
                     + '<span style="flex: 1 1 360px; color: var(--bad); font-weight: 600">'
-                    + tr("ما لقينا حالة تطابق الوصف. لو الموقف طارئ اتصل على 997 الحين.", "We could not find a matching case. If it is an emergency, call 997 now.")
-                    + "</span>"
-                    + '<a href="tel:997" class="btn-call">' + tr("اتصل 997", "Call 997") + "</a></div>";
+                    + tr("ما لقينا حالة تطابق الوصف. جرّب توصف الموقف بكلمات ثانية أو تصفح الحالات تحت.", "We could not find a matching case. Try describing it differently or browse the cases below.")
+                    + "</span></div>";
             }
         } catch (e) {
             showError(box, e.message);

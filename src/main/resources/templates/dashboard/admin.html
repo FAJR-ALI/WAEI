@@ -103,6 +103,16 @@
                 <div class="panel">
                     <div class="panel-head">
                         <div>
+                            <h2 data-en="Latest pending applications">أحدث طلبات التسجيل المعلقة</h2>
+                            <p data-en="Organizations waiting for document review.">جهات بانتظار مراجعة المستند.</p>
+                        </div>
+                        <button type="button" class="btn btn-ghost btn-sm" data-goto="registrations" data-en="View all">عرض الكل</button>
+                    </div>
+                    <div id="overviewPending" class="panel-state"></div>
+                </div>
+                <div class="panel">
+                    <div class="panel-head">
+                        <div>
                             <h2 data-en="Weekly summary">ملخص الأسبوع الذكي</h2>
                             <p data-en="A short summary of platform activity for the last and next 7 days.">ملخص مختصر لنشاط المنصة لآخر 7 أيام و7 أيام قادمة.</p>
                         </div>
@@ -114,16 +124,6 @@
                     <div id="adminWeeklySummary" class="panel-state"></div>
                 </div>
 
-                <div class="panel">
-                    <div class="panel-head">
-                        <div>
-                            <h2 data-en="Latest pending applications">أحدث طلبات التسجيل المعلقة</h2>
-                            <p data-en="Organizations waiting for document review.">جهات بانتظار مراجعة المستند.</p>
-                        </div>
-                        <button type="button" class="btn btn-ghost btn-sm" data-goto="registrations" data-en="View all">عرض الكل</button>
-                    </div>
-                    <div id="overviewPending" class="panel-state"></div>
-                </div>
             </section>
 
             <section class="app-section hidden" data-panel="registrations">
@@ -280,33 +280,63 @@
         </div>
         <div class="dialog-body">
             <div id="trainingError"></div>
-            <div class="form-grid">
-                <div class="field">
-                    <label for="trainingTitle" data-en="Training title">اسم التدريب</label>
-                    <input id="trainingTitle" class="input" type="text" minlength="3" maxlength="100" required>
-                </div>
-                <div class="field">
-                    <label for="trainingCategory" data-en="Category">التصنيف</label>
-                    <input id="trainingCategory" class="input" type="text" maxlength="50" list="trainingCategoryList" required placeholder="إسعافات أولية" data-en-placeholder="First aid">
-                    <datalist id="trainingCategoryList"></datalist>
-                </div>
-                <div class="field full">
-                    <label for="trainingDescription" data-en="Correct steps">الخطوات الصحيحة</label>
-                    <textarea id="trainingDescription" class="input" rows="9" minlength="20" maxlength="5000" required></textarea>
-                    <span class="field-hint" data-en="One step per line, numbered: 1. … 2. … You can start with a title line like “Correct steps:”.">كل خطوة في سطر ومرقمة: 1. … 2. … وتقدر تبدأ بسطر عنوان مثل "الخطوات الصحيحة:".</span>
-                </div>
-                <div class="field full">
-                    <label for="trainingVideo" data-en="Official video link (optional)">رابط الفيديو الرسمي (اختياري)</label>
-                    <input id="trainingVideo" class="input" type="url" maxlength="255" dir="ltr" placeholder="https://">
-                </div>
-                <label class="check full">
-                    <input type="checkbox" id="trainingActive" checked>
-                    <span data-en="Available to visitors">متاح للزوار</span>
-                </label>
+            <div class="form-tabs" role="tablist" aria-label="عرض النموذج" data-en-aria="Form view">
+                <button type="button" class="form-tab" role="tab" aria-selected="true" data-pane="form" data-en="Details">البيانات</button>
+                <button type="button" class="form-tab" role="tab" aria-selected="false" data-pane="preview" data-en="Preview">المعاينة</button>
+            </div>
+            <div class="form-pane" data-pane-body="form">
+                <fieldset class="form-section">
+                    <legend><span class="form-step">1</span><span data-en="Basic info">المعلومات الأساسية</span></legend>
+                    <div class="form-grid">
+                        <div class="field">
+                            <label for="trainingTitle" data-en="Training title">اسم التدريب</label>
+                            <input id="trainingTitle" class="input" type="text" minlength="3" maxlength="100" required placeholder="مثال: الإنعاش القلبي الرئوي للبالغ" data-en-placeholder="Example: Adult CPR">
+                        </div>
+                        <div class="field">
+                            <label for="trainingCategory" data-en="Category">التصنيف</label>
+                            <input id="trainingCategory" class="input" type="text" maxlength="50" list="trainingCategoryList" required placeholder="إسعافات أولية" data-en-placeholder="First aid">
+                            <datalist id="trainingCategoryList"></datalist>
+                            <span class="field-hint" data-en="Pick one from the list or write a new one.">اختر من القائمة أو اكتب تصنيف جديد.</span>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-section">
+                    <legend><span class="form-step">2</span><span data-en="Correct steps">الخطوات الصحيحة</span></legend>
+                    <p class="form-section-note" data-en="The AI rates the visitor's video against these steps, so write them carefully and in order.">الذكاء الاصطناعي يقيّم فيديو الزائر على هذي الخطوات، فاكتبها بدقة وبالترتيب.</p>
+                    <div class="field">
+                        <label for="trainingDescription" class="sr-only" data-en="Correct steps">الخطوات الصحيحة</label>
+                        <textarea id="trainingDescription" class="input" rows="9" minlength="20" maxlength="5000" required></textarea>
+                        <div class="field-meta">
+                            <span class="field-hint" data-en="One step per line, numbered: 1. … 2. … You can start with a title line like “Correct steps:”.">كل خطوة في سطر ومرقمة: 1. … 2. … وتقدر تبدأ بسطر عنوان مثل "الخطوات الصحيحة:".</span>
+                            <span class="field-count" id="trainingStepCount"></span>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-section">
+                    <legend><span class="form-step">3</span><span data-en="Video and visibility">الفيديو والظهور</span></legend>
+                    <div class="form-grid">
+                        <div class="field full">
+                            <label for="trainingVideo" data-en="Official video link (optional)">رابط الفيديو الرسمي (اختياري)</label>
+                            <input id="trainingVideo" class="input" type="url" maxlength="255" dir="ltr" placeholder="https://">
+                            <span class="field-hint" data-en="A video that shows the correct way, from an official source.">فيديو يوضح الطريقة الصحيحة من مصدر رسمي.</span>
+                        </div>
+                        <label class="check full">
+                            <input type="checkbox" id="trainingActive" checked>
+                            <span data-en="Available to visitors">متاح للزوار</span>
+                        </label>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="preview-pane hidden" data-pane-body="preview">
+                <p class="form-section-note" data-en="This is how visitors will see the training.">هكذا بيشوف الزوار التدريب.</p>
+                <div id="trainingPreview"></div>
             </div>
         </div>
         <div class="dialog-footer">
             <button type="button" class="btn btn-outline btn-sm" data-close-dialog data-en="Cancel">إلغاء</button>
+            <button type="button" class="btn btn-ghost btn-sm" data-toggle-preview data-en="Preview">معاينة</button>
             <button type="submit" id="trainingSubmit" class="btn btn-primary btn-sm" data-en="Save training">حفظ التدريب</button>
         </div>
     </form>
@@ -317,7 +347,7 @@
         <div class="dialog-head">
             <div>
                 <h2 id="guideDialogTitle">إضافة حالة</h2>
-                <p data-en="Write each list item on its own line.">اكتب كل عنصر في القوائم في سطر لحاله.</p>
+                <p data-en="Fill in the three sections, then check the preview before saving.">عبّئ الأقسام الثلاثة، وبعدها شيّك على المعاينة قبل الحفظ.</p>
             </div>
             <button type="button" class="dialog-close" data-close-dialog aria-label="إغلاق" data-en-aria="Close">
                 <svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>
@@ -325,63 +355,94 @@
         </div>
         <div class="dialog-body">
             <div id="guideError"></div>
-            <div class="form-grid">
-                <div class="field full">
-                    <label for="guideTitle" data-en="Case title">اسم الحالة</label>
-                    <input id="guideTitle" class="input" type="text" minlength="3" maxlength="100" required>
-                </div>
-                <div class="field">
-                    <label for="guideCategory" data-en="Category">التصنيف</label>
-                    <select id="guideCategory" class="input" required></select>
-                </div>
-                <div class="field">
-                    <label for="guideIcon" data-en="Icon">الأيقونة</label>
-                    <select id="guideIcon" class="input"></select>
-                </div>
-                <div class="field full">
-                    <label for="guideSummary" data-en="Short summary">ملخص قصير</label>
-                    <input id="guideSummary" class="input" type="text" maxlength="255" required placeholder="مثال: إذا شخص طاح وما يتنفس" data-en-placeholder="Example: someone collapsed and isn't breathing">
-                </div>
-                <div class="field">
-                    <label for="guideSigns" data-en="Signs (one per line)">العلامات (كل وحدة في سطر)</label>
-                    <textarea id="guideSigns" class="input" rows="5" maxlength="3000" required></textarea>
-                </div>
-                <div class="field">
-                    <label for="guideSteps" data-en="What to do (one step per line)">وش تسوي (كل خطوة في سطر)</label>
-                    <textarea id="guideSteps" class="input" rows="5" maxlength="5000" required></textarea>
-                </div>
-                <div class="field">
-                    <label for="guideDonts" data-en="Don'ts (optional)">لا تسوي (اختياري)</label>
-                    <textarea id="guideDonts" class="input" rows="4" maxlength="3000"></textarea>
-                </div>
-                <div class="field">
-                    <label for="guideWhenToCall" data-en="When to call (optional)">متى تتصل (اختياري)</label>
-                    <textarea id="guideWhenToCall" class="input" rows="4" maxlength="3000"></textarea>
-                </div>
-                <div class="field">
-                    <label for="guideSourceName" data-en="Source name (optional)">اسم المصدر (اختياري)</label>
-                    <input id="guideSourceName" class="input" type="text" maxlength="150" placeholder="الهلال الأحمر السعودي" data-en-placeholder="Saudi Red Crescent">
-                </div>
-                <div class="field">
-                    <label for="guideSourceUrl" data-en="Source link (optional)">رابط المصدر (اختياري)</label>
-                    <input id="guideSourceUrl" class="input" type="url" maxlength="255" dir="ltr" placeholder="https://">
-                </div>
-                <div class="field full">
-                    <label for="guideTraining" data-en="Linked video training (optional)">تدريب فيديو مرتبط (اختياري)</label>
-                    <select id="guideTraining" class="input"></select>
-                </div>
-                <label class="check">
-                    <input type="checkbox" id="guideUrgent">
-                    <span data-en="Urgent case">حالة عاجلة</span>
-                </label>
-                <label class="check">
-                    <input type="checkbox" id="guidePublished" checked>
-                    <span data-en="Published to visitors">منشورة للزوار</span>
-                </label>
+            <div class="form-tabs" role="tablist" aria-label="عرض النموذج" data-en-aria="Form view">
+                <button type="button" class="form-tab" role="tab" aria-selected="true" data-pane="form" data-en="Details">البيانات</button>
+                <button type="button" class="form-tab" role="tab" aria-selected="false" data-pane="preview" data-en="Preview">المعاينة</button>
+            </div>
+            <div class="form-pane" data-pane-body="form">
+                <fieldset class="form-section">
+                    <legend><span class="form-step">1</span><span data-en="Basic info">المعلومات الأساسية</span></legend>
+                    <div class="form-grid">
+                        <div class="field full">
+                            <label for="guideTitle" data-en="Case title">اسم الحالة</label>
+                            <input id="guideTitle" class="input" type="text" minlength="3" maxlength="100" required placeholder="مثال: توقف القلب" data-en-placeholder="Example: Cardiac arrest">
+                        </div>
+                        <div class="field">
+                            <label for="guideCategory" data-en="Category">التصنيف</label>
+                            <select id="guideCategory" class="input" required></select>
+                        </div>
+                        <div class="field">
+                            <label for="guideIcon" data-en="Icon">الأيقونة</label>
+                            <select id="guideIcon" class="input"></select>
+                        </div>
+                        <div class="field full">
+                            <label for="guideSummary" data-en="Short summary">ملخص قصير</label>
+                            <input id="guideSummary" class="input" type="text" maxlength="255" required placeholder="مثال: إذا شخص طاح وما يتنفس" data-en-placeholder="Example: someone collapsed and isn't breathing">
+                            <span class="field-hint" data-en="One sentence shown on the case card.">جملة وحدة تظهر على بطاقة الحالة.</span>
+                        </div>
+                        <label class="check full">
+                            <input type="checkbox" id="guideUrgent">
+                            <span data-en="Urgent case (shows a “very urgent” label)">حالة عاجلة (يظهر عليها "طارئ جدًا")</span>
+                        </label>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-section">
+                    <legend><span class="form-step">2</span><span data-en="Signs and steps">العلامات والخطوات</span></legend>
+                    <p class="form-section-note" data-en="Write each item on its own line.">اكتب كل عنصر في سطر لحاله.</p>
+                    <div class="form-grid">
+                        <div class="field full">
+                            <label for="guideSigns" data-en="How to recognize it">كيف تعرف الحالة؟ (العلامات)</label>
+                            <textarea id="guideSigns" class="input" rows="4" maxlength="3000" required></textarea>
+                            <span class="field-count" id="guideSignsCount"></span>
+                        </div>
+                        <div class="field full">
+                            <label for="guideSteps" data-en="What to do (in order)">وش تسوي (بالترتيب)</label>
+                            <textarea id="guideSteps" class="input" rows="6" maxlength="5000" required></textarea>
+                            <span class="field-count" id="guideStepsCount"></span>
+                        </div>
+                        <div class="field">
+                            <label for="guideDonts" data-en="Don'ts (optional)">لا تسوي (اختياري)</label>
+                            <textarea id="guideDonts" class="input" rows="4" maxlength="3000"></textarea>
+                        </div>
+                        <div class="field">
+                            <label for="guideWhenToCall" data-en="Needs emergency help if (optional)">تحتاج إسعاف إذا (اختياري)</label>
+                            <textarea id="guideWhenToCall" class="input" rows="4" maxlength="3000"></textarea>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-section">
+                    <legend><span class="form-step">3</span><span data-en="Source and training">المصدر والتدريب</span></legend>
+                    <div class="form-grid">
+                        <div class="field">
+                            <label for="guideSourceName" data-en="Source name (optional)">اسم المصدر (اختياري)</label>
+                            <input id="guideSourceName" class="input" type="text" maxlength="150" placeholder="الهلال الأحمر السعودي" data-en-placeholder="Saudi Red Crescent">
+                        </div>
+                        <div class="field">
+                            <label for="guideSourceUrl" data-en="Source link (optional)">رابط المصدر (اختياري)</label>
+                            <input id="guideSourceUrl" class="input" type="url" maxlength="255" dir="ltr" placeholder="https://">
+                        </div>
+                        <div class="field full">
+                            <label for="guideTraining" data-en="Linked video training (optional)">تدريب فيديو مرتبط (اختياري)</label>
+                            <select id="guideTraining" class="input"></select>
+                            <span class="field-hint" data-en="Adds a “Practice it” button on the case page.">يضيف زر "تدرّب عليها" في صفحة الحالة.</span>
+                        </div>
+                        <label class="check full">
+                            <input type="checkbox" id="guidePublished" checked>
+                            <span data-en="Published to visitors">منشورة للزوار</span>
+                        </label>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="preview-pane hidden" data-pane-body="preview">
+                <p class="form-section-note" data-en="This is how visitors will see the case.">هكذا بيشوف الزوار الحالة.</p>
+                <div id="guidePreview"></div>
             </div>
         </div>
         <div class="dialog-footer">
             <button type="button" class="btn btn-outline btn-sm" data-close-dialog data-en="Cancel">إلغاء</button>
+            <button type="button" class="btn btn-ghost btn-sm" data-toggle-preview data-en="Preview">معاينة</button>
             <button type="submit" id="guideSubmit" class="btn btn-primary btn-sm" data-en="Save case">حفظ الحالة</button>
         </div>
     </form>
@@ -946,6 +1007,57 @@
         WaeiDashboard.openDialog("paymentDialog");
     }
 
+    // ===== Notifications (built from the data already loaded) =====
+    function buildNotifications() {
+        const items = [];
+        registrations.forEach(function (item) {
+            if (item.verificationStatus !== "PENDING") return;
+            items.push({
+                id: "reg:" + item.id + ":PENDING",
+                title: tr("طلب تسجيل جديد", "New organization application"),
+                text: item.name + " · " + WaeiDashboard.typeLabel(item.type),
+                time: item.submittedAt || item.createdAt,
+                panel: "registrations",
+                tone: "warn"
+            });
+        });
+        payments.forEach(function (payment) {
+            if (payment.status === "PAID" && WaeiDashboard.daysSince(payment.paidAt || payment.createdAt) <= 7) {
+                items.push({
+                    id: "pay:" + payment.id + ":PAID",
+                    title: tr("دفعة جديدة مكتملة", "New payment received"),
+                    textHtml: WaeiDashboard.formatMoney(payment.amount),
+                    time: payment.paidAt || payment.createdAt,
+                    panel: "payments",
+                    tone: "ok"
+                });
+            } else if (payment.status === "FAILED" && WaeiDashboard.daysSince(payment.updatedAt || payment.createdAt) <= 14) {
+                items.push({
+                    id: "pay:" + payment.id + ":FAILED",
+                    title: tr("فشلت عملية دفع", "A payment failed"),
+                    textHtml: WaeiDashboard.formatMoney(payment.amount),
+                    time: payment.updatedAt || payment.createdAt,
+                    panel: "payments",
+                    tone: "bad"
+                });
+            }
+        });
+        requests.forEach(function (request) {
+            // Requests waiting for the provider for more than 3 days
+            if (request.status === "PENDING" && WaeiDashboard.daysSince(request.requestedAt) > 3) {
+                items.push({
+                    id: "req:" + request.id + ":STALE",
+                    title: tr("طلب تدريب متأخر بدون رد", "Training request without a reply"),
+                    text: (request.trainingProgramTitle || "") + " · " + (request.providerOrganizationName || ""),
+                    time: request.requestedAt,
+                    panel: "overview",
+                    tone: "warn"
+                });
+            }
+        });
+        WaeiDashboard.setNotifications(items);
+    }
+
     async function loadData() {
         const pendingRoot = document.getElementById("registrationsList");
         if (pendingRoot) {
@@ -972,6 +1084,7 @@
             renderOrganizations();
             renderPayments();
             loadContent();
+            buildNotifications();
         } catch (e) {
             showError(pendingRoot, e.message);
             WaeiDashboard.notify(e.message, "error");
@@ -1077,6 +1190,8 @@
         trainings.forEach(function (row) { if (row.category && cats.indexOf(row.category) === -1) cats.push(row.category); });
         ["إسعافات أولية", "سلامة"].forEach(function (c) { if (cats.indexOf(c) === -1) cats.push(c); });
         document.getElementById("trainingCategoryList").innerHTML = cats.map(function (c) { return '<option value="' + escapeHtml(c) + '"></option>'; }).join("");
+        showFormPane("trainingDialog", "form");
+        updateFormCounts();
         WaeiDashboard.openDialog("trainingDialog");
         document.getElementById("trainingTitle").focus();
     }
@@ -1218,6 +1333,8 @@
         document.getElementById("guideTraining").value = g && g.awarenessServiceId ? String(g.awarenessServiceId) : "";
         document.getElementById("guideUrgent").checked = g ? Boolean(g.isUrgent) : false;
         document.getElementById("guidePublished").checked = g ? Boolean(g.isPublished) : true;
+        showFormPane("guideDialog", "form");
+        updateFormCounts();
         WaeiDashboard.openDialog("guideDialog");
         document.getElementById("guideTitle").focus();
     }
@@ -1264,6 +1381,124 @@
         document.getElementById(rootId).innerHTML = '<div class="alert alert-error" role="alert">' + escapeHtml(message) + "</div>";
     }
 
+    // ===== Form tabs (details / preview) for the training and case dialogs =====
+    function textLines(value) {
+        return (value || "").split("\n").map(function (l) { return l.trim(); }).filter(Boolean);
+    }
+
+    function showFormPane(dialogId, pane) {
+        const dialog = document.getElementById(dialogId);
+        if (pane === "preview") {
+            if (dialogId === "trainingDialog") renderTrainingPreview();
+            else renderGuidePreview();
+        }
+        dialog.querySelectorAll(".form-tab").forEach(function (tab) {
+            tab.setAttribute("aria-selected", tab.dataset.pane === pane ? "true" : "false");
+        });
+        dialog.querySelectorAll("[data-pane-body]").forEach(function (body) {
+            body.classList.toggle("hidden", body.dataset.paneBody !== pane);
+        });
+        const toggle = dialog.querySelector("[data-toggle-preview]");
+        toggle.textContent = pane === "preview" ? tr("رجوع للتعديل", "Back to editing") : tr("معاينة", "Preview");
+        dialog.dataset.pane = pane;
+    }
+
+    ["trainingDialog", "guideDialog"].forEach(function (dialogId) {
+        const dialog = document.getElementById(dialogId);
+        dialog.querySelectorAll(".form-tab").forEach(function (tab) {
+            tab.addEventListener("click", function () { showFormPane(dialogId, tab.dataset.pane); });
+        });
+        dialog.querySelector("[data-toggle-preview]").addEventListener("click", function () {
+            showFormPane(dialogId, dialog.dataset.pane === "preview" ? "form" : "preview");
+        });
+    });
+
+    // Live counters under the list fields
+    function updateFormCounts() {
+        const steps = textLines(document.getElementById("trainingDescription").value).filter(function (l) { return /^\d+[.)\-]/.test(l); }).length;
+        document.getElementById("trainingStepCount").textContent = tr(steps + " خطوات مرقمة", steps + " numbered steps");
+        const signs = textLines(document.getElementById("guideSigns").value).length;
+        document.getElementById("guideSignsCount").textContent = tr(signs + " علامات", signs + " signs");
+        const gsteps = textLines(document.getElementById("guideSteps").value).length;
+        document.getElementById("guideStepsCount").textContent = tr(gsteps + " خطوات", gsteps + " steps");
+    }
+    ["trainingDescription", "guideSigns", "guideSteps"].forEach(function (id) {
+        document.getElementById(id).addEventListener("input", updateFormCounts);
+    });
+
+    function renderTrainingPreview() {
+        const title = document.getElementById("trainingTitle").value.trim();
+        const category = document.getElementById("trainingCategory").value.trim();
+        const description = document.getElementById("trainingDescription").value.trim();
+        const video = document.getElementById("trainingVideo").value.trim();
+        const active = document.getElementById("trainingActive").checked;
+        let html = '<article class="training-card preview-card ' + categoryTagClass(category).replace("tag-", "tone-") + '">'
+            + '<div class="training-tags"><span class="tag ' + categoryTagClass(category) + '">' + escapeHtml(category || tr("بدون تصنيف", "No category")) + "</span>"
+            + (video ? '<span class="video-tag">' + tr("فيه فيديو رسمي", "Official video") + "</span>" : "")
+            + "</div>"
+            + "<h3>" + escapeHtml(title || tr("اسم التدريب", "Training title")) + "</h3>"
+            + '<div class="steps-wrap">' + stepsPreviewHtml(description, 99) + "</div>"
+            + "</article>";
+        if (!active) {
+            html = '<div class="alert alert-error" style="margin-bottom: 12px">' + tr("التدريب غير متاح للزوار حاليًا.", "This training is hidden from visitors.") + "</div>" + html;
+        }
+        document.getElementById("trainingPreview").innerHTML = html;
+    }
+
+    function renderGuidePreview() {
+        const title = document.getElementById("guideTitle").value.trim();
+        const category = GUIDE_CATEGORIES[document.getElementById("guideCategory").value];
+        const icon = document.getElementById("guideIcon").value;
+        const summary = document.getElementById("guideSummary").value.trim();
+        const signs = textLines(document.getElementById("guideSigns").value);
+        const steps = textLines(document.getElementById("guideSteps").value);
+        const donts = textLines(document.getElementById("guideDonts").value);
+        const when = textLines(document.getElementById("guideWhenToCall").value);
+        const sourceName = document.getElementById("guideSourceName").value.trim();
+        const urgent = document.getElementById("guideUrgent").checked;
+        const published = document.getElementById("guidePublished").checked;
+        const trainingId = document.getElementById("guideTraining").value;
+
+        let html = "";
+        if (!published) {
+            html += '<div class="alert alert-error">' + tr("الحالة مخفية عن الزوار حاليًا.", "This case is hidden from visitors.") + "</div>";
+        }
+        html += '<div class="preview-case-head">' + guideIconHtml(icon)
+            + '<div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">'
+            + '<div style="display: flex; flex-wrap: wrap; gap: 6px">'
+            + (category ? '<span class="tag">' + tr(category[0], category[1]) + "</span>" : "")
+            + (urgent ? '<span class="tag" style="background: var(--bad-bg); color: var(--bad)">' + tr("طارئ جدًا", "Very urgent") + "</span>" : "")
+            + "</div>"
+            + "<h3>" + escapeHtml(title || tr("اسم الحالة", "Case title")) + "</h3>"
+            + "<p>" + escapeHtml(summary || tr("الملخص القصير يظهر هنا.", "The short summary shows here.")) + "</p>"
+            + "</div></div>";
+
+        html += '<section class="preview-block"><h4>' + tr("كيف تعرف؟", "How to recognize it") + '</h4><div class="signs">'
+            + (signs.length ? signs.map(function (x) { return '<span class="sign">' + escapeHtml(x) + "</span>"; }).join("") : '<span class="field-hint">' + tr("ما فيه علامات", "No signs yet") + "</span>")
+            + "</div></section>";
+        html += '<section class="preview-block"><h4>' + tr("وش تسوي", "What to do") + '</h4><ol class="g-steps">'
+            + steps.map(function (x, i) { return '<li><span class="n">' + (i + 1) + "</span><span>" + escapeHtml(x) + "</span></li>"; }).join("")
+            + "</ol>" + (steps.length ? "" : '<span class="field-hint">' + tr("ما فيه خطوات", "No steps yet") + "</span>") + "</section>";
+        if (donts.length) {
+            html += '<section class="preview-block"><h4>' + tr("لا تسوي", "Don't") + '</h4><ul class="g-donts">'
+                + donts.map(function (x) { return '<li><span class="x" aria-hidden="true">✕</span><span>' + escapeHtml(x) + "</span></li>"; }).join("")
+                + "</ul></section>";
+        }
+        if (when.length) {
+            html += '<section class="preview-block g-when"><h4>' + tr("تحتاج إسعاف إذا", "Needs emergency help if") + '</h4><ul class="g-donts">'
+                + when.map(function (x) { return "<li><span>• " + escapeHtml(x) + "</span></li>"; }).join("")
+                + "</ul></section>";
+        }
+        if (trainingId) {
+            const t = trainings.find(function (row) { return String(row.id) === trainingId; });
+            html += '<section class="preview-block g-train"><h4>' + tr("تدرّب عليها", "Practice it") + "</h4><p>" + escapeHtml(t ? t.title : "") + "</p></section>";
+        }
+        if (sourceName) {
+            html += '<p class="field-hint">' + tr("المصدر: ", "Source: ") + escapeHtml(sourceName) + "</p>";
+        }
+        document.getElementById("guidePreview").innerHTML = html;
+    }
+
     document.getElementById("newTraining").addEventListener("click", function () { openTrainingForm(null); });
     document.getElementById("newGuide").addEventListener("click", function () { openGuideForm(null); });
 
@@ -1278,14 +1513,17 @@
             isActive: document.getElementById("trainingActive").checked
         };
         if (payload.title.length < 3 || !payload.category) {
+            showFormPane("trainingDialog", "form");
             formError("trainingError", tr("اكتب اسم التدريب (3 أحرف على الأقل) والتصنيف.", "Enter a title (at least 3 characters) and a category."));
             return;
         }
         if (payload.description.length < 20) {
+            showFormPane("trainingDialog", "form");
             formError("trainingError", tr("اكتب الخطوات الصحيحة (20 حرف على الأقل).", "Write the correct steps (at least 20 characters)."));
             return;
         }
         if (payload.officialVideoUrl && payload.officialVideoUrl.indexOf("https://") !== 0) {
+            showFormPane("trainingDialog", "form");
             formError("trainingError", tr("رابط الفيديو لازم يبدأ بـ https://", "The video link must start with https://"));
             return;
         }
@@ -1301,6 +1539,7 @@
             WaeiDashboard.notify(editingTrainingId ? tr("تم تحديث التدريب.", "Training updated.") : tr("تمت إضافة التدريب.", "Training added."), "ok");
             await loadContent();
         } catch (e) {
+            showFormPane("trainingDialog", "form");
             formError("trainingError", e.message);
         } finally {
             button.disabled = false;
@@ -1327,10 +1566,12 @@
             isPublished: document.getElementById("guidePublished").checked
         };
         if (payload.title.length < 3 || !payload.summary || !payload.signs || !payload.steps) {
+            showFormPane("guideDialog", "form");
             formError("guideError", tr("عبّئ اسم الحالة والملخص والعلامات والخطوات.", "Fill in the title, summary, signs and steps."));
             return;
         }
         if (payload.sourceUrl && payload.sourceUrl.indexOf("https://") !== 0) {
+            showFormPane("guideDialog", "form");
             formError("guideError", tr("رابط المصدر لازم يبدأ بـ https://", "The source link must start with https://"));
             return;
         }
@@ -1346,6 +1587,7 @@
             WaeiDashboard.notify(editingGuideId ? tr("تم تحديث الحالة.", "Case updated.") : tr("تمت إضافة الحالة.", "Case added."), "ok");
             await loadContent();
         } catch (e) {
+            showFormPane("guideDialog", "form");
             formError("guideError", e.message);
         } finally {
             button.disabled = false;

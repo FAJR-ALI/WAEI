@@ -142,4 +142,20 @@ public class PageController {
     public String calendar() {
         return "visitor/calendar";
     }
+
+    // Contact the Waei team (inquiries, complaints, suggestions)
+    @GetMapping("/contact")
+    public String contact() {
+        return "visitor/contact";
+    }
+
+    @GetMapping("/privacy")
+    public String privacy() {
+        return "visitor/privacy";
+    }
+
+    @GetMapping("/terms")
+    public String terms() {
+        return "visitor/terms";
+    }
 }

@@ -335,7 +335,7 @@
                     <a href="/login" data-en="Organization login">دخول الجهات</a>
                 </div>
                 <div class="footer-row">
-                    <a href="#" class="footer-contact">
+                    <a href="/contact" class="footer-contact">
                         <span data-en="Contact the Waei team">تواصل مع فريق واعي</span>
                         <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg>
                     </a>
@@ -346,15 +346,16 @@
         <div class="footer-bottom">
             <span data-en="© 2026 Waei. All rights reserved.">© 2026 واعي. جميع الحقوق محفوظة.</span>
             <div class="footer-row">
-                <a href="#" data-en="Privacy policy">سياسة الخصوصية</a>
+                <a href="/privacy" data-en="Privacy policy">سياسة الخصوصية</a>
                 <span class="footer-dot" aria-hidden="true">·</span>
-                <a href="#" data-en="Terms of use">شروط الاستخدام</a>
+                <a href="/terms" data-en="Terms of use">شروط الاستخدام</a>
             </div>
         </div>
     </div>
 </footer>
 
 <script src="/js/api.js"></script>
+<script src="/js/seed-content-en.js"></script>
 <script th:inline="none">
     const MAX_SIZE = 20 * 1024 * 1024;
 
@@ -399,7 +400,7 @@
         }
         showLoading(message, tr("نجيب التدريب...", "Loading the training..."));
         try {
-            training = await apiGet("/awareness-service/get/" + encodeURIComponent(id));
+            training = localizeTraining(await apiGet("/awareness-service/get/" + encodeURIComponent(id)));
             message.innerHTML = "";
             document.title = tr("واعي — ", "Waei — ") + training.title;
             document.getElementById("trainingCategory").textContent = training.category;
