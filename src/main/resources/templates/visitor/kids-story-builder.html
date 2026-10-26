@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-en="Waei — Create a story">واعي — كوّن قصتك</title>
+    <link rel="icon" href="/img/logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/kids.css?v=art-1"><script src="/js/i18n.js"></script>
+    <style>
+        .builder-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 20px; }
+        .builder-field { display: flex; flex-direction: column; gap: 10px; font-size: 23px; font-weight: 700; }
+        .builder-field select { font: inherit; font-size: 21px; padding: 12px; border: 3px solid #DDD6FE; border-radius: 18px; background: #FAF5FF; max-width: 100%; }
+        #builderContent { white-space: pre-line; font-size: 27px; line-height: 1.9; }
+        #builderResult { background: #FEF3C7; }
+        #builderLesson { font-size: 23px; color: #6D28D9; }
+    </style>
+</head>
+<body>
+<header class="k-header">
+    <a href="/kids/stories" class="k-back" data-en="Back to stories">رجوع للقصص</a>
+    <div class="k-tools">
+        <button type="button" class="lang-toggle">English</button>
+        <button type="button" class="k-sound" data-kids-speak=".k-hero-text" aria-label="اسمع التعليمات" data-en-aria="Listen to instructions">🔊</button>
+    </div>
+</header>
+<main class="k-main">
+    <section class="k-hero k-art-hero" data-activity="stories"><div class="k-hero-text">
+        <span class="k-hello" data-en="You choose the ingredients!">أنت تختار مكونات القصة!</span>
+        <h1 data-en="Create your story with Waei">كوّن قصتك مع واعي</h1>
+        <p data-en="Choose your age, character, place, and safety topic. Waei will write a short story for you.">اختر عمرك والشخصية والمكان وموضوع السلامة، وواعي يكتب لك قصة قصيرة.</p>
+    </div>
+        <img class="k-hero-art" src="/img/kids-activities/stories-v1.png" width="1254" height="1254" alt="طفلة تقرأ كتابًا" data-en-alt="A child reading a book" decoding="async">
+    </section>
+    <form id="builderForm" class="k-card">
+        <div class="builder-grid" id="builderChoices">
+            <label class="builder-field"><span data-en="Age">العمر</span><select id="builderAge">
+                <option value="3-5" data-en="3 to 5 years">من 3 إلى 5 سنوات</option>
+                <option value="6-8" selected data-en="6 to 8 years">من 6 إلى 8 سنوات</option>
+                <option value="9-12" data-en="9 to 12 years">من 9 إلى 12 سنة</option>
+            </select></label>
+            <label class="builder-field"><span data-en="Story hero">بطل القصة</span><select id="builderCharacter">
+                <option value="layan" data-en="Layan">ليان</option><option value="saad" data-en="Saad">سعد</option>
+                <option value="rabbit" data-en="A little rabbit">أرنب صغير</option><option value="cat" data-en="A little cat">قطة صغيرة</option>
+            </select></label>
+            <label class="builder-field"><span data-en="Place">المكان</span><select id="builderPlace">
+                <option value="home" data-en="Home">البيت</option><option value="school" data-en="School">المدرسة</option><option value="park" data-en="Park">الحديقة</option>
+            </select></label>
+            <label class="builder-field"><span data-en="What will we learn?">وش نتعلم؟</span><select id="builderTopic">
+                <option value="road" data-en="Crossing safely">عبور الطريق بأمان</option>
+                <option value="medicine" data-en="Staying away from medicine">الابتعاد عن الأدوية</option>
+                <option value="smoke" data-en="Staying away from smoke">الابتعاد عن الدخان</option>
+                <option value="help" data-en="Asking an adult for help">طلب المساعدة من شخص كبير</option>
+            </select></label>
+        </div>
+        <button type="button" class="k-listen" id="builderListenChoices" data-en="Listen to my choices">🔊 اسمع اختياراتي</button>
+        <button type="submit" id="builderSubmit" class="k-btn k-btn-purple" data-en="Create my story">ولّد قصتي</button>
+        <p id="builderStatus" role="status" aria-live="polite"></p>
+    </form>
+    <section id="builderResult" class="k-card hidden" aria-labelledby="builderTitle">
+        <div class="k-section-heading"><h2 id="builderTitle"></h2>
+            <button type="button" class="k-listen" data-kids-speak="#builderTitle,#builderContent,#builderLesson" data-en="Listen to my story">🔊 اسمع قصتي</button>
+        </div>
+        <p id="builderContent"></p><p id="builderLesson"></p>
+        <p class="k-note" data-en="This is an AI-generated story for this visit. It has not been reviewed by a specialist and is not added to the published library. Read it with an adult.">هذه قصة مولّدة بالذكاء الاصطناعي لهذه الزيارة، ولم يراجعها مختص ولا تُضاف للمكتبة المنشورة. اقرأها مع شخص كبير.</p>
+    </section>
+</main>
+<script src="/js/kids-voice.js?v=2"></script><script src="/js/kids-story-builder.js?v=1"></script>
+</body>
+</html>

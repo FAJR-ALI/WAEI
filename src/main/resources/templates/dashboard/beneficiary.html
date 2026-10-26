@@ -218,55 +218,83 @@
     </div>
 </div>
 
-<dialog id="requestDialog" class="app-dialog">
-    <form id="requestForm">
-        <div class="dialog-head">
-            <div>
-                <h2 id="requestDialogTitle" data-en="Request a training program">طلب برنامج تدريبي</h2>
-                <p data-en="Choose the training program, start date and number of days.">اختر البرنامج التدريبي وتاريخ البداية وعدد الأيام.</p>
+<dialog id="requestDialog" class="app-dialog request-dialog">
+    <form id="requestForm" novalidate>
+        <div class="dialog-head req-head">
+            <span id="reqIcon" class="req-icon tag-default" aria-hidden="true"></span>
+            <div class="req-head-copy">
+                <small id="requestDialogTitle" data-en="Request a training program">طلب برنامج تدريبي</small>
+                <h2 id="reqProgramTitle">—</h2>
+                <div id="reqChips" class="req-chips"></div>
             </div>
             <button type="button" class="dialog-close" data-close-dialog aria-label="إغلاق" data-en-aria="Close">
                 <svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>
             </button>
         </div>
-        <div class="dialog-body">
+        <div class="dialog-body req-body">
             <div id="requestError"></div>
-            <div class="form-grid">
-                <div class="field full">
-                    <label for="requestProgram" data-en="Training program">البرنامج التدريبي</label>
-                    <select id="requestProgram" class="input" required></select>
-                </div>
-                <div class="field full request-price-field">
-                    <span data-en="Daily price">السعر اليومي</span>
-                    <strong id="requestDailyPrice" class="request-price" aria-live="polite">—</strong>
-                </div>
-                <div id="programFacts" class="program-facts full"></div>
+
+            <!-- Only shown when the program is not chosen yet -->
+            <div id="reqProgramField" class="field">
+                <label for="requestProgram" data-en="Training program">البرنامج التدريبي</label>
+                <select id="requestProgram" class="input" required></select>
+            </div>
+            <div id="reqDurationWarning"></div>
+
+            <div class="req-row">
                 <div class="field">
                     <label for="participantCount" data-en="Participants">عدد المشاركين</label>
-                    <input id="participantCount" class="input" type="number" min="1" step="1" value="1" required>
+                    <div class="req-stepper">
+                        <button type="button" class="req-step-btn" data-step="-1" aria-label="أنقص مشارك" data-en-aria="Fewer participants">−</button>
+                        <input id="participantCount" class="input" type="number" min="1" step="1" value="1" required>
+                        <button type="button" class="req-step-btn" data-step="1" aria-label="زد مشارك" data-en-aria="More participants">+</button>
+                        <span class="req-unit" data-en="participants">مشارك</span>
+                    </div>
                 </div>
                 <div class="field">
-                    <label for="scheduledStart" data-en="Start date and time">وقت البداية</label>
-                    <input id="scheduledStart" class="input" type="datetime-local" dir="ltr" required>
-                </div>
-                <div class="field">
-                    <label for="daysCount" data-en="Number of days">عدد الأيام</label>
-                    <input id="daysCount" class="input" type="number" min="1" step="1" value="1" required>
-                </div>
-                <div class="field">
-                    <span data-en="Total price">السعر الإجمالي</span>
-                    <strong id="requestTotal" class="request-total">—</strong>
-                    <small id="requestEndPreview" class="field-hint"></small>
-                </div>
-                <div class="field full">
-                    <label for="requestNotes" data-en="Notes (optional)">ملاحظات (اختياري)</label>
-                    <textarea id="requestNotes" class="input" maxlength="5000" rows="3" data-en-placeholder="Any special requirements" placeholder="أي متطلبات خاصة"></textarea>
+                    <span class="req-label" id="reqDaysLabel"><span data-en="Number of days">عدد الأيام</span> <small id="reqMaxDaysHint"></small></span>
+                    <input id="daysCount" type="number" class="hidden" min="1" step="1" value="1" aria-hidden="true" tabindex="-1">
+                    <div id="reqDayCounts" class="req-choice-grid" role="radiogroup" aria-labelledby="reqDaysLabel"></div>
+                    <input id="reqDaysInput" class="input hidden" type="number" min="1" step="1" dir="ltr" aria-labelledby="reqDaysLabel">
                 </div>
             </div>
+
+            <div class="field">
+                <span class="req-label" id="reqDateLabel" data-en="Start day">يوم البداية</span>
+                <div id="reqDays" class="req-day-grid" role="radiogroup" aria-labelledby="reqDateLabel"></div>
+                <button type="button" id="reqOtherDate" class="req-link" data-en="Another date? Pick from the calendar">تاريخ ثاني؟ اختر من التقويم</button>
+                <input id="reqCustomDate" class="input hidden" type="date" dir="ltr" aria-labelledby="reqDateLabel">
+            </div>
+
+            <div class="field">
+                <span class="req-label" id="reqTimeLabel" data-en="Start time">وقت البداية</span>
+                <div id="reqTimes" class="req-time-row" role="radiogroup" aria-labelledby="reqTimeLabel"></div>
+                <input id="reqCustomTime" class="input hidden" type="time" dir="ltr" step="900" aria-labelledby="reqTimeLabel">
+                <input id="scheduledStart" type="datetime-local" class="hidden" aria-hidden="true" tabindex="-1">
+                <p class="req-session">
+                    <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h18v18H3zM16 2v4M8 2v4M3 10h18"></path></svg>
+                    <span id="requestEndPreview"></span>
+                </p>
+            </div>
+
+            <div class="field">
+                <label for="requestNotes"><span data-en="Notes for the provider">ملاحظات لمقدم الخدمة</span> <small class="req-optional" data-en="(optional)">(اختياري)</small></label>
+                <textarea id="requestNotes" class="input" maxlength="5000" rows="2" data-en-placeholder="Example: participants are middle school students" placeholder="مثال: المشاركين طلاب المرحلة المتوسطة"></textarea>
+            </div>
         </div>
-        <div class="dialog-footer">
-            <button type="button" class="btn btn-outline btn-sm" data-close-dialog data-en="Cancel">إلغاء</button>
-            <button type="submit" id="requestSubmit" class="btn btn-primary btn-sm" data-en="Send request">إرسال الطلب</button>
+        <div class="dialog-footer req-footer">
+            <div class="req-total-box">
+                <span id="requestDailyPrice" class="req-breakdown">—</span>
+                <strong id="requestTotal" class="req-total" aria-live="polite">—</strong>
+                <small class="req-pay-note">
+                    <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+                    <span data-en="You don't pay now, you pay after the provider accepts">ما تدفع الحين، تدفع بعد ما يقبل مقدم الخدمة</span>
+                </small>
+            </div>
+            <div class="req-actions">
+                <button type="button" class="btn btn-outline" data-close-dialog data-en="Cancel">إلغاء</button>
+                <button type="submit" id="requestSubmit" class="btn btn-primary" data-en="Send request">إرسال الطلب</button>
+            </div>
         </div>
     </form>
 </dialog>
@@ -364,52 +392,176 @@
         return end;
     }
 
+    // ===== Request form (chips for days, date and time) =====
+    const REQ_TIMES = ["08:00", "10:00", "12:00", "16:00", "19:00"];
+    let reqDate = "";
+    let reqTime = "";
+    let reqCustomDateOn = false;
+    let reqCustomTimeOn = false;
+
+    function pad2(n) { return String(n).padStart(2, "0"); }
+    function toDateKey(d) { return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate()); }
+    function dateLocale() { return LANG === "en" ? "en-GB" : "ar-SA-u-ca-gregory-nu-latn"; }
+    function daysLabel(n) {
+        if (LANG === "en") return n + (n === 1 ? " day" : " days");
+        return n === 1 ? "يوم واحد" : n === 2 ? "يومين" : n + " أيام";
+    }
+    function timeLabel(hhmm) {
+        const parts = hhmm.split(":").map(Number);
+        const d = new Date(2000, 0, 1, parts[0], parts[1]);
+        return d.toLocaleTimeString(dateLocale(), { hour: "numeric", minute: "2-digit" });
+    }
+    function plainMoney(value) {
+        return Number(value).toLocaleString("en-US", { maximumFractionDigits: 2 }) + " " + tr("ر.س", "SAR");
+    }
+
+    // Writes the chosen date + time into the hidden datetime input the submit code reads
+    function syncScheduledStart() {
+        document.getElementById("scheduledStart").value = reqDate && reqTime ? reqDate + "T" + reqTime : "";
+    }
+
+    function renderRequestHeader(program) {
+        const icon = document.getElementById("reqIcon");
+        const tone = program ? categoryTagClass(program.category) : "tag-default";
+        icon.className = "req-icon " + tone;
+        icon.innerHTML = categoryIconSvg(tone, 30);
+        document.getElementById("reqProgramTitle").textContent = program ? program.title : tr("اختر البرنامج التدريبي", "Choose a training program");
+        document.getElementById("reqChips").innerHTML = program
+            ? '<span class="badge ' + tone + '">' + escapeHtml(program.category) + '</span>'
+              + '<span class="badge badge-muted">' + escapeHtml(WaeiDashboard.modeLabel(program.deliveryMode)) + '</span>'
+              + '<span class="badge badge-muted">' + formatProgramHours(program.hoursPerDay) + '</span>'
+              + '<span class="req-provider">' + tr("يقدمها: ", "Offered by: ") + escapeHtml(program.organizationName || "—") + '</span>'
+            : "";
+    }
+
+    function renderDayCounts(program, days) {
+        const box = document.getElementById("reqDayCounts");
+        const typed = document.getElementById("reqDaysInput");
+        const maxDays = Number(program && program.maxDays) || 1;
+        document.getElementById("reqMaxDaysHint").textContent = program ? tr("(حتى " + maxDays + ")", "(up to " + maxDays + ")") : "";
+        if (maxDays > 6) {
+            box.innerHTML = "";
+            typed.classList.remove("hidden");
+            typed.max = String(maxDays);
+            typed.value = String(days);
+            return;
+        }
+        typed.classList.add("hidden");
+        let html = "";
+        for (let n = 1; n <= maxDays; n++) {
+            const on = n === days;
+            html += '<button type="button" class="req-choice' + (on ? " selected" : "") + '" role="radio" aria-checked="' + on + '" data-days="' + n + '">'
+                + '<strong>' + daysLabel(n) + '</strong>'
+                + '<small>' + (program ? plainMoney(Number(program.price) * n) : "") + '</small></button>';
+        }
+        box.innerHTML = html;
+        box.querySelectorAll("[data-days]").forEach(function (button) {
+            button.addEventListener("click", function () {
+                document.getElementById("daysCount").value = button.dataset.days;
+                updateRequestSummary();
+            });
+        });
+    }
+
+    function renderDayChips() {
+        const box = document.getElementById("reqDays");
+        const base = new Date();
+        let html = "";
+        for (let i = 1; i <= 7; i++) {
+            const d = new Date(base.getFullYear(), base.getMonth(), base.getDate() + i);
+            const key = toDateKey(d);
+            const on = !reqCustomDateOn && key === reqDate;
+            html += '<button type="button" class="req-day' + (on ? " selected" : "") + '" role="radio" aria-checked="' + on + '" data-date="' + key + '">'
+                + '<small>' + d.toLocaleDateString(dateLocale(), { weekday: "long" }) + '</small>'
+                + '<strong>' + d.getDate() + '</strong>'
+                + '<small>' + d.toLocaleDateString(dateLocale(), { month: "long" }) + '</small></button>';
+        }
+        box.innerHTML = html;
+        box.querySelectorAll("[data-date]").forEach(function (button) {
+            button.addEventListener("click", function () {
+                reqDate = button.dataset.date;
+                reqCustomDateOn = false;
+                document.getElementById("reqCustomDate").classList.add("hidden");
+                updateRequestSummary();
+            });
+        });
+    }
+
+    function renderTimeChips() {
+        const box = document.getElementById("reqTimes");
+        let html = "";
+        REQ_TIMES.forEach(function (t) {
+            const on = !reqCustomTimeOn && t === reqTime;
+            html += '<button type="button" class="req-time' + (on ? " selected" : "") + '" role="radio" aria-checked="' + on + '" data-time="' + t + '">' + timeLabel(t) + '</button>';
+        });
+        const otherOn = reqCustomTimeOn;
+        html += '<button type="button" class="req-time req-time-other' + (otherOn ? " selected" : "") + '" role="radio" aria-checked="' + otherOn + '" data-time="other">' + tr("وقت ثاني", "Other time") + '</button>';
+        box.innerHTML = html;
+        box.querySelectorAll("[data-time]").forEach(function (button) {
+            button.addEventListener("click", function () {
+                const custom = document.getElementById("reqCustomTime");
+                if (button.dataset.time === "other") {
+                    reqCustomTimeOn = true;
+                    custom.classList.remove("hidden");
+                    reqTime = custom.value || "";
+                    custom.focus();
+                } else {
+                    reqCustomTimeOn = false;
+                    custom.classList.add("hidden");
+                    reqTime = button.dataset.time;
+                }
+                updateRequestSummary();
+            });
+        });
+    }
+
     function updateRequestSummary() {
         const program = selectedProgram();
-        const facts = document.getElementById("programFacts");
-        const dailyPrice = document.getElementById("requestDailyPrice");
-        const total = document.getElementById("requestTotal");
-        const endPreview = document.getElementById("requestEndPreview");
         const daysInput = document.getElementById("daysCount");
-        const start = document.getElementById("scheduledStart").value;
+        const endPreview = document.getElementById("requestEndPreview");
+        const maxDays = Number(program && program.maxDays) || 1;
+        let days = Math.min(Math.max(Number(daysInput.value) || 1, 1), maxDays);
+        daysInput.value = String(days);
+        daysInput.max = String(maxDays);
+
+        renderRequestHeader(program);
+        renderDayCounts(program, days);
+        renderDayChips();
+        renderTimeChips();
+        syncScheduledStart();
+
+        document.getElementById("reqDurationWarning").innerHTML = program && (!program.hoursPerDay || !program.maxDays)
+            ? '<div class="alert alert-error">' + tr("هذا البرنامج لم تكتمل إعدادات مدته بعد.", "This program duration is not configured yet.") + '</div>'
+            : "";
 
         if (!program) {
-            facts.innerHTML = "";
-            dailyPrice.textContent = "—";
-            total.textContent = "—";
-            endPreview.textContent = "";
-            daysInput.removeAttribute("max");
+            document.getElementById("requestDailyPrice").textContent = "";
+            document.getElementById("requestTotal").textContent = "—";
+            endPreview.textContent = tr("اختر البرنامج أولًا.", "Choose a program first.");
             return;
         }
 
-        const maxDays = Number(program.maxDays) || 1;
-        let days = Number(daysInput.value) || 1;
-        daysInput.min = "1";
-        daysInput.max = String(maxDays);
-        if (days > maxDays) {
-            days = maxDays;
-            daysInput.value = String(maxDays);
-        }
-        if (days < 1) {
-            days = 1;
-            daysInput.value = "1";
-        }
+        document.getElementById("requestDailyPrice").textContent = plainMoney(program.price) + " × " + daysLabel(days);
+        document.getElementById("requestTotal").innerHTML = WaeiDashboard.formatMoney(Number(program.price) * days);
 
-        facts.innerHTML = '<div class="program-fact-grid">'
-            + '<div class="program-fact"><span>' + tr("التصنيف", "Category") + '</span><strong>' + escapeHtml(program.category) + '</strong></div>'
-            + '<div class="program-fact"><span>' + tr("الساعات في اليوم", "Hours per day") + '</span><strong>' + formatProgramHours(program.hoursPerDay) + '</strong></div>'
-            + '<div class="program-fact"><span>' + tr("الحد الأقصى للأيام", "Maximum days") + '</span><strong>' + WaeiDashboard.formatNumber(maxDays) + '</strong></div>'
-            + '</div>';
-        if (!program.hoursPerDay || !program.maxDays) {
-            facts.innerHTML += '<div class="alert alert-error">' + tr("هذا البرنامج لم تكتمل إعدادات مدته بعد.", "This program duration is not configured yet.") + '</div>';
-        }
-
-        dailyPrice.innerHTML = WaeiDashboard.formatMoney(program.price);
-        total.innerHTML = WaeiDashboard.formatMoney(Number(program.price) * days);
+        const start = document.getElementById("scheduledStart").value;
         const end = requestEndAt(start, days, program.hoursPerDay);
-        endPreview.textContent = end
-            ? tr("ينتهي في: ", "Ends: ") + WaeiDashboard.formatDateTime(end)
-            : tr("حدد وقت البداية لعرض وقت النهاية.", "Choose a start time to see the end time.");
+        if (!start || !end) {
+            endPreview.textContent = !reqDate
+                ? tr("اختر يوم البداية والوقت.", "Choose the start day and time.")
+                : tr("اختر وقت البداية.", "Choose the start time.");
+            return;
+        }
+        const s = new Date(start);
+        const dayFmt = { weekday: "long", day: "numeric", month: "long" };
+        const timeFmt = { hour: "numeric", minute: "2-digit" };
+        const from = s.toLocaleTimeString(dateLocale(), timeFmt);
+        const to = end.toLocaleTimeString(dateLocale(), timeFmt);
+        endPreview.innerHTML = tr("الجلسة: ", "Session: ") + "<strong>" + escapeHtml(days === 1
+            ? s.toLocaleDateString(dateLocale(), dayFmt) + tr("، من ", ", ") + from + tr(" إلى ", " – ") + to
+            : tr("من ", "From ") + s.toLocaleDateString(dateLocale(), { day: "numeric", month: "long" })
+              + tr(" إلى ", " to ") + end.toLocaleDateString(dateLocale(), { day: "numeric", month: "long" })
+              + tr("، يوميًا ", ", daily ") + from + " – " + to) + "</strong>";
     }
 
     function latestPayment(request) {
@@ -821,7 +973,7 @@
                 + (program.imageUrl
                     ? '<img class="program-tile-cover" src="' + escapeHtml(program.imageUrl) + '" alt="' + escapeHtml(program.title) + '" loading="lazy">'
                     : '<div class="program-tile-cover program-tile-cover-empty">' + tr("لا توجد صورة", "No image") + '</div>')
-                + '<div class="tile-tags"><span class="badge badge-neutral">' + escapeHtml(program.category) + '</span>'
+                + '<div class="tile-tags"><span class="badge ' + categoryTagClass(program.category) + '">' + escapeHtml(program.category) + '</span>'
                 + '<span class="badge badge-muted">' + escapeHtml(WaeiDashboard.modeLabel(program.deliveryMode)) + '</span></div>'
                 + '<h3>' + escapeHtml(program.title) + '</h3>'
                 + '<p>' + escapeHtml(program.description || "") + '</p>'
@@ -983,10 +1135,32 @@
             !item && programId != null
         );
         document.getElementById("participantCount").value = item ? item.participantCount : 1;
-        document.getElementById("scheduledStart").value = item ? WaeiDashboard.toInputDateTime(item.scheduledStart) : "";
         document.getElementById("daysCount").value = item && item.daysCount ? item.daysCount : 1;
         document.getElementById("requestNotes").value = item && item.notes ? item.notes : "";
-        document.getElementById("scheduledStart").min = nowLocalInput();
+
+        // Start date / time: preload when editing
+        const existing = item ? WaeiDashboard.toInputDateTime(item.scheduledStart) : "";
+        reqDate = existing ? existing.slice(0, 10) : "";
+        reqTime = existing ? existing.slice(11, 16) : "";
+        const chipDates = [];
+        for (let i = 1; i <= 7; i++) {
+            const d = new Date();
+            d.setDate(d.getDate() + i);
+            chipDates.push(toDateKey(d));
+        }
+        reqCustomDateOn = Boolean(reqDate) && chipDates.indexOf(reqDate) === -1;
+        reqCustomTimeOn = Boolean(reqTime) && REQ_TIMES.indexOf(reqTime) === -1;
+        const customDate = document.getElementById("reqCustomDate");
+        const customTime = document.getElementById("reqCustomTime");
+        customDate.min = nowLocalInput().slice(0, 10);
+        customDate.value = reqCustomDateOn ? reqDate : "";
+        customDate.classList.toggle("hidden", !reqCustomDateOn);
+        customTime.value = reqCustomTimeOn ? reqTime : "";
+        customTime.classList.toggle("hidden", !reqCustomTimeOn);
+
+        // The program picker only appears when the program isn't already known
+        const select = document.getElementById("requestProgram");
+        document.getElementById("reqProgramField").classList.toggle("hidden", select.disabled || Boolean(item));
         updateRequestSummary();
         WaeiDashboard.openDialog("requestDialog");
     }
@@ -1140,8 +1314,34 @@
     document.getElementById("requestsInternalAnnouncementCopy").addEventListener("click", copyInternalAnnouncement);
 
     document.getElementById("requestProgram").addEventListener("change", updateRequestSummary);
-    document.getElementById("daysCount").addEventListener("input", updateRequestSummary);
-    document.getElementById("scheduledStart").addEventListener("input", updateRequestSummary);
+    document.getElementById("reqDaysInput").addEventListener("input", function () {
+        document.getElementById("daysCount").value = this.value;
+        updateRequestSummary();
+    });
+    document.querySelectorAll(".req-step-btn").forEach(function (button) {
+        button.addEventListener("click", function () {
+            const input = document.getElementById("participantCount");
+            input.value = String(Math.max(1, (Number(input.value) || 1) + Number(button.dataset.step)));
+        });
+    });
+    document.getElementById("reqOtherDate").addEventListener("click", function () {
+        const custom = document.getElementById("reqCustomDate");
+        custom.classList.remove("hidden");
+        reqCustomDateOn = true;
+        reqDate = custom.value || "";
+        updateRequestSummary();
+        custom.focus();
+    });
+    document.getElementById("reqCustomDate").addEventListener("input", function () {
+        reqCustomDateOn = true;
+        reqDate = this.value;
+        updateRequestSummary();
+    });
+    document.getElementById("reqCustomTime").addEventListener("input", function () {
+        reqCustomTimeOn = true;
+        reqTime = this.value;
+        updateRequestSummary();
+    });
 
     document.getElementById("requestForm").addEventListener("submit", async function (event) {
         event.preventDefault();
@@ -1171,7 +1371,7 @@
             return;
         }
         if (!start) {
-            errorRoot.innerHTML = '<div class="alert alert-error" role="alert">' + tr("حدد وقت البداية.", "Choose the start time.") + "</div>";
+            errorRoot.innerHTML = '<div class="alert alert-error" role="alert">' + tr("اختر يوم البداية والوقت.", "Choose the start day and time.") + "</div>";
             return;
         }
         if (new Date(start) <= new Date()) {

@@ -64,7 +64,7 @@ const ARABIC_MESSAGES = {
     "A training request can only be edited while it is pending": "طلب التدريب يُعدل فقط وهو قيد الانتظار",
     "Only pending or rejected requests can be deleted": "تُحذف فقط الطلبات قيد الانتظار أو المرفوضة",
     "A training program with this title already exists for this organization": "فيه برنامج بنفس الاسم لهذي الجهة",
-    "Cannot delete a training program that has training requests": "ما يمكن حذف برنامج له طلبات تدريب",
+    "Cannot delete a training program that has training requests": "لا يمكن حذف برنامج له طلبات تدريب",
     "Invalid training program category": "تصنيف البرنامج غير صالح",
     "Price must be at least 1 SAR": "السعر لازم يكون 1 ريال على الأقل",
     "Program hours per day must be at least 0.5": "عدد الساعات في اليوم لازم يكون 0.5 على الأقل",
@@ -402,12 +402,104 @@ function showEmpty(element, message) {
     element.innerHTML = '<div class="empty-state">' + escapeHtml(message) + "</div>";
 }
 
-// Header: if the user is logged in, "انضم لواعي" becomes their name
+// Header: if the user is logged in, "تسجيل الدخول" becomes their name and "انضم لواعي" is hidden
 document.addEventListener("DOMContentLoaded", function () {
     const loginLink = document.getElementById("headerLogin");
     const user = getUser();
     if (loginLink && user && getToken()) {
         loginLink.textContent = user.fullName || tr("حسابي", "My account");
         loginLink.href = dashboardPath(user);
+        const joinLink = document.getElementById("headerJoin");
+        if (joinLink) joinLink.style.display = "none";
     }
+});
+
+// ===== Training cards (shared by the home page and /trainings) =====
+
+// Each category gets a color that matches its meaning
+function categoryTagClass(category) {
+    const c = (category || "").toLowerCase();
+    if (c.includes("إسعاف") || c.includes("اسعاف") || c.includes("first aid")) return "tag-firstaid";
+    if (c.includes("سلامة") || c.includes("حريق") || c.includes("safety") || c.includes("fire")) return "tag-safety";
+    if (c.includes("كوارث") || c.includes("زلزال") || c.includes("سيول") || c.includes("disaster")) return "tag-disaster";
+    if (c.includes("طفل") || c.includes("أطفال") || c.includes("child") || c.includes("kids")) return "tag-kids";
+    if (c.includes("نفس") || c.includes("mental")) return "tag-mental";
+    if (c.includes("تغذية") || c.includes("nutrition")) return "tag-nutrition";
+    if (c.includes("لياقة") || c.includes("fitness")) return "tag-fitness";
+    if (c.includes("صحة") || c.includes("health")) return "tag-health";
+    return "tag-default";
+}
+
+// Shows the correct steps one per line (first few only, the rest are on the training page)
+function stepsPreviewHtml(description, maxSteps) {
+    const lines = (description || "").split("\n").map(function (l) { return l.trim(); }).filter(Boolean);
+    const steps = lines.filter(function (l) { return /^\d+[.)\-]/.test(l); });
+    if (steps.length === 0) {
+        return '<p class="steps-plain">' + escapeHtml(description || "") + "</p>";
+    }
+    let html = '<ol class="steps-preview">';
+    steps.forEach(function (step, i) {
+        const number = step.match(/^\d+/)[0];
+        const text = step.replace(/^\d+[.)\-]\s*/, "");
+        html += '<li' + (i >= maxSteps ? ' class="step-extra" hidden' : "") + '><span class="step-num">' + number + '</span><span class="step-text">' + escapeHtml(text) + "</span></li>";
+    });
+    html += "</ol>";
+    const rest = steps.length - maxSteps;
+    if (rest > 0) {
+        html += '<button type="button" class="steps-more" aria-expanded="false" data-more="' + rest + '">'
+            + tr("+ " + rest + " خطوات ثانية", "+ " + rest + " more steps") + "</button>";
+    }
+    return html;
+}
+
+function trainingCardHtml(t) {
+    // Same instruction on every card; the official video is shown as a separate small tag
+    const meta = tr("ارفع فيديو حتى دقيقة", "Upload a video up to 1 minute");
+    const videoTag = t.officialVideoUrl
+        ? '<span class="video-tag"><svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>' + tr("فيه فيديو رسمي", "Official video") + "</span>"
+        : "";
+    return '<article class="training-card ' + categoryTagClass(t.category).replace("tag-", "tone-") + '">'
+        + '<div class="training-tags"><span class="tag ' + categoryTagClass(t.category) + '">' + escapeHtml(t.category) + "</span>" + videoTag + "</div>"
+        + "<h3>" + escapeHtml(t.title) + "</h3>"
+        + '<div class="steps-wrap">' + stepsPreviewHtml(t.description, 3) + "</div>"
+        + '<div class="card-footer">'
+        + '<span class="meta">' + meta + "</span>"
+        + '<a class="btn btn-primary" style="min-height: 44px; font-size: 15px" href="/train?id=' + t.id + '">' + tr("ابدأ", "Start") + "</a>"
+        + "</div></article>";
+}
+
+// Icon for each category tone (same icons as the provider's add-program form)
+const CATEGORY_ICON_PATHS = {
+    "tag-health": '<path d="M6 3v6a6 6 0 0 0 12 0V3"></path><path d="M12 15v2a4 4 0 0 0 8 0v-1"></path><circle cx="20" cy="14" r="2"></circle>',
+    "tag-safety": '<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6l-8-3z"></path><path d="m9 12 2 2 4-4"></path>',
+    "tag-firstaid": '<path d="M19.5 13.5 12 21l-7.5-7.5A5 5 0 0 1 12 6.5a5 5 0 0 1 7.5 7z"></path><path d="M8 12h2l1-2 2 4 1-2h2"></path>',
+    "tag-mental": '<circle cx="12" cy="12" r="9"></circle><path d="M8.5 14.5c1 1.2 2.2 1.8 3.5 1.8s2.5-.6 3.5-1.8"></path><path d="M9 9.5h.01M15 9.5h.01"></path>',
+    "tag-nutrition": '<path d="M12 7c-1.5-1.2-5-1.5-6.5 1.5S5 17 8 20c1.3 1.3 2.7 1 4 .2 1.3.8 2.7 1.1 4-.2 3-3 4-8.5 2.5-11.5S13.5 5.8 12 7z"></path><path d="M12 7c0-2 1-3.5 3-4"></path>',
+    "tag-fitness": '<path d="M6 7v10M18 7v10M3 10v4M21 10v4M6 12h12"></path>',
+    "tag-disaster": '<path d="M3 15c2 0 2-2 4.5-2s2.5 2 4.5 2 2-2 4.5-2 2.5 2 4.5 2"></path><path d="M3 20c2 0 2-2 4.5-2s2.5 2 4.5 2 2-2 4.5-2 2.5 2 4.5 2"></path><path d="M8 9a4 4 0 0 1 8 0"></path>',
+    "tag-kids": '<circle cx="12" cy="7" r="3"></circle><path d="M6 21v-2a6 6 0 0 1 12 0v2"></path>',
+    "tag-default": '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V2H6.5A2.5 2.5 0 0 0 4 4.5z"></path>'
+};
+
+function categoryIconSvg(tone, size) {
+    const path = CATEGORY_ICON_PATHS[tone] || CATEGORY_ICON_PATHS["tag-default"];
+    const px = size || 20;
+    return '<svg aria-hidden="true" width="' + px + '" height="' + px + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + path + "</svg>";
+}
+
+// "+ N more steps" opens the full list inside the card (and closes it again)
+document.addEventListener("click", function (event) {
+    const button = event.target.closest(".steps-more");
+    if (!button) {
+        return;
+    }
+    const card = button.closest(".steps-wrap");
+    const open = button.getAttribute("aria-expanded") !== "true";
+    card.querySelectorAll(".step-extra").forEach(function (li) { li.hidden = !open; });
+    card.classList.toggle("steps-open", open);
+    button.setAttribute("aria-expanded", String(open));
+    const rest = button.dataset.more;
+    button.textContent = open
+        ? tr("عرض أقل", "Show less")
+        : tr("+ " + rest + " خطوات ثانية", "+ " + rest + " more steps");
 });
