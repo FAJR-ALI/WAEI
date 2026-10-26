@@ -1,6 +1,7 @@
 package org.fadhel.waeiplatform.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.fadhel.waeiplatform.api.ApiException;
 import org.fadhel.waeiplatform.dto.in.CancelTrainingRequest;
 import org.fadhel.waeiplatform.dto.in.TrainingRequestRequest;
@@ -29,6 +30,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -46,6 +48,7 @@ public class TrainingRequestService {
     private final ZoomMeetingService zoomMeetingService;
     private final CurrentUser currentUser;
     private final AccessControl accessControl;
+    private final TrainingRequestWhatsAppService trainingRequestWhatsAppService;
 
     private TrainingRequestResponse convertToResponse(TrainingRequest request) {
         Set<PaymentResponse> payments = new LinkedHashSet<>();
@@ -192,6 +195,11 @@ public class TrainingRequestService {
         trainingRequest.setRequestedAt(LocalDateTime.now());
 
         trainingRequestRepository.save(trainingRequest);
+        try {
+            trainingRequestWhatsAppService.requestCreated(trainingRequest);
+        } catch (Exception ex) {
+            log.warn("Could not schedule new-request WhatsApp notification for request {}", trainingRequest.getId());
+        }
     }
 
     @Transactional
@@ -237,6 +245,11 @@ public class TrainingRequestService {
         trainingRequest.setAcceptedAt(LocalDateTime.now());
 
         trainingRequestRepository.save(trainingRequest);
+        try {
+            trainingRequestWhatsAppService.requestAccepted(trainingRequest);
+        } catch (Exception ex) {
+            log.warn("Could not schedule acceptance WhatsApp notification for request {}", trainingRequest.getId());
+        }
     }
 
     @Transactional
