@@ -182,7 +182,7 @@ public class SecurityConfig {
                                 "/kids", "/kids/stories", "/kids/what-if",
                                 "/kids/emergency-number", "/kids/detective", "/kids/drawing", "/kids/stories/create",
                                 "/story", "/call", "/guide", "/guide/detail",
-                                "/calendar",
+                                "/calendar", "/contact", "/privacy", "/terms",
                                 "/dashboard/admin", "/dashboard/beneficiary",
                                 "/dashboard/provider"
                         ).permitAll()

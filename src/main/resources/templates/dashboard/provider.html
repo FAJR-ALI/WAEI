@@ -1132,6 +1132,39 @@
         }
     }
 
+    // ===== Notifications (built from the data already loaded) =====
+    function buildNotifications() {
+        const items = [];
+        incoming.forEach(function (request) {
+            const program = request.trainingProgramTitle || "";
+            const org = request.beneficiaryOrganizationName || "";
+            if (request.status === "PENDING") {
+                items.push({ id: "req:" + request.id + ":PENDING", title: tr("طلب تدريب جديد", "New training request"),
+                    text: program + " · " + org, time: request.requestedAt, panel: "requests", tone: "warn" });
+            } else if (request.status === "CONFIRMED") {
+                const soon = WaeiDashboard.daysUntil(request.scheduledStart);
+                if (soon >= 0 && soon <= 3) {
+                    items.push({ id: "req:" + request.id + ":SOON", title: tr("جلسة تدريب قريبة", "Upcoming training session"),
+                        text: program + " · " + WaeiDashboard.formatDateTime(request.scheduledStart), time: request.scheduledStart, panel: "requests", tone: "info" });
+                } else {
+                    items.push({ id: "req:" + request.id + ":CONFIRMED", title: tr("تم الدفع وتأكد الطلب", "Paid and confirmed"),
+                        text: program + " · " + org, time: request.acceptedAt || request.requestedAt, panel: "requests", tone: "ok" });
+                }
+            } else if (request.status === "CANCELLED" && WaeiDashboard.daysSince(request.cancelledAt) <= 14) {
+                items.push({ id: "req:" + request.id + ":CANCELLED", title: tr("تم إلغاء طلب", "A request was cancelled"),
+                    text: program + " · " + org, time: request.cancelledAt, panel: "requests", tone: "bad" });
+            }
+        });
+        payments.forEach(function (payment) {
+            if (payment.status === "PAID" && WaeiDashboard.daysSince(payment.paidAt || payment.createdAt) <= 7) {
+                items.push({ id: "pay:" + payment.id + ":PAID", title: tr("وصلتك دفعة", "Payment received"),
+                    textHtml: WaeiDashboard.formatMoney(payment.providerAmount != null ? payment.providerAmount : payment.amount),
+                    time: payment.paidAt || payment.createdAt, panel: "payments", tone: "ok" });
+            }
+        });
+        WaeiDashboard.setNotifications(items);
+    }
+
     async function loadData() {
         if (!dashboardUser) {
             return;
@@ -1160,6 +1193,7 @@
             renderPrograms();
             renderRequests();
             renderPayments();
+            buildNotifications();
         } catch (e) {
             showError(root, e.message);
             WaeiDashboard.notify(e.message, "error");

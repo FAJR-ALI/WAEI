@@ -506,6 +506,16 @@ img { max-width: 100%; }
 .g-train { background: var(--primary); color: #FFFFFF; border: none; }
 .g-train p { color: var(--line); line-height: 1.7; }
 
+/* Each case has its own color (--case / --case-bg are set from guide.js) */
+.guide-card { border-top: 5px solid var(--case, var(--line)); }
+.guide-card:hover { border-color: var(--case, var(--primary)); }
+.case-tag { background: var(--case-bg, var(--tint)); color: var(--case, var(--primary)); }
+.case-head { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; padding: 22px; border-radius: 20px; background: var(--case-bg, var(--tint-2)); border-inline-start: 6px solid var(--case, var(--primary)); }
+.case-head .guide-icon { width: 64px; height: 64px; background: #FFFFFF !important; }
+#guideBox .g-steps .n { background: var(--case, var(--primary)); }
+#guideBox .g-box h2 { color: var(--case, var(--ink)); }
+#guideBox .g-when h2 { color: var(--bad); }
+
 /* Guide content from the database is Arabic */
 .guide-card .title, .guide-card p, .sign, .g-steps li span, .g-donts li span, #guideTitle, #guideSummary, #aiTitle, #aiReason {
     unicode-bidi: plaintext;
