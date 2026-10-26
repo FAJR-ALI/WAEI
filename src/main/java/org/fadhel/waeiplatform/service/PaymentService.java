@@ -42,6 +42,7 @@ public class PaymentService {
     private final ZoomMeetingService zoomMeetingService;
     private final CurrentUser currentUser;
     private final AccessControl accessControl;
+    private final PaymentWhatsAppService paymentWhatsAppService;
 
     @Value("${payment.commission-rate-percent:10}")
     private BigDecimal commissionRatePercent;
@@ -423,6 +424,13 @@ public class PaymentService {
 
         paymentRepository.save(payment);
         updateRequestStatus(payment, target);
+        if (target == PaymentStatus.PAID) {
+            try {
+                paymentWhatsAppService.paymentConfirmed(payment);
+            } catch (Exception ex) {
+                log.warn("Could not schedule WhatsApp notifications for payment {}", payment.getId());
+            }
+        }
     }
 
     private void updateRequestStatus(Payment payment, PaymentStatus paymentStatus) {
