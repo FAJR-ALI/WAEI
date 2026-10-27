@@ -35,13 +35,17 @@
         .login-form .input { min-height: 52px; border-radius: 14px; padding: 0 16px; }
         [dir="rtl"] #email { text-align: right; }
         .pw-wrap { position: relative; display: flex; }
-        .pw-wrap .input { padding-inline-end: 56px; }
+        /* The password input is always LTR, so place the eye button and its space with physical sides */
         .pw-toggle {
-            position: absolute; inset-inline-end: 4px; top: 4px; width: 44px; height: 44px; border-radius: 10px;
+            position: absolute; top: 4px; width: 44px; height: 44px; border-radius: 10px;
             border: none; background: transparent; color: var(--muted); cursor: pointer;
             display: flex; align-items: center; justify-content: center;
         }
         .pw-toggle:hover { background: var(--tint); color: var(--ink); }
+        [dir="rtl"] .pw-toggle { left: 4px; right: auto; }
+        [dir="rtl"] .pw-wrap .input { padding-left: 56px; padding-right: 16px; }
+        [dir="ltr"] .pw-toggle { right: 4px; left: auto; }
+        [dir="ltr"] .pw-wrap .input { padding-right: 56px; padding-left: 16px; }
         .login-form .btn { min-height: 54px; font-size: 17px; }
         .center-text { text-align: center; font-size: 15px; color: var(--muted); }
 

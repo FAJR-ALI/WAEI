@@ -15,10 +15,10 @@ public class AdminInitializer implements CommandLineRunner {
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @Value("${app.admin.email:admin@waei.sa}")
+    @Value("${app.admin.email}")
     private String adminEmail;
 
-    @Value("${app.admin.password:Admin@12345}")
+    @Value("${app.admin.password}")
     private String adminPassword;
 
     @Value("${app.admin.full-name:Platform Administrator}")
