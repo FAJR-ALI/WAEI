@@ -48,6 +48,9 @@ public class GeminiService {
     @Value("${gemini.prep.model:gemini-3.5-flash-lite}")
     private String prepModel;
 
+    @Value("${gemini.guide.model:gemini-3.5-flash-lite}")
+    private String guideModel;
+
     // Sends the video + the correct steps (from the service description) to Gemini and reads the JSON answer
     // The video is sent directly from memory: it is never saved on our server
     public AiEvaluationResult evaluateVideo(MultipartFile video, AwarenessService service) {
@@ -186,19 +189,34 @@ public class GeminiService {
                 + "Reply with JSON only, exactly in this shape:\n"
                 + "{\"guideId\": 1, \"reason\": \"\"}";
 
-        try {
-            Client client = Client.builder().apiKey(apiKey).build();
+        try (Client client = Client.builder()
+                .apiKey(apiKey)
+                .httpOptions(HttpOptions.builder()
+                        .timeout(15000)
+                        .retryOptions(HttpRetryOptions.builder().attempts(1).build())
+                        .build())
+                .build()) {
 
             GenerateContentConfig config = GenerateContentConfig.builder()
                     .responseMimeType("application/json")
+                    .thinkingConfig(ThinkingConfig.builder().thinkingLevel("MINIMAL").build())
+                    .maxOutputTokens(300)
                     .build();
 
-            GenerateContentResponse response = client.models.generateContent(model, prompt, config);
+            GenerateContentResponse response = client.models.generateContent(guideModel, prompt, config);
+
+            // Sometimes the model adds text around the answer: keep only the JSON object
+            String answerText = response.text();
+            int jsonStart = answerText.indexOf('{');
+            int jsonEnd = answerText.lastIndexOf('}');
+            if (jsonStart < 0 || jsonEnd <= jsonStart) {
+                throw new ApiException("Smart search is not available right now, please browse the cases");
+            }
 
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-            return mapper.readValue(response.text(), AiGuideMatch.class);
+            return mapper.readValue(answerText.substring(jsonStart, jsonEnd + 1), AiGuideMatch.class);
 
         } catch (Exception e) {
             throw new ApiException("Smart search is not available right now, please browse the cases");
