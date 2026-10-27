@@ -620,6 +620,25 @@ body.app-body {
     color: #FFFFFF;
 }
 
+/* Zoom buttons use Zoom blue */
+.btn-zoom {
+    background: #EBF4FF;
+    border-color: #93C5FD;
+    color: #0B5CFF;
+    gap: 6px;
+}
+
+.btn-zoom:hover {
+    background: #0B5CFF;
+    border-color: #0B5CFF;
+    color: #FFFFFF;
+}
+
+/* Delivery mode badges */
+.badge-mode-online { background: #E0ECFF; color: #0B5CFF; }
+.badge-mode-inperson { background: #EDE9FE; color: #6D28D9; }
+td .badge-mode { display: inline-flex; margin-top: 4px; }
+
 .badge {
     display: inline-flex;
     align-items: center;
@@ -1562,6 +1581,7 @@ select.input:disabled {
 .pf-mode:hover { border-color: var(--line-strong); }
 .pf-mode.selected { border-color: var(--primary); background: var(--tint-2); }
 .pf-mode-icon { flex: 0 0 auto; width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: var(--tint); color: var(--primary); }
+.pf-mode-icon.pf-mode-icon-zoom { background: #E0ECFF; color: #0B5CFF; }
 .pf-mode-copy { display: flex; flex-direction: column; gap: 2px; }
 .pf-mode-copy strong { font-size: 15px; }
 .pf-mode-copy small { font-size: 12.5px; color: var(--soft); }

@@ -117,7 +117,7 @@
                 <div class="panel">
                     <div class="panel-head">
                         <div>
-                            <h2 data-en="Internal announcement">إعلان داخلي</h2>
+                            <h2 data-en="Generate announcement">توليد إعلان</h2>
                             <p data-en="Generate a short employee announcement for an upcoming training">أنشئ إعلانًا مختصرًا للموظفين عن تدريب قادم</p>
                         </div>
                         <div class="cell-actions">
@@ -159,7 +159,7 @@
                 <div class="panel">
                     <div class="panel-head">
                         <div>
-                            <h2 data-en="Internal announcement">إعلان داخلي</h2>
+                            <h2 data-en="Generate announcement">توليد إعلان</h2>
                             <p data-en="Generate a short employee announcement for a confirmed training">أنشئ إعلانًا مختصرًا للموظفين عن تدريب مؤكد</p>
                         </div>
                         <div class="cell-actions">
@@ -428,7 +428,7 @@
         document.getElementById("reqProgramTitle").textContent = program ? program.title : tr("اختر البرنامج التدريبي", "Choose a training program");
         document.getElementById("reqChips").innerHTML = program
             ? '<span class="badge ' + tone + '">' + escapeHtml(program.category) + '</span>'
-              + '<span class="badge badge-muted">' + escapeHtml(WaeiDashboard.modeLabel(program.deliveryMode)) + '</span>'
+              + modeBadge(program.deliveryMode)
               + '<span class="badge badge-muted">' + formatProgramHours(program.hoursPerDay) + '</span>'
               + '<span class="req-provider">' + tr("يقدمها: ", "Offered by: ") + escapeHtml(program.organizationName || "—") + '</span>'
             : "";
@@ -693,12 +693,21 @@
         });
     }
 
+    // Delivery mode badge: each mode has its own color (online = blue, in person = purple)
+    function modeBadge(mode) {
+        if (!mode) {
+            return "";
+        }
+        const tone = mode === "ONLINE" ? "badge-mode-online" : "badge-mode-inperson";
+        return '<span class="badge badge-mode ' + tone + '">' + escapeHtml(WaeiDashboard.modeLabel(mode)) + '</span>';
+    }
+
     function meetingJoinButton(item) {
         if (!item.meetingJoinUrl || (item.status !== "CONFIRMED" && item.status !== "IN_PROGRESS")) {
             return "";
         }
-        return '<a class="btn btn-ok btn-sm" href="' + escapeHtml(item.meetingJoinUrl)
-            + '" target="_blank" rel="noopener noreferrer">' + tr("الانضمام إلى Zoom", "Join Zoom") + '</a>'
+        return '<a class="btn btn-zoom btn-sm" href="' + escapeHtml(item.meetingJoinUrl)
+            + '" target="_blank" rel="noopener noreferrer">' + '<svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2"></rect><path d="m16 10 5-3v10l-5-3"></path></svg>' + tr("الانضمام إلى Zoom", "Join Zoom") + '</a>'
             + '<button type="button" class="btn btn-outline btn-sm" data-copy-meeting-link="' + item.id + '">'
             + tr("نسخ الرابط", "Copy link") + '</button>';
     }
@@ -735,7 +744,7 @@
             }
             html += '<button type="button" class="btn btn-danger btn-sm" data-cancel-request="' + item.id + '">' + tr("إلغاء", "Cancel") + '</button>';
         } else if (item.status === "CONFIRMED") {
-            html += '<button type="button" class="btn btn-primary btn-sm" data-announce-training="' + item.id + '" data-announcement-target="requests">' + tr("إعلان داخلي", "Announcement") + '</button>';
+            html += '<button type="button" class="btn btn-primary btn-sm" data-announce-training="' + item.id + '" data-announcement-target="requests">' + tr("توليد إعلان", "Generate announcement") + '</button>';
             html += meetingJoinButton(item);
             html += '<button type="button" class="btn btn-danger btn-sm" data-cancel-request="' + item.id + '">' + tr("إلغاء واسترداد", "Cancel and refund") + '</button>';
         } else if (item.status === "IN_PROGRESS") {
@@ -764,7 +773,7 @@
         rows.forEach(function (item) {
             const payment = latestPayment(item);
             html += '<tr>'
-                + '<td><strong>' + escapeHtml(item.trainingProgramTitle || "—") + '</strong><small>' + escapeHtml(item.providerOrganizationName || "—") + '</small></td>'
+                + '<td><strong>' + escapeHtml(item.trainingProgramTitle || "—") + '</strong><small>' + escapeHtml(item.providerOrganizationName || "—") + '</small>' + modeBadge(item.trainingProgramDeliveryMode) + '</td>'
                 + '<td class="nowrap">' + WaeiDashboard.formatDateTime(item.scheduledStart) + '<small>' + WaeiDashboard.formatDateTime(item.scheduledEnd) + '</small>'
                 + '<small>' + requestDaysText(item) + ' · ' + formatProgramHours(item.hoursPerDay) + '</small></td>'
                 + '<td>' + WaeiDashboard.formatNumber(item.participantCount) + '</td>'
@@ -882,7 +891,7 @@
         internalAnnouncementText = buildInternalAnnouncementPlainText(result);
         const checklist = result.checklist || [];
         let html = '<div class="ai-summary-body">';
-        html += '<p class="ai-summary-headline">' + escapeHtml(result.subject || tr("إعلان داخلي", "Internal announcement")) + "</p>";
+        html += '<p class="ai-summary-headline">' + escapeHtml(result.subject || tr("توليد إعلان", "Generate announcement")) + "</p>";
         if (result.whenLine) {
             html += '<p class="ai-summary-action">' + escapeHtml(result.whenLine) + "</p>";
         }
@@ -945,11 +954,11 @@
             + '</tr></thead><tbody>';
         rows.forEach(function (item) {
             html += '<tr>'
-                + '<td><strong>' + escapeHtml(item.trainingProgramTitle || "—") + '</strong><small>' + escapeHtml(item.providerOrganizationName || "—") + '</small></td>'
+                + '<td><strong>' + escapeHtml(item.trainingProgramTitle || "—") + '</strong><small>' + escapeHtml(item.providerOrganizationName || "—") + '</small>' + modeBadge(item.trainingProgramDeliveryMode) + '</td>'
                 + '<td class="nowrap">' + WaeiDashboard.formatDateTime(item.scheduledStart) + '<small>' + requestDaysText(item) + ' · ' + formatProgramHours(item.hoursPerDay) + '</small></td>'
                 + '<td>' + WaeiDashboard.statusBadge("request", item.status) + '</td>'
                 + '<td><div class="cell-actions"><button type="button" class="btn btn-outline btn-sm" data-view-request="' + item.id + '">' + tr("تفاصيل", "Details") + '</button>'
-                + '<button type="button" class="btn btn-primary btn-sm" data-announce-training="' + item.id + '" data-announcement-target="overview">' + tr("إعلان داخلي", "Announcement") + '</button>'
+                + '<button type="button" class="btn btn-primary btn-sm" data-announce-training="' + item.id + '" data-announcement-target="overview">' + tr("توليد إعلان", "Generate announcement") + '</button>'
                 + meetingJoinButton(item) + '</div></td>'
                 + '</tr>';
         });
@@ -974,7 +983,7 @@
                     ? '<img class="program-tile-cover" src="' + escapeHtml(program.imageUrl) + '" alt="' + escapeHtml(program.title) + '" loading="lazy">'
                     : '<div class="program-tile-cover program-tile-cover-empty">' + tr("لا توجد صورة", "No image") + '</div>')
                 + '<div class="tile-tags"><span class="badge ' + categoryTagClass(program.category) + '">' + escapeHtml(program.category) + '</span>'
-                + '<span class="badge badge-muted">' + escapeHtml(WaeiDashboard.modeLabel(program.deliveryMode)) + '</span></div>'
+                + modeBadge(program.deliveryMode) + '</div>'
                 + '<h3>' + escapeHtml(program.title) + '</h3>'
                 + '<p>' + escapeHtml(program.description || "") + '</p>'
                 + '<span class="soft" style="font-size: 13px">' + tr("يقدمها: ", "Offered by: ") + escapeHtml(program.organizationName || "—") + '</span>'
@@ -1492,8 +1501,8 @@
         }
         dashboardUser = user;
         showEmpty(document.getElementById("beneficiaryWeeklySummary"), tr("اضغط لتوليد ملخص مختصر لنشاط جهتك خلال الأسبوع", "Click to generate a short weekly activity summary for your organization"));
-        showEmpty(document.getElementById("internalAnnouncementResult"), tr("اختر تدريبًا قادمًا واضغط إعلان داخلي", "Choose an upcoming training and click Announcement"));
-        showEmpty(document.getElementById("requestsInternalAnnouncementResult"), tr("اختر طلبًا مؤكدًا واضغط إعلان داخلي", "Choose a confirmed request and click Announcement"));
+        showEmpty(document.getElementById("internalAnnouncementResult"), tr("اختر تدريبًا قادمًا واضغط توليد إعلان", "Choose an upcoming training and click Generate announcement"));
+        showEmpty(document.getElementById("requestsInternalAnnouncementResult"), tr("اختر طلبًا مؤكدًا واضغط توليد إعلان", "Choose a confirmed request and click Generate announcement"));
         loadData();
     });
 </script>
