@@ -559,13 +559,6 @@ Base URL: `http://localhost:8080` · Auth header: `Authorization: Bearer <JWT>` 
 
 Custom endpoints and business workflows I implemented or contributed to, excluding basic CRUD operations.
 
-### Accounts — 2 Endpoints
-
-| Method | Endpoint | Purpose |
-| --- | --- | --- |
-| GET | `/api/v1/account/get-by-organization/{organizationId}` | Get accounts belonging to a specific organization |
-| PUT | `/api/v1/account/status/{id}` | Change account status |
-
 ### Organizations — 6 Endpoints
 
 | Method | Endpoint | Purpose |
@@ -576,6 +569,14 @@ Custom endpoints and business workflows I implemented or contributed to, excludi
 | PUT | `/api/v1/organization/{id}/verify` | Approve an organization, activate its manager account, and send a verification email |
 | PUT | `/api/v1/organization/{id}/reject` | Reject a registration with a reason and send a rejection email |
 | GET | `/api/v1/organization/{id}/document` | Download the organization's registration document |
+
+
+### Accounts — 2 Endpoints
+
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| GET | `/api/v1/account/get-by-organization/{organizationId}` | Get accounts belonging to a specific organization |
+| PUT | `/api/v1/account/status/{id}` | Change account status |
 
 ### Kids Mode and AI Activities — 7 Endpoints
 
