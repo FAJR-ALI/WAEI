@@ -18,14 +18,46 @@
         .legal p, .legal li { font-size: 16px; line-height: 1.9; color: var(--muted); }
         .legal ul { margin: 0; padding-inline-start: 22px; display: flex; flex-direction: column; gap: 6px; }
         .legal a { color: var(--primary); }
-        .contact-layout { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+        .contact-layout { display: flex; flex-wrap: wrap; gap: 24px; align-items: stretch; }
         .contact-form { flex: 999 1 480px; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
-        .contact-side { flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+        .contact-side { flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; }
         .contact-form label { font-weight: 600; font-size: 15px; }
         .contact-field { display: flex; flex-direction: column; gap: 6px; }
         .contact-form textarea { min-height: 150px; resize: vertical; font-family: inherit; }
         .type-chips { display: flex; flex-wrap: wrap; gap: 8px; }
-        .contact-email { font-size: 18px; font-weight: 700; color: var(--primary); direction: ltr; unicode-bidi: embed; }
+        .contact-email { font-size: 18px; font-weight: 700; color: #FFFFFF; direction: ltr; unicode-bidi: embed; text-decoration: none; }
+        .contact-email:hover { color: #FFFFFF; text-decoration: underline; }
+
+        /* Waei email card */
+        .email-card {
+            position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 10px;
+            flex: 1; align-items: center; justify-content: center; text-align: center;
+            padding: 32px 24px; border-radius: 24px; color: #FFFFFF;
+            background: linear-gradient(135deg, #1E1B4B 0%, #3730A3 55%, #6D28D9 100%);
+        }
+        .email-card::before, .email-card::after {
+            content: ""; position: absolute; border-radius: 50%; background: rgba(255, 255, 255, 0.08);
+        }
+        .email-card::before { width: 180px; height: 180px; top: -70px; inset-inline-start: -60px; }
+        .email-card::after { width: 120px; height: 120px; bottom: -50px; inset-inline-end: -30px; }
+        .email-card > * { position: relative; }
+        .email-icon {
+            width: 52px; height: 52px; border-radius: 16px; display: flex; align-items: center; justify-content: center;
+            background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+        .email-card h2 { font-size: 26px; color: #FFFFFF; margin: 8px 0 0; }
+        .email-card p { margin: 0; font-size: 15px; line-height: 1.8; color: rgba(255, 255, 255, 0.8); }
+        .email-row {
+            display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 10px; max-width: 100%;
+            padding: 8px 8px 8px 16px; border-radius: 14px; direction: ltr;
+            background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .copy-btn {
+            flex-shrink: 0; display: flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 10px;
+            border: none; background: #FFFFFF; color: var(--primary); font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+        }
+        .copy-btn:hover { background: var(--tint); }
+
     </style>
 </head>
 <body>
@@ -53,7 +85,7 @@
     <div class="container stack" style="gap: 28px">
         <div class="legal" style="gap: 10px">
             <h1 data-en="Contact the Waei team">تواصل مع فريق واعي</h1>
-            <p data-en="A question, a complaint or a suggestion? Write to us and we will get back to you.">عندك استفسار أو شكوى أو اقتراح؟ اكتب لنا ونرد عليك.</p>
+            <p data-en="Whatever you want to tell us, write to us and the Waei team will get back to you.">مهما كان موضوع رسالتك، اكتب لنا وفريق واعي يتواصل معك.</p>
         </div>
 
         <div class="contact-layout">
@@ -72,8 +104,8 @@
                     <input id="contactName" class="input" type="text" maxlength="80" required>
                 </div>
                 <div class="contact-field">
-                    <label for="contactOrg" data-en="Organization (optional)">الجهة (اختياري)</label>
-                    <input id="contactOrg" class="input" type="text" maxlength="120">
+                    <label for="contactOrg" data-en="Organization">الجهة</label>
+                    <input id="contactOrg" class="input" type="text" maxlength="120" required>
                 </div>
                 <div class="contact-field">
                     <label for="contactMessage" data-en="Message">الرسالة</label>
@@ -84,9 +116,16 @@
             </form>
 
             <aside class="contact-side">
-                <div class="card" style="display: flex; flex-direction: column; gap: 8px">
-                    <h2 style="font-size: 20px" data-en="Waei email">إيميل واعي</h2>
-                    <a class="contact-email" id="contactEmailLink" href="mailto:contact@waei.sa">contact@waei.sa</a>
+                <div class="email-card">
+                    <span class="email-icon" aria-hidden="true">
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="3"></rect><path d="M22 7l-10 6L2 7"></path></svg>
+                    </span>
+                    <h2 data-en="Waei email">إيميل واعي</h2>
+                    <p data-en="You can also email us directly.">تقدر تراسلنا مباشرة على إيميلنا.</p>
+                    <div class="email-row">
+                        <a class="contact-email" id="contactEmailLink" href="mailto:contact@waei.sa">contact@waei.sa</a>
+                        <button type="button" class="copy-btn" id="copyEmailBtn" data-en="Copy">نسخ</button>
+                    </div>
                 </div>
             </aside>
         </div>
@@ -105,7 +144,7 @@
                     </span>
                 </a>
                 <p class="footer-tagline" data-en="Because awareness.. saves lives.">لأن الوعي.. ينقذ حياة.</p>
-                <p data-en="Free awareness trainings for everyone, no sign-in needed.">تدريبات توعوية مجانية للجميع، بدون تسجيل دخول.</p>
+                <p data-en="Free awareness trainings for individuals, and specialized training programs for organizations.">تدريبات توعوية مجانية للأفراد، وبرامج تدريبية متخصصة للجهات.</p>
             </div>
 
             <nav class="footer-col" aria-label="روابط تهمك" data-en-aria="Useful links">
@@ -184,20 +223,29 @@
     });
     renderTypes();
 
+    // Copy the team email
+    document.getElementById("copyEmailBtn").addEventListener("click", function () {
+        const btn = this;
+        navigator.clipboard.writeText(WAEI_CONTACT_EMAIL).then(function () {
+            btn.textContent = tr("تم النسخ", "Copied");
+            setTimeout(function () { btn.textContent = tr("نسخ", "Copy"); }, 2000);
+        });
+    });
+
     document.getElementById("contactForm").addEventListener("submit", function (e) {
         e.preventDefault();
         const name = document.getElementById("contactName").value.trim();
         const org = document.getElementById("contactOrg").value.trim();
         const message = document.getElementById("contactMessage").value.trim();
         const alertBox = document.getElementById("contactAlert");
-        if (!name || message.length < 5) {
-            alertBox.innerHTML = '<div class="alert alert-error">' + tr("اكتب اسمك والرسالة.", "Please write your name and message.") + "</div>";
+        if (!name || !org || message.length < 5) {
+            alertBox.innerHTML = '<div class="alert alert-error">' + tr("اكتب اسمك واسم الجهة والرسالة.", "Please write your name, organization and message.") + "</div>";
             return;
         }
         alertBox.innerHTML = "";
-        const subject = CONTACT_TYPES[contactType] + " — " + name + (org ? " (" + org + ")" : "");
+        const subject = CONTACT_TYPES[contactType] + " — " + name + " (" + org + ")";
         const body = tr("الاسم: ", "Name: ") + name + "\n"
-            + (org ? tr("الجهة: ", "Organization: ") + org + "\n" : "")
+            + tr("الجهة: ", "Organization: ") + org + "\n"
             + tr("النوع: ", "Type: ") + CONTACT_TYPES[contactType] + "\n\n"
             + message;
         window.location.href = "mailto:" + WAEI_CONTACT_EMAIL
