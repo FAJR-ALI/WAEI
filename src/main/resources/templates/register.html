@@ -23,22 +23,22 @@
         <div>
             <h1 th:if="${isProvider}" data-en="Join Waei as a training provider">انضم إلى واعي كمقدم خدمة تدريبية</h1>
             <h1 th:unless="${isProvider}" data-en="Join Waei as a beneficiary organization">انضم إلى واعي كجهة مستفيدة</h1>
-            <p th:if="${isProvider}" data-en="For training centers and providers that publish and deliver in-person or online courses. Register your organization and upload the supporting document for review.">لمراكز التدريب ومقدمي الخدمات الذين ينشرون الدورات ويقدمونها حضوريًا أو عن بُعد. سجّل جهتك وارفع المستند الداعم، وفريق واعي يراجع طلبك.</p>
-            <p th:unless="${isProvider}" data-en="For schools, companies, government entities and nonprofits that want to train their teams. Register your organization, and the Waei team will review your application.">للمدارس والشركات والجهات الحكومية وغير الربحية التي ترغب في تدريب فرقها. سجّل جهتك، وفريق واعي يراجع طلبك.</p>
+            <p th:if="${isProvider}" data-en="For training centers and providers that publish and deliver in-person or online courses. Register your organization and upload the supporting document for review">لمراكز التدريب ومقدمي الخدمات الذين ينشرون الدورات ويقدمونها حضوريًا أو عن بُعد. سجّل جهتك وارفع المستند الداعم، وفريق واعي يراجع طلبك</p>
+            <p th:unless="${isProvider}" data-en="For schools, companies, government entities and nonprofits that want to train their teams. Register your organization, and the Waei team will review your application">للمدارس والشركات والجهات الحكومية وغير الربحية التي ترغب في تدريب فرقها. سجّل جهتك، وفريق واعي يراجع طلبك</p>
         </div>
         <ol class="register-steps">
             <li>
                 <span class="step-dot">1</span>
-                <span data-en="Fill in the organization and account details.">عبّئ بيانات الجهة وحساب مدير الجهة.</span>
+                <span data-en="Fill in the organization and account details">عبّئ بيانات الجهة وحساب مدير الجهة</span>
             </li>
             <li>
                 <span class="step-dot">2</span>
-                <span data-en="Upload a PDF or image of the supporting document.">ارفع المستند الداعم بصيغة PDF أو صورة.</span>
+                <span data-en="Upload a PDF or image of the supporting document">ارفع المستند الداعم بصيغة PDF أو صورة</span>
             </li>
             <li>
                 <span class="step-dot">3</span>
-                <span th:if="${isProvider}" data-en="After approval, the organization administrator can log in, publish courses and receive training requests.">بعد الموافقة، يستطيع مدير الجهة تسجيل الدخول ونشر الدورات واستقبال طلبات التدريب.</span>
-                <span th:unless="${isProvider}" data-en="The organization administrator can log in and request training programs for their team.">يستطيع مدير الجهة تسجيل الدخول وطلب البرامج التدريبية لفريقه.</span>
+                <span th:if="${isProvider}" data-en="After approval, the organization administrator can log in, publish courses and receive training requests">بعد الموافقة، يستطيع مدير الجهة تسجيل الدخول ونشر الدورات واستقبال طلبات التدريب</span>
+                <span th:unless="${isProvider}" data-en="The organization administrator can log in and request training programs for their team">يستطيع مدير الجهة تسجيل الدخول وطلب البرامج التدريبية لفريقه</span>
             </li>
         </ol>
         <span class="tagline" data-en="Because awareness.. saves lives">لأن الوعي.. ينقذ حياة</span>
@@ -54,13 +54,13 @@
             <header>
                 <h2 th:if="${isProvider}" data-en="Register a training provider">تسجيل مقدم خدمة تدريبية</h2>
                 <h2 th:unless="${isProvider}" data-en="Register a beneficiary organization">تسجيل جهة مستفيدة</h2>
-                <p data-en="All fields are required unless marked optional. The login account is for the organization administrator.">جميع الحقول مطلوبة إلا إذا ذُكر أنها اختيارية. حساب الدخول يكون لمدير الجهة.</p>
+                <p data-en="All fields are required unless marked optional. The login account is for the organization administrator">جميع الحقول مطلوبة إلا إذا ذُكر أنها اختيارية. حساب الدخول يكون لمدير الجهة</p>
             </header>
 
             <div class="register-type-note">
                 <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5"></path><path d="M12 8h.01"></path></svg>
-                <p th:if="${isProvider}" data-en="After approval, you can log in to publish training programs, set prices, control availability and receive beneficiary requests.">بعد الموافقة، يمكنك تسجيل الدخول لنشر البرامج التدريبية وتحديد الأسعار والتحكم بالإتاحة واستقبال طلبات الجهات المستفيدة.</p>
-                <p th:unless="${isProvider}" data-en="You can log in to request training programs for your team and follow approvals and payments from the beneficiary dashboard.">يمكنك تسجيل الدخول لطلب البرامج التدريبية لفريقك ومتابعة الموافقات والمدفوعات من لوحة الجهة المستفيدة.</p>
+                <p th:if="${isProvider}" data-en="After approval, you can log in to publish training programs, set prices, control availability and receive beneficiary requests">بعد الموافقة، يمكنك تسجيل الدخول لنشر البرامج التدريبية وتحديد الأسعار والتحكم بالإتاحة واستقبال طلبات الجهات المستفيدة</p>
+                <p th:unless="${isProvider}" data-en="You can log in to request training programs for your team and follow approvals and payments from the beneficiary dashboard">يمكنك تسجيل الدخول لطلب البرامج التدريبية لفريقك ومتابعة الموافقات والمدفوعات من لوحة الجهة المستفيدة</p>
             </div>
 
             <form id="registerForm" novalidate>
@@ -98,7 +98,7 @@
                         <div class="field">
                             <label for="phoneNumber" data-en="Mobile number">رقم الجوال</label>
                             <input id="phoneNumber" name="phoneNumber" class="input" type="tel" dir="ltr" inputmode="numeric" maxlength="10" placeholder="05XXXXXXXX" required>
-                            <span class="field-hint" data-en="A Saudi mobile number starting with 05.">رقم جوال سعودي يبدأ بـ 05.</span>
+                            <span class="field-hint" data-en="A Saudi mobile number starting with 05">رقم جوال سعودي يبدأ بـ 05</span>
                         </div>
                     </div>
                 </fieldset>
@@ -119,7 +119,7 @@
                         <div class="field">
                             <label for="adminPassword" data-en="Password">كلمة المرور</label>
                             <input id="adminPassword" name="adminPassword" class="input" type="password" dir="ltr" autocomplete="new-password" minlength="8" required>
-                            <span class="field-hint" data-en="At least 8 characters.">8 أحرف على الأقل.</span>
+                            <span class="field-hint" data-en="At least 8 characters">8 أحرف على الأقل</span>
                         </div>
 
                         <div class="field">
@@ -156,7 +156,7 @@
 
                 <label class="check">
                     <input type="checkbox" id="terms">
-                    <span data-en="I confirm that the information is correct and that I am authorized to register this organization.">أقر بأن البيانات صحيحة وأنني مخوّل بتسجيل هذه الجهة.</span>
+                    <span data-en="I confirm that the information is correct and that I am authorized to register this organization">أقر بأن البيانات صحيحة وأنني مخوّل بتسجيل هذه الجهة</span>
                 </label>
 
                 <div class="form-actions">
@@ -172,8 +172,8 @@
                     <svg aria-hidden="true" width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4.5 4.5L19 7"></path></svg>
                 </div>
                 <h2 data-en="Your registration was received">تم استلام طلب التسجيل</h2>
-                <p th:if="${isProvider}" data-en="The platform administrator will review your organization and its document. After verification, you can log in, publish training programs and receive beneficiary requests.">إدارة المنصة تراجع بيانات جهتك والمستند المرفق. بعد التوثيق، يمكنك تسجيل الدخول ونشر البرامج التدريبية واستقبال طلبات الجهات المستفيدة.</p>
-                <p th:unless="${isProvider}" data-en="The platform administrator will review your organization and its document. After verification, you can log in and request training programs for your team.">إدارة المنصة تراجع بيانات جهتك والمستند المرفق. بعد التوثيق، يمكنك تسجيل الدخول وطلب البرامج التدريبية لفريقك.</p>
+                <p th:if="${isProvider}" data-en="The platform administrator will review your organization and its document. After verification, you can log in, publish training programs and receive beneficiary requests">إدارة المنصة تراجع بيانات جهتك والمستند المرفق. بعد التوثيق، يمكنك تسجيل الدخول ونشر البرامج التدريبية واستقبال طلبات الجهات المستفيدة</p>
+                <p th:unless="${isProvider}" data-en="The platform administrator will review your organization and its document. After verification, you can log in and request training programs for your team">إدارة المنصة تراجع بيانات جهتك والمستند المرفق. بعد التوثيق، يمكنك تسجيل الدخول وطلب البرامج التدريبية لفريقك</p>
                 <div class="application-ref">
                     <span data-en="Application number">رقم الطلب</span>
                     <span id="applicationRef" dir="ltr">#</span>
@@ -216,13 +216,13 @@
 
     function validateFile(file) {
         if (!file) {
-            return tr("اختر المستند الداعم أول.", "Choose the supporting document first.");
+            return tr("اختر المستند الداعم أول", "Choose the supporting document first");
         }
         if (file.size > MAX_FILE_SIZE) {
-            return tr("حجم المستند أكبر من 10 ميجابايت.", "The document is larger than 10 MB.");
+            return tr("حجم المستند أكبر من 10 ميجابايت", "The document is larger than 10 MB");
         }
         if (ALLOWED_TYPES.indexOf(file.type) === -1 && ALLOWED_EXTENSIONS.indexOf(fileExtension(file.name)) === -1) {
-            return tr("المستند لازم يكون PDF أو صورة JPEG أو PNG.", "The document must be a PDF, JPEG or PNG file.");
+            return tr("المستند لازم يكون PDF أو صورة JPEG أو PNG", "The document must be a PDF, JPEG or PNG file");
         }
         return "";
     }
@@ -319,37 +319,37 @@
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
         if (!organizationType) {
-            return tr("نوع الجهة غير محدد.", "Organization type is missing.");
+            return tr("نوع الجهة غير محدد", "Organization type is missing");
         }
         if (!name) {
-            return tr("اسم الجهة مطلوب.", "Organization name is required.");
+            return tr("اسم الجهة مطلوب", "Organization name is required");
         }
         if (!sector) {
-            return tr("القطاع مطلوب.", "Sector is required.");
+            return tr("القطاع مطلوب", "Sector is required");
         }
         if (!emailPattern.test(email)) {
-            return tr("اكتب بريدًا إلكترونيًا صحيحًا للجهة.", "Enter a valid organization email.");
+            return tr("اكتب بريدًا إلكترونيًا صحيحًا للجهة", "Enter a valid organization email");
         }
         if (!/^05\d{8}$/.test(phoneNumber)) {
-            return tr("رقم الجوال لازم يكون سعوديًا ويبدأ بـ 05.", "The mobile number must be a Saudi number starting with 05.");
+            return tr("رقم الجوال لازم يكون سعوديًا ويبدأ بـ 05", "The mobile number must be a Saudi number starting with 05");
         }
         if (!adminFullName) {
-            return tr("اسم مدير الجهة مطلوب.", "The administrator full name is required.");
+            return tr("اسم مدير الجهة مطلوب", "The administrator full name is required");
         }
         if (!emailPattern.test(adminEmail)) {
-            return tr("اكتب بريدًا إلكترونيًا صحيحًا لمدير الجهة.", "Enter a valid administrator email.");
+            return tr("اكتب بريدًا إلكترونيًا صحيحًا لمدير الجهة", "Enter a valid administrator email");
         }
         if (adminPassword.length < 8) {
-            return tr("كلمة المرور لازم تكون 8 أحرف على الأقل.", "The password must be at least 8 characters.");
+            return tr("كلمة المرور لازم تكون 8 أحرف على الأقل", "The password must be at least 8 characters");
         }
         if (adminPassword !== adminPasswordConfirm) {
-            return tr("كلمتا المرور غير متطابقتين.", "The passwords do not match.");
+            return tr("كلمتا المرور غير متطابقتين", "The passwords do not match");
         }
         if (!selectedFile) {
-            return tr("ارفع المستند الداعم.", "Upload the supporting document.");
+            return tr("ارفع المستند الداعم", "Upload the supporting document");
         }
         if (!terms) {
-            return tr("لازم تقر بصحة البيانات.", "Confirm that the information is correct.");
+            return tr("لازم تقر بصحة البيانات", "Confirm that the information is correct");
         }
         return "";
     }

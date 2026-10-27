@@ -21,16 +21,16 @@ const ARABIC_MESSAGES = {
     "You already answered this quiz": "جاوبت على هذا الاختبار من قبل",
     "Story not found": "القصة غير موجودة",
     "Invalid email or password": "البريد أو كلمة المرور غير صحيحة",
-    "This account is not active yet. Please contact the platform administrator.": "الحساب غير مفعّل بعد، تواصل مع إدارة المنصة",
-    "Your organization registration is awaiting platform administrator verification.": "طلب تسجيل جهتك بانتظار مراجعة إدارة المنصة",
-    "Your organization is not verified yet. Please contact the platform administrator.": "جهتك غير موثقة بعد، تواصل مع إدارة المنصة",
+    "This account is not active yet. Please contact the platform administrator": "الحساب غير مفعّل بعد، تواصل مع إدارة المنصة",
+    "Your organization registration is awaiting platform administrator verification": "طلب تسجيل جهتك بانتظار مراجعة إدارة المنصة",
+    "Your organization is not verified yet. Please contact the platform administrator": "جهتك غير موثقة بعد، تواصل مع إدارة المنصة",
     "The organization must be verified before it can perform this action": "لازم تكون الجهة موثقة قبل تنفيذ هذا الإجراء",
     "Authentication required": "لازم تسجّل دخول",
     "Emergency case not found": "الحالة غير موجودة",
     "The emergency guide is empty right now": "دليل الطوارئ فاضي حاليًا",
     "Smart search is not available right now, please browse the cases": "البحث الذكي غير متاح الحين، تصفح الحالات تحت",
-    "Your organization registration is awaiting platform administrator verification.": "طلب تسجيل جهتك قيد المراجعة من إدارة المنصة",
-    "Your organization is not verified yet. Please contact the platform administrator.": "جهتك ما توثقت بعد، تواصل مع إدارة المنصة",
+    "Your organization registration is awaiting platform administrator verification": "طلب تسجيل جهتك قيد المراجعة من إدارة المنصة",
+    "Your organization is not verified yet. Please contact the platform administrator": "جهتك ما توثقت بعد، تواصل مع إدارة المنصة",
     "Access denied": "ما عندك صلاحية",
     "Organization email already exists": "بريد الجهة مسجل من قبل",
     "Organization administrator email already exists": "بريد مدير الجهة مسجل من قبل",
@@ -55,7 +55,7 @@ const ARABIC_MESSAGES = {
     "No document was uploaded for this organization": "ما فيه مستند مرفوع لهذي الجهة",
     "A payment can only be started for an accepted training request": "الدفع يبدأ فقط بعد قبول طلب التدريب",
     "A payment is already pending or paid for this training request": "فيه دفعة قيد المعالجة أو مدفوعة لهذا الطلب",
-    "Moyasar is not configured. Set MOYASAR_SECRET_KEY to a test or live secret key.": "بوابة ميسر غير مضبوطة حاليًا، تواصل مع إدارة المنصة",
+    "Moyasar is not configured. Set MOYASAR_SECRET_KEY to a test or live secret key": "بوابة ميسر غير مضبوطة حاليًا، تواصل مع إدارة المنصة",
     "This training program is not active right now": "هذا البرنامج غير متاح حاليًا",
     "The training date and time are required": "تاريخ ووقت التدريب مطلوبان",
     "The training start time must be in the future": "وقت بداية التدريب لازم يكون في المستقبل",
@@ -91,7 +91,7 @@ const ARABIC_MESSAGES = {
     "Only the beneficiary organization can perform this action": "الإجراء هذا متاح للجهة المستفيدة فقط",
     "Only the training provider can perform this action": "الإجراء هذا متاح لمقدم الخدمة فقط",
     "Only the provider organization that owns this program can manage it": "إدارة البرنامج متاحة للجهة المقدمة له فقط",
-    "Built-in awareness days cannot be deleted. Unpublish it instead.": "أيام التقويم الأساسية ما يمكن حذفها، أخفها بإلغاء النشر بدلًا من ذلك",
+    "Built-in awareness days cannot be deleted. Unpublish it instead": "أيام التقويم الأساسية ما يمكن حذفها، أخفها بإلغاء النشر بدلًا من ذلك",
     "A date rule can only be used with ANNUAL recurrence": "قاعدة التاريخ تُستخدم فقط مع التكرار السنوي",
     "Date rule must look like FIXED:11-14, NTH_WEEKDAY:09:SATURDAY:2, or LAST_WEEKDAY:01:SUNDAY": "صيغة قاعدة التاريخ غير صحيحة",
     "Year must be between 2000 and 2100": "السنة لازم تكون بين 2000 و2100",
@@ -129,7 +129,7 @@ function toArabic(message) {
             .replace(/\. Please update your registration and resubmit it\.$/, "");
         return "تم رفض طلب تسجيل جهتك"
             + (reason ? ": " + reason : "")
-            + ". حدّث بيانات طلبك وتواصل مع إدارة المنصة.";
+            + ". حدّث بيانات طلبك وتواصل مع إدارة المنصة";
     }
     return ARABIC_MESSAGES[message] || message;
 }

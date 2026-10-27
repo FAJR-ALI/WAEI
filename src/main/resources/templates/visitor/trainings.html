@@ -38,7 +38,7 @@
         <div class="row-between" style="align-items: center">
             <div>
                 <h1 class="section-title" data-en="Trainings">التدريبات</h1>
-                <p class="section-sub" data-en="Every training has correct steps written by a specialist, and the AI rates you against them.">كل تدريب له خطوات صحيحة كتبها مختص، والذكاء الاصطناعي يقيّمك عليها.</p>
+                <p class="section-sub" data-en="Every training has correct steps set by an emergency specialist, and the AI evaluates your performance based on them">لكل تدريب خطوات صحيحة يحدّدها مختص بالطوارئ، ويقيّم الذكاء الاصطناعي أداءك بناءً عليها</p>
                 <p class="section-sub" id="countText"></p>
             </div>
             <div id="categoryFilters" class="filters" role="group" aria-label="تصفية التدريبات" data-en-aria="Filter trainings"></div>
@@ -65,8 +65,8 @@
                         <small>WAEI</small>
                     </span>
                 </a>
-                <p class="footer-tagline" data-en="Because awareness.. saves lives.">لأن الوعي.. ينقذ حياة.</p>
-                <p data-en="Free awareness trainings for individuals, and specialized training programs for organizations.">تدريبات توعوية مجانية للأفراد، وبرامج تدريبية متخصصة للجهات.</p>
+                <p class="footer-tagline" data-en="Because awareness.. saves lives">لأن الوعي.. ينقذ حياة</p>
+                <p data-en="Free awareness trainings for individuals, and specialized training programs for organizations">تدريبات توعوية مجانية للأفراد، وبرامج تدريبية متخصصة للجهات</p>
             </div>
 
             <nav class="footer-col" aria-label="روابط تهمك" data-en-aria="Useful links">
@@ -106,7 +106,7 @@
         </div>
 
         <div class="footer-bottom">
-            <span data-en="© 2026 Waei. All rights reserved.">© 2026 واعي. جميع الحقوق محفوظة.</span>
+            <span data-en="© 2026 Waei. All rights reserved">© 2026 واعي. جميع الحقوق محفوظة</span>
             <div class="footer-row">
                 <a href="/privacy" data-en="Privacy policy">سياسة الخصوصية</a>
                 <span class="footer-dot" aria-hidden="true">·</span>
@@ -174,7 +174,7 @@
         document.getElementById("countText").textContent = tr(trainings.length + " تدريب", trainings.length + " trainings");
 
         if (trainings.length === 0) {
-            showEmpty(list, tr("ما فيه تدريبات تطابق بحثك.", "No trainings match your search."));
+            showEmpty(list, tr("ما فيه تدريبات تطابق بحثك", "No trainings match your search"));
             return;
         }
         let html = "";

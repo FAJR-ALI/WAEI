@@ -7,7 +7,7 @@ objects.forEach(function (button) {
     button.addEventListener("click", async function () {
         if (checking) return;
         if (found.has(button.dataset.item)) {
-            feedback.textContent = tr("اكتشفت هذا الخطر! دوّر على شيء ثاني.", "You already found this hazard! Look for another object.");
+            feedback.textContent = tr("اكتشفت هذا الخطر! دوّر على شيء ثاني", "You already found this hazard! Look for another object");
             return;
         }
         checking = true;
@@ -39,13 +39,13 @@ objects.forEach(function (button) {
             }
         } catch (e) {
             if (e.status === 429) {
-                feedback.textContent = tr("وصلنا لحد استخدام الذكاء الاصطناعي، جرّب لاحقًا.", "The AI usage limit was reached. Please try later.");
+                feedback.textContent = tr("وصلنا لحد استخدام الذكاء الاصطناعي، جرّب لاحقًا", "The AI usage limit was reached. Please try later");
             } else if (e.status === 503) {
-                feedback.textContent = tr("محقق السلامة غير متاح حاليًا، يلزم التحقق من إعدادات الخدمة.", "Safety detective is unavailable. The service settings need checking.");
+                feedback.textContent = tr("محقق السلامة غير متاح حاليًا، يلزم التحقق من إعدادات الخدمة", "Safety detective is unavailable. The service settings need checking");
             } else if (e.name === "AbortError") {
-                feedback.textContent = tr("الرد تأخر، جرّب مرة ثانية.", "The reply took too long. Please try again.");
+                feedback.textContent = tr("الرد تأخر، جرّب مرة ثانية", "The reply took too long. Please try again");
             } else {
-                feedback.textContent = tr("واعي ما قدر يرد الآن، جرّب مرة ثانية.", "Waei couldn't reply just now. Please try again.");
+                feedback.textContent = tr("واعي ما قدر يرد الآن، جرّب مرة ثانية", "Waei couldn't reply just now. Please try again");
             }
         } finally {
             clearTimeout(timeout);

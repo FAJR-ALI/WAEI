@@ -18,7 +18,7 @@ function clearDrawing() {
     ctx.fillStyle = "#FFFFFF";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     hasDrawing = false;
-    drawingFeedback.textContent = tr("ارسم تصرفًا آمنًا وورّه لواعي.", "Draw a safe action and show Waei.");
+    drawingFeedback.textContent = tr("ارسم تصرفًا آمنًا وورّه لواعي", "Draw a safe action and show Waei");
 }
 clearDrawing();
 
@@ -82,7 +82,7 @@ eraserButton.addEventListener("click", function () {
 });
 clearButton.addEventListener("click", clearDrawing);
 topicSelect.addEventListener("change", function () {
-    drawingFeedback.textContent = tr("الموضوع تغيّر، تقدر تعدّل رسمتك ثم ترسلها.", "The topic changed. You can edit your drawing and submit it.");
+    drawingFeedback.textContent = tr("الموضوع تغيّر، تقدر تعدّل رسمتك ثم ترسلها", "The topic changed. You can edit your drawing and submit it");
 });
 
 reviewButton.addEventListener("click", async function () {
@@ -92,7 +92,7 @@ reviewButton.addEventListener("click", async function () {
         return;
     }
     if (!document.getElementById("drawingConsent").checked) {
-        drawingFeedback.textContent = tr("اطلب إذن ولي أمرك وفعّل الموافقة أولًا.", "Ask your parent's permission and check the consent box first.");
+        drawingFeedback.textContent = tr("اطلب إذن ولي أمرك وفعّل الموافقة أولًا", "Ask your parent's permission and check the consent box first");
         return;
     }
     busy = true;
@@ -116,10 +116,10 @@ reviewButton.addEventListener("click", async function () {
         if (typeof result.message !== "string") throw new Error("Invalid response");
         drawingFeedback.textContent = result.message;
     } catch (error) {
-        if (error.status === 429) drawingFeedback.textContent = tr("وصلنا لحد استخدام الذكاء الاصطناعي، جرّب لاحقًا.", "The AI usage limit was reached. Please try later.");
-        else if (error.status === 400) drawingFeedback.textContent = tr("أضف تفاصيل لرسمتك وحاول مرة ثانية.", "Add details to your drawing and try again.");
-        else if (error.status === 503) drawingFeedback.textContent = tr("واعي غير متاح حاليًا. يلزم التحقق من إعدادات الخدمة.", "Waei is unavailable. The service settings need checking.");
-        else drawingFeedback.textContent = tr("ما قدرنا نراجع الرسمة الآن. رسمتك موجودة، جرّب مرة ثانية.", "We couldn't review the drawing. It is still here; please try again.");
+        if (error.status === 429) drawingFeedback.textContent = tr("وصلنا لحد استخدام الذكاء الاصطناعي، جرّب لاحقًا", "The AI usage limit was reached. Please try later");
+        else if (error.status === 400) drawingFeedback.textContent = tr("أضف تفاصيل لرسمتك وحاول مرة ثانية", "Add details to your drawing and try again");
+        else if (error.status === 503) drawingFeedback.textContent = tr("واعي غير متاح حاليًا. يلزم التحقق من إعدادات الخدمة", "Waei is unavailable. The service settings need checking");
+        else drawingFeedback.textContent = tr("ما قدرنا نراجع الرسمة الآن. رسمتك موجودة، جرّب مرة ثانية", "We couldn't review the drawing. It is still here; please try again");
     } finally {
         clearTimeout(timeout);
         drawingRequest = null;

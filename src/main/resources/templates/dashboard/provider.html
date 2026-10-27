@@ -62,11 +62,11 @@
                 <div class="page-intro">
                     <div>
                         <h2 data-en="Overview">نظرة عامة</h2>
-                        <p data-en="Your programs and incoming requests at a glance.">ملخص برامجك والطلبات الواردة.</p>
+                        <p data-en="Your programs and incoming requests at a glance">ملخص برامجك والطلبات الواردة</p>
                     </div>
                     <div class="toolbar">
                         <button type="button" class="btn btn-outline btn-sm" data-refresh data-en="Refresh">تحديث</button>
-                        <button type="button" class="btn btn-primary btn-sm" data-new-program data-en="Add program">أضف برنامجًا</button>
+                        <button type="button" class="btn btn-primary btn-sm" data-new-program data-en="Add program">إضافة برنامج</button>
                     </div>
                 </div>
 
@@ -97,7 +97,7 @@
                     <div class="panel-head">
                         <div>
                             <h2 data-en="Weekly summary">ملخص الأسبوع الذكي</h2>
-                            <p data-en="A short provider summary for the last and next 7 days.">ملخص مختصر لآخر 7 أيام و7 أيام قادمة.</p>
+                            <p data-en="A short provider summary for the last and next 7 days">ملخص مختصر لآخر 7 أيام و7 أيام قادمة</p>
                         </div>
                         <div class="cell-actions">
                             <button type="button" class="btn btn-outline btn-sm" id="providerWeeklySummaryGenerate" data-en="Generate weekly summary">توليد ملخص الأسبوع</button>
@@ -111,7 +111,7 @@
                     <div class="panel-head">
                         <div>
                             <h2 data-en="Latest requests">أحدث الطلبات</h2>
-                            <p data-en="New requests waiting for a decision.">طلبات جديدة بانتظار القرار.</p>
+                            <p data-en="New requests waiting for a decision">طلبات جديدة بانتظار القرار</p>
                         </div>
                         <button type="button" class="btn btn-ghost btn-sm" data-goto="requests" data-en="All requests">كل الطلبات</button>
                     </div>
@@ -123,11 +123,11 @@
                 <div class="page-intro">
                     <div>
                         <h2 data-en="My programs">برامجي التدريبية</h2>
-                        <p data-en="Publish courses, update prices and control availability.">انشر الدورات وحدّث الأسعار وتحكم بالإتاحة.</p>
+                        <p data-en="Publish courses, update prices and control availability">انشر الدورات وحدّث الأسعار وتحكم بالإتاحة</p>
                     </div>
                     <div class="toolbar">
                         <button type="button" class="btn btn-outline btn-sm" data-refresh data-en="Refresh">تحديث</button>
-                        <button type="button" class="btn btn-primary btn-sm" data-new-program data-en="Add program">أضف برنامجًا</button>
+                        <button type="button" class="btn btn-primary btn-sm" data-new-program data-en="Add program">إضافة برنامج</button>
                     </div>
                 </div>
                 <div id="programFormCard" class="panel program-form-card hidden">
@@ -191,15 +191,12 @@
                                     </span>
                                 </button>
                                 <button type="button" class="pf-mode" data-mode="ONLINE" role="radio">
-                                    <span class="pf-mode-icon"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2"></rect><path d="m16 10 5-3v10l-5-3"></path></svg></span>
+                                    <span class="pf-mode-icon pf-mode-icon-zoom"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2"></rect><path d="m16 10 5-3v10l-5-3"></path></svg></span>
                                     <span class="pf-mode-copy">
                                         <strong data-en="Online · Zoom">عن بعد · Zoom</strong>
                                         <small data-en="Automatic Zoom link">رابط Zoom تلقائي</small>
                                     </span>
                                 </button>
-                            </div>
-                            <div class="pf-note pf-note-mode">
-                                <p id="programModeNote"></p>
                             </div>
                         </div>
 
@@ -209,7 +206,7 @@
                                 <span class="pf-drop-icon"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="9" cy="10" r="2"></circle><path d="m21 16-5-5-9 9"></path></svg></span>
                                 <span class="pf-drop-copy">
                                     <strong data-en="Upload a program image">ارفع صورة للبرنامج</strong>
-                                    <small data-en="JPG, PNG or WebP up to 5 MB, landscape (16:9) is best.">JPG أو PNG أو WebP بحد أقصى 5 ميجابايت، ويفضّل مقاس عرضي (16:9).</small>
+                                    <small data-en="JPG, PNG or WebP up to 5 MB, landscape (16:9) is best">JPG أو PNG أو WebP بحد أقصى 5 ميجابايت، ويفضّل مقاس عرضي (16:9)</small>
                                 </span>
                                 <input id="programImage" class="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp">
                             </label>
@@ -242,7 +239,7 @@
                 <div class="page-intro">
                     <div>
                         <h2 data-en="Incoming requests">طلبات التدريب الواردة</h2>
-                        <p data-en="Accept or decline pending requests. Training start and completion update automatically from the schedule.">اقبل الطلبات أو ارفضها. تتغير حالة بدء التدريب وإكماله تلقائيًا حسب الموعد.</p>
+                        <p data-en="Accept or decline pending requests. Training start and completion update automatically from the schedule">اقبل الطلبات أو ارفضها. تتغير حالة بدء التدريب وإكماله تلقائيًا حسب الموعد</p>
                     </div>
                     <button type="button" class="btn btn-outline btn-sm" data-refresh data-en="Refresh">تحديث</button>
                 </div>
@@ -269,7 +266,7 @@
                     <div class="panel-head">
                         <div>
                             <h2 data-en="Session prep">جهّز جلستك</h2>
-                            <p data-en="AI suggestions to tailor the program to the organization that requested it.">اقتراحات بالذكاء الاصطناعي تخصّص البرنامج للجهة اللي طلبته.</p>
+                            <p data-en="AI suggestions to tailor the program to the organization that requested it">اقتراحات بالذكاء الاصطناعي تخصّص البرنامج للجهة اللي طلبته</p>
                         </div>
                         <div class="cell-actions">
                             <button type="button" class="btn btn-ghost btn-sm" id="sessionPrepCopy" hidden data-en="Copy prep">نسخ التجهيز</button>
@@ -283,7 +280,7 @@
                 <div class="page-intro">
                     <div>
                         <h2 data-en="Payments">المدفوعات</h2>
-                        <p data-en="All payment attempts and platform commission for your programs.">كل محاولات الدفع وعمولة المنصة لبرامجك.</p>
+                        <p data-en="All payment attempts and platform commission for your programs">كل محاولات الدفع وعمولة المنصة لبرامجك</p>
                     </div>
                     <button type="button" class="btn btn-outline btn-sm" data-refresh data-en="Refresh">تحديث</button>
                 </div>
@@ -311,7 +308,7 @@
         <div class="dialog-head">
             <div>
                 <h2 data-en="Reject request">رفض الطلب</h2>
-                <p data-en="Explain why the request cannot be delivered.">وضّح سبب تعذر تنفيذ الطلب.</p>
+                <p data-en="Explain why the request cannot be delivered">وضّح سبب تعذر تنفيذ الطلب</p>
             </div>
             <button type="button" class="dialog-close" data-close-dialog aria-label="إغلاق" data-en-aria="Close">
                 <svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>
@@ -335,7 +332,7 @@
     <div class="dialog-head">
         <div>
             <h2 data-en="Request details">تفاصيل الطلب</h2>
-            <p data-en="The full request, schedule and payment information.">بيانات الطلب والموعد والدفع.</p>
+            <p data-en="The full request, schedule and payment information">بيانات الطلب والموعد والدفع</p>
         </div>
         <button type="button" class="dialog-close" data-close-dialog aria-label="إغلاق" data-en-aria="Close">
             <svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>
@@ -561,7 +558,7 @@
         syncProgramChoices();
     }
 
-    // Highlights the chosen category / mode and updates the helper notes
+    // Highlights the chosen category / mode
     function syncProgramChoices() {
         const category = document.getElementById("programCategory").value;
         document.querySelectorAll("#categoryTiles .pf-cat").forEach(function (tile) {
@@ -575,27 +572,33 @@
             card.classList.toggle("selected", on);
             card.setAttribute("aria-checked", String(on));
         });
-        document.getElementById("programModeNote").textContent = mode === "ONLINE"
-            ? tr("بعد ما تقبل الطلب، ينشأ رابط Zoom تلقائيًا ويوصل للجهة.", "After you accept the request, a Zoom link is created automatically and shared with the organization.")
-            : tr("بعد ما تقبل الطلب، تواصل مع الجهة لتأكيد المكان.", "After you accept the request, contact the organization to confirm the location.");
     }
 
     function showProgramForm() {
         WaeiDashboard.setPanel("programs");
         const card = document.getElementById("programFormCard");
         card.classList.remove("hidden");
+        toggleRefreshButtons(false);
         card.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
     function hideProgramForm() {
         document.getElementById("programFormCard").classList.add("hidden");
+        toggleRefreshButtons(true);
         editingProgramId = null;
+    }
+
+    // Hides the refresh buttons while the program form is open and brings them back after
+    function toggleRefreshButtons(show) {
+        document.querySelectorAll("[data-refresh]").forEach(function (button) {
+            button.classList.toggle("hidden", !show);
+        });
     }
 
     function renderPrograms() {
         const target = document.getElementById("programsList");
         if (!programs.length) {
-            showEmpty(target, tr("ما فيه برامج بعد. أضف أول برنامج لك.", "No programs yet. Add your first program."));
+            showEmpty(target, tr("ما فيه برامج بعد. أضف أول برنامج لك", "No programs yet. Add your first program"));
             return;
         }
         let html = '<div class="table-wrap"><table class="data-table"><thead><tr>'
@@ -622,11 +625,11 @@
                 + '<td class="money">' + WaeiDashboard.formatMoney(program.price) + '<small>/ ' + tr("يوم", "day") + '</small></td>'
                 + '<td>' + (program.isActive
                     ? '<span class="badge badge-status badge-ok">' + tr("نشط", "Active") + '</span>'
-                    : '<span class="badge badge-status badge-muted">' + tr("موقوف", "Inactive") + '</span>') + '</td>'
+                    : '<span class="badge badge-status badge-muted">' + tr("غير نشط", "Inactive") + '</span>') + '</td>'
                 + '<td><div class="cell-actions">'
                 + '<button type="button" class="btn btn-outline btn-sm" data-edit-program="' + program.id + '">' + tr("تعديل", "Edit") + '</button>'
                 + '<button type="button" class="btn btn-ghost btn-sm" data-toggle-program="' + program.id + '">'
-                + (program.isActive ? tr("إيقاف", "Deactivate") : tr("تفعيل", "Activate")) + '</button>'
+                + (program.isActive ? tr("إيقاف", "Deactivate") : tr("تنشيط", "Activate")) + '</button>'
                 + '<button type="button" class="btn btn-danger btn-sm" data-delete-program="' + program.id + '">' + tr("حذف", "Delete") + '</button>'
                 + '</div></td></tr>';
         });
@@ -682,8 +685,8 @@
         if (!item.meetingJoinUrl || (item.status !== "CONFIRMED" && item.status !== "IN_PROGRESS")) {
             return "";
         }
-        return '<button type="button" class="btn btn-ok btn-sm" data-start-zoom="' + item.id + '">'
-            + tr("بدء Zoom", "Start Zoom") + '</button>';
+        return '<button type="button" class="btn btn-zoom btn-sm" data-start-zoom="' + item.id + '">'
+            + '<svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2"></rect><path d="m16 10 5-3v10l-5-3"></path></svg>' + tr("بدء Zoom", "Start Zoom") + '</button>';
     }
 
     function meetingCopyButton(item) {
@@ -799,7 +802,7 @@
             html += '<p class="ai-summary-action">' + escapeHtml(tr("نصيحة: ", "Tip: ") + result.trainerTip) + "</p>";
         }
 
-        html += '<p class="prep-note">' + escapeHtml(tr("اقتراحات من الذكاء الاصطناعي، راجعها قبل الجلسة.", "AI suggestions, review them before the session.")) + "</p>";
+        html += '<p class="prep-note">' + escapeHtml(tr("اقتراحات من الذكاء الاصطناعي، راجعها قبل الجلسة", "AI suggestions, review them before the session")) + "</p>";
         html += "</div>";
 
         document.getElementById("sessionPrepResult").innerHTML = html;
@@ -835,7 +838,7 @@
         const target = document.getElementById("requestsList");
         const rows = requestRows();
         if (!rows.length) {
-            showEmpty(target, tr("ما فيه طلبات مطابقة.", "No matching requests."));
+            showEmpty(target, tr("ما فيه طلبات مطابقة", "No matching requests"));
             return;
         }
         let html = '<div class="table-wrap"><table class="data-table"><thead><tr>'
@@ -870,7 +873,7 @@
             return item.status === "PENDING";
         }).slice(0, 6);
         if (!rows.length) {
-            showEmpty(target, tr("ما فيه طلبات جديدة حاليًا.", "No new requests right now."));
+            showEmpty(target, tr("ما فيه طلبات جديدة حاليًا", "No new requests right now"));
             return;
         }
         let html = '<div class="table-wrap"><table class="data-table"><thead><tr>'
@@ -915,10 +918,10 @@
         }
         WaeiDashboard.copyText(item.meetingJoinUrl)
             .then(function () {
-                WaeiDashboard.notify(tr("تم نسخ الرابط.", "Meeting link copied."), "ok");
+                WaeiDashboard.notify(tr("تم نسخ الرابط", "Meeting link copied"), "ok");
             })
             .catch(function (e) {
-                WaeiDashboard.notify(tr("فشل نسخ الرابط.", "Failed to copy link."), "error");
+                WaeiDashboard.notify(tr("فشل نسخ الرابط", "Failed to copy link"), "error");
             });
     }
 
@@ -958,8 +961,8 @@
         const rows = paymentRows();
         if (!rows.length) {
             showEmpty(target, payments.length
-                ? tr("ما فيه مدفوعات مطابقة.", "No matching payments.")
-                : tr("ما فيه مدفوعات بعد.", "No payments yet."));
+                ? tr("ما فيه مدفوعات مطابقة", "No matching payments")
+                : tr("ما فيه مدفوعات بعد", "No payments yet"));
             return;
         }
         const byRequest = {};
@@ -1081,13 +1084,13 @@
         }
         const prompt = program.isActive
             ? ["إيقاف استقبال الطلبات لهذا البرنامج؟", "Stop accepting requests for this program?"]
-            : ["تفعيل البرنامج لاستقبال الطلبات؟", "Activate this program for new requests?"];
+            : ["تنشيط البرنامج لاستقبال الطلبات؟", "Activate this program for new requests?"];
         if (!WaeiDashboard.confirmAction(prompt[0], prompt[1])) {
             return;
         }
         try {
             await apiPut("/training-program/change-status/" + id);
-            WaeiDashboard.notify(tr("تم تحديث حالة البرنامج.", "Program status updated."), "ok");
+            WaeiDashboard.notify(tr("تم تحديث حالة البرنامج", "Program status updated"), "ok");
             await loadData();
         } catch (e) {
             WaeiDashboard.notify(e.message, "error");
@@ -1100,7 +1103,7 @@
         }
         try {
             await apiDelete("/training-program/delete/" + id);
-            WaeiDashboard.notify(tr("تم حذف البرنامج.", "Program deleted."), "ok");
+            WaeiDashboard.notify(tr("تم حذف البرنامج", "Program deleted"), "ok");
             await loadData();
         } catch (e) {
             WaeiDashboard.notify(e.message, "error");
@@ -1111,7 +1114,7 @@
         try {
             const response = await apiGet("/training-request/" + id + "/meeting/host-link");
             if (!response || !response.url) {
-                throw new Error(tr("رابط بدء الاجتماع غير متاح.", "The meeting start link is not available."));
+                throw new Error(tr("رابط بدء الاجتماع غير متاح", "The meeting start link is not available"));
             }
             window.open(response.url, "_blank", "noopener");
         } catch (e) {
@@ -1125,7 +1128,7 @@
         }
         try {
             await apiPost("/training-request/" + id + "/accept");
-            WaeiDashboard.notify(tr("تم قبول الطلب.", "Request accepted."), "ok");
+            WaeiDashboard.notify(tr("تم قبول الطلب", "Request accepted"), "ok");
             await loadData();
         } catch (e) {
             WaeiDashboard.notify(e.message, "error");
@@ -1255,9 +1258,9 @@
         }
         try {
             await WaeiDashboard.copyText(sessionPrepText);
-            WaeiDashboard.notify(tr("تم نسخ التجهيز.", "Prep copied."), "ok");
+            WaeiDashboard.notify(tr("تم نسخ التجهيز", "Prep copied"), "ok");
         } catch (e) {
-            WaeiDashboard.notify(tr("فشل نسخ التجهيز.", "Failed to copy prep."), "error");
+            WaeiDashboard.notify(tr("فشل نسخ التجهيز", "Failed to copy prep"), "error");
         }
     });
     document.getElementById("providerWeeklySummaryCopy").addEventListener("click", async function () {
@@ -1266,9 +1269,9 @@
         }
         try {
             await WaeiDashboard.copyText(weeklySummaryText);
-            WaeiDashboard.notify(tr("تم نسخ الملخص.", "Summary copied."), "ok");
+            WaeiDashboard.notify(tr("تم نسخ الملخص", "Summary copied"), "ok");
         } catch (e) {
-            WaeiDashboard.notify(tr("فشل نسخ الملخص.", "Failed to copy summary."), "error");
+            WaeiDashboard.notify(tr("فشل نسخ الملخص", "Failed to copy summary"), "error");
         }
     });
 
@@ -1306,23 +1309,23 @@
         const imageFile = document.getElementById("programImage").files[0] || null;
 
         if (!title || !category || !description) {
-            errorRoot.innerHTML = '<div class="alert alert-error" role="alert">' + tr("عبّئ اسم البرنامج والتصنيف والوصف.", "Fill in the title, category and description.") + "</div>";
+            errorRoot.innerHTML = '<div class="alert alert-error" role="alert">' + tr("عبّئ اسم البرنامج والتصنيف والوصف", "Fill in the title, category and description") + "</div>";
             return;
         }
         if (!price || price < 1) {
-            errorRoot.innerHTML = '<div class="alert alert-error" role="alert">' + tr("السعر لازم يكون 1 ريال على الأقل.", "The price must be at least 1 SAR.") + "</div>";
+            errorRoot.innerHTML = '<div class="alert alert-error" role="alert">' + tr("السعر لازم يكون 1 ريال على الأقل", "The price must be at least 1 SAR") + "</div>";
             return;
         }
         if (!hoursPerDay || hoursPerDay < 0.5 || hoursPerDay > 24) {
-            errorRoot.innerHTML = '<div class="alert alert-error" role="alert">' + tr("عدد الساعات في اليوم لازم يكون بين 0.5 و24.", "Hours per day must be between 0.5 and 24.") + "</div>";
+            errorRoot.innerHTML = '<div class="alert alert-error" role="alert">' + tr("عدد الساعات في اليوم لازم يكون بين 0.5 و24", "Hours per day must be between 0.5 and 24") + "</div>";
             return;
         }
         if (!Number.isInteger(maxDays) || maxDays < 1 || maxDays > 365) {
-            errorRoot.innerHTML = '<div class="alert alert-error" role="alert">' + tr("الحد الأقصى للأيام لازم يكون بين 1 و365.", "Maximum days must be between 1 and 365.") + "</div>";
+            errorRoot.innerHTML = '<div class="alert alert-error" role="alert">' + tr("الحد الأقصى للأيام لازم يكون بين 1 و365", "Maximum days must be between 1 and 365") + "</div>";
             return;
         }
         if (imageFile && imageFile.size > 5 * 1024 * 1024) {
-            errorRoot.innerHTML = '<div class="alert alert-error" role="alert">' + tr("حجم الصورة لازم يكون 5 ميجابايت أو أقل.", "The image must be 5 MB or smaller.") + "</div>";
+            errorRoot.innerHTML = '<div class="alert alert-error" role="alert">' + tr("حجم الصورة لازم يكون 5 ميجابايت أو أقل", "The image must be 5 MB or smaller") + "</div>";
             return;
         }
 
@@ -1358,8 +1361,8 @@
             }
 
             WaeiDashboard.notify(wasEditing
-                ? tr("تم تحديث البرنامج.", "Program updated.")
-                : tr("تمت إضافة البرنامج.", "Program added."), "ok");
+                ? tr("تم تحديث البرنامج", "Program updated")
+                : tr("تمت إضافة البرنامج", "Program added"), "ok");
             hideProgramForm();
             await loadData();
         } catch (e) {
@@ -1378,7 +1381,7 @@
         const errorRoot = document.getElementById("rejectError");
         errorRoot.innerHTML = "";
         if (!reason) {
-            errorRoot.innerHTML = '<div class="alert alert-error" role="alert">' + tr("اكتب سبب الرفض.", "Enter a rejection reason.") + "</div>";
+            errorRoot.innerHTML = '<div class="alert alert-error" role="alert">' + tr("اكتب سبب الرفض", "Enter a rejection reason") + "</div>";
             return;
         }
         const button = document.getElementById("rejectSubmit");
@@ -1386,7 +1389,7 @@
         try {
             await apiPost("/training-request/" + rejectRequestId + "/reject", { reason: reason });
             WaeiDashboard.closeDialog("rejectDialog");
-            WaeiDashboard.notify(tr("تم رفض الطلب.", "Request rejected."), "ok");
+            WaeiDashboard.notify(tr("تم رفض الطلب", "Request rejected"), "ok");
             await loadData();
         } catch (e) {
             errorRoot.innerHTML = '<div class="alert alert-error" role="alert">' + escapeHtml(e.message) + "</div>";
@@ -1414,8 +1417,8 @@
             return;
         }
         dashboardUser = user;
-        showEmpty(document.getElementById("providerWeeklySummary"), tr("اضغط لتوليد ملخص مختصر لأنشطة الأسبوع.", "Click to generate a short weekly activity summary."));
-        showEmpty(document.getElementById("sessionPrepResult"), tr("اضغط \"جهّزني\" على أي طلب مقبول، ونقترح لك كيف تخصّص الجلسة للجهة.", "Click \"Prep me\" on an accepted request to get suggestions tailored to the organization."));
+        showEmpty(document.getElementById("providerWeeklySummary"), tr("اضغط لتوليد ملخص مختصر لأنشطة الأسبوع", "Click to generate a short weekly activity summary"));
+        showEmpty(document.getElementById("sessionPrepResult"), tr("اضغط \"جهّزني\" على أي طلب مقبول، ونقترح لك كيف تخصّص الجلسة للجهة", "Click \"Prep me\" on an accepted request to get suggestions tailored to the organization"));
         loadData();
     });
 </script>

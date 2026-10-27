@@ -15,7 +15,7 @@ const TRAINING_EN = {
             + "4. Place the heel of your hand in the center of the chest and your other hand on top, keeping your arms straight and your shoulders over the chest.\n"
             + "5. Push hard and fast: 5 to 6 cm deep, 100 to 120 compressions per minute.\n"
             + "6. Let the chest rise fully after each compression.\n"
-            + "7. Keep compressing without stopping until the ambulance arrives or they start breathing normally."
+            + "7. Keep compressing without stopping until the ambulance arrives or they start breathing normally"
     },
     "الاختناق عند البالغ (مناورة هيمليك)": {
         title: "Adult choking (Heimlich maneuver)",
@@ -27,7 +27,7 @@ const TRAINING_EN = {
             + "4. If the object doesn't come out: place your fist above the navel and below the breastbone, and grab it with your other hand.\n"
             + "5. Press inward and upward forcefully 5 times.\n"
             + "6. Repeat 5 back blows and 5 thrusts until the object comes out or the ambulance arrives.\n"
-            + "7. If they become unconscious, lower them gently to the ground and start CPR."
+            + "7. If they become unconscious, lower them gently to the ground and start CPR"
     },
     "وضعية الإفاقة الجانبية": {
         title: "Recovery position",
@@ -39,7 +39,7 @@ const TRAINING_EN = {
             + "4. Lift their far knee so the leg is bent with the foot flat on the ground.\n"
             + "5. Pull the far knee toward you until they roll onto their side.\n"
             + "6. Tilt their head back slightly to keep the airway open.\n"
-            + "7. Stay with them and watch their breathing until the ambulance arrives."
+            + "7. Stay with them and watch their breathing until the ambulance arrives"
     },
     "إيقاف النزيف الشديد": {
         title: "Stopping severe bleeding",
@@ -51,7 +51,7 @@ const TRAINING_EN = {
             + "4. If the cloth soaks through, add another on top and keep pressing without removing the first.\n"
             + "5. Wrap a bandage tightly over the gauze if available.\n"
             + "6. Keep pressing without stopping until the ambulance arrives.\n"
-            + "7. Don't pull out any object stuck in the wound."
+            + "7. Don't pull out any object stuck in the wound"
     },
     "استخدام طفاية الحريق": {
         title: "Using a fire extinguisher",
@@ -63,7 +63,7 @@ const TRAINING_EN = {
             + "4. Aim the nozzle at the base of the fire, not the flames.\n"
             + "5. Squeeze the handle steadily.\n"
             + "6. Sweep the nozzle side to side at the base of the fire until it goes out.\n"
-            + "7. If the fire grows or the extinguisher runs out, leave immediately and close the door behind you."
+            + "7. If the fire grows or the extinguisher runs out, leave immediately and close the door behind you"
     }
 };
 
@@ -83,56 +83,56 @@ const STORY_EN = {
     "ليان والكوب الساخن": {
         title: "Layan and the Hot Cup",
         topic: "Safety at home",
-        content: "Layan saw a hot cup, so she stayed away from it.\nShe called her mom to put it somewhere safe.",
-        lesson: "Stay away from hot things and ask a grown-up for help."
+        content: "Layan saw a hot cup, so she stayed away from it.\nShe called her mom to put it somewhere safe",
+        lesson: "Stay away from hot things and ask a grown-up for help"
     },
     "سعد والحبوب الملونة": {
         title: "Saad and the Colorful Pills",
         topic: "Medicine safety",
-        content: "Saad found some colorful pills, but he didn't touch them.\nHe told his dad, who put them away from children.",
-        lesson: "Medicine is not candy. Don't touch it on your own."
+        content: "Saad found some colorful pills, but he didn't touch them.\nHe told his dad, who put them away from children",
+        lesson: "Medicine is not candy. Don't touch it on your own"
     },
     "نورة عند المسبح": {
         title: "Noura at the Pool",
         topic: "Safety near water",
-        content: "Noura's ball rolled into the pool, so she stopped far from the edge.\nShe asked her mom to get the ball.",
-        lesson: "Don't go near the pool without a grown-up."
+        content: "Noura's ball rolled into the pool, so she stopped far from the edge.\nShe asked her mom to get the ball",
+        lesson: "Don't go near the pool without a grown-up"
     },
     "عمر وممر المشاة": {
         title: "Omar and the Crosswalk",
         topic: "Road safety",
-        content: "Omar wanted to cross the street, so he waited at the crosswalk.\nHe held his dad's hand, and they crossed after making sure the cars had stopped.",
-        lesson: "Cross with a grown-up at the right place."
+        content: "Omar wanted to cross the street, so he waited at the crosswalk.\nHe held his dad's hand, and they crossed after making sure the cars had stopped",
+        lesson: "Cross with a grown-up at the right place"
     },
     "ريم ورائحة الدخان": {
         title: "Reem and the Smell of Smoke",
         topic: "Fire safety",
-        content: "Reem noticed smoke, so she moved away and called her mom.\nThey went out to a safe place and didn't go back for the toys.",
-        lesson: "Stay away from smoke and tell a grown-up."
+        content: "Reem noticed smoke, so she moved away and called her mom.\nThey went out to a safe place and didn't go back for the toys",
+        lesson: "Stay away from smoke and tell a grown-up"
     },
     "فهد وصديقه": {
         title: "Fahad and His Friend",
         topic: "Asking for help",
-        content: "Fahad's friend fell on the playground and couldn't stand up.\nFahad called the teacher and didn't try to move his friend.",
-        lesson: "Ask the teacher for help when your friend gets hurt."
+        content: "Fahad's friend fell on the playground and couldn't stand up.\nFahad called the teacher and didn't try to move his friend",
+        lesson: "Ask the teacher for help when your friend gets hurt"
     },
     "جود والسلك المكشوف": {
         title: "Joud and the Exposed Wire",
         topic: "Electrical safety",
-        content: "Joud saw an exposed wire, so she moved away and warned her brothers and sisters.\nShe told her dad without touching the wire or trying to fix it.",
-        lesson: "Stay away from damaged wires and leave repairs to grown-ups."
+        content: "Joud saw an exposed wire, so she moved away and warned her brothers and sisters.\nShe told her dad without touching the wire or trying to fix it",
+        lesson: "Stay away from damaged wires and leave repairs to grown-ups"
     },
     "راشد والمكالمة الواضحة": {
         title: "Rashed and the Clear Call",
         topic: "Communicating in an emergency",
-        content: "Rashed practiced with his mom how to describe the situation and the address calmly.\nHe learned that an emergency call is for real help, not for fun.",
-        lesson: "Know your address and listen to the emergency operator's instructions."
+        content: "Rashed practiced with his mom how to describe the situation and the address calmly.\nHe learned that an emergency call is for real help, not for fun",
+        lesson: "Know your address and listen to the emergency operator's instructions"
     },
     "سارة والطريق المغمور": {
         title: "Sara and the Flooded Road",
         topic: "Safety in the rain",
-        content: "Sara saw water covering the road, so she stopped in a safe place.\nShe told her family, and together they chose a road away from the water.",
-        lesson: "Don't cross standing water or play near flood channels."
+        content: "Sara saw water covering the road, so she stopped in a safe place.\nShe told her family, and together they chose a road away from the water",
+        lesson: "Don't cross standing water or play near flood channels"
     }
 };
 
