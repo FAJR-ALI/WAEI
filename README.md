@@ -564,7 +564,7 @@ Custom endpoints and business workflows I implemented or contributed to, excludi
 | Method | Endpoint | Purpose |
 | --- | --- | --- |
 | GET | `/api/v1/organization/registrations` | Filter registration requests by verification status |
-| POST | `/api/v1/organization/register` | Register an organization with a document and send a pending-approval email |
+| POST | `/api/v1/organization/register` | Register an organization with a document and send a approval email |
 | POST | `/api/v1/organization/{id}/resubmit` | Resubmit a rejected registration |
 | PUT | `/api/v1/organization/{id}/verify` | Approve an organization, activate its manager account, and send a verification email |
 | PUT | `/api/v1/organization/{id}/reject` | Reject a registration with a reason and send a rejection email |
