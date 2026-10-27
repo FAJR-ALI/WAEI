@@ -332,7 +332,7 @@ const WaeiDashboard = (function () {
         }
         stateRoot.innerHTML = '<div class="card">'
             + '<h1 style="font-size: 25px">' + tr("تعذر فتح لوحة التحكم", "Could not open the dashboard") + "</h1>"
-            + '<p style="color: var(--muted); margin: 8px 0 20px">' + escapeHtml(message || tr("جرّب تحديث الصفحة.", "Try refreshing the page.")) + "</p>"
+            + '<p style="color: var(--muted); margin: 8px 0 20px">' + escapeHtml(message || tr("جرّب تحديث الصفحة", "Try refreshing the page")) + "</p>"
             + '<button type="button" class="btn btn-primary" onclick="window.location.reload()">'
             + tr("تحديث الصفحة", "Refresh page") + "</button> "
             + '<a href="/login" class="btn btn-outline">' + tr("تسجيل الدخول", "Log in") + "</a>"
@@ -493,7 +493,7 @@ const WaeiDashboard = (function () {
         const list = document.getElementById("notifList");
         if (!list) return;
         if (!notifItems.length) {
-            list.innerHTML = '<p class="notif-empty">' + tr("ما فيه إشعارات حاليًا.", "No notifications right now.") + "</p>";
+            list.innerHTML = '<p class="notif-empty">' + tr("ما فيه إشعارات حاليًا", "No notifications right now") + "</p>";
             return;
         }
         list.innerHTML = notifItems.map(function (item, i) {

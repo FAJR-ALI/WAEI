@@ -46,7 +46,7 @@ function enableStoryNarration(storyId) {
                 audio.classList.remove("hidden");
                 replay.classList.remove("hidden");
             } catch (error) {
-                status.textContent = tr("ما قدرنا نجهّز الصوت الآن. جرّب مرة ثانية.", "We couldn't prepare the audio. Please try again.");
+                status.textContent = tr("ما قدرنا نجهّز الصوت الآن. جرّب مرة ثانية", "We couldn't prepare the audio. Please try again");
                 return;
             } finally {
                 clearTimeout(timeout);
@@ -60,7 +60,7 @@ function enableStoryNarration(storyId) {
             window.dispatchEvent(new Event("kids-story-audio-start"));
             await audio.play();
         } catch (error) {
-            status.textContent = tr("الصوت جاهز، اضغط تشغيل للاستماع.", "Audio is ready. Press play to listen.");
+            status.textContent = tr("الصوت جاهز، اضغط تشغيل للاستماع", "Audio is ready. Press play to listen");
         }
     }
 
@@ -82,7 +82,7 @@ function enableStoryNarration(storyId) {
         label("اسمع مرة ثانية", "Listen again");
     });
     audio.addEventListener("error", function () {
-        status.textContent = tr("تعذّر تشغيل الصوت. أعد تحميل الصفحة للمحاولة مجددًا.", "Audio playback failed. Reload the page to retry.");
+        status.textContent = tr("تعذّر تشغيل الصوت. أعد تحميل الصفحة للمحاولة مجددًا", "Audio playback failed. Reload the page to retry");
     });
     window.addEventListener("pagehide", function () {
         audio.pause();

@@ -49,8 +49,8 @@
                         <small>WAEI</small>
                     </span>
                 </a>
-                <p class="footer-tagline" data-en="Because awareness.. saves lives.">لأن الوعي.. ينقذ حياة.</p>
-                <p data-en="Free awareness trainings for individuals, and specialized training programs for organizations.">تدريبات توعوية مجانية للأفراد، وبرامج تدريبية متخصصة للجهات.</p>
+                <p class="footer-tagline" data-en="Because awareness.. saves lives">لأن الوعي.. ينقذ حياة</p>
+                <p data-en="Free awareness trainings for individuals, and specialized training programs for organizations">تدريبات توعوية مجانية للأفراد، وبرامج تدريبية متخصصة للجهات</p>
             </div>
 
             <nav class="footer-col" aria-label="روابط تهمك" data-en-aria="Useful links">
@@ -90,7 +90,7 @@
         </div>
 
         <div class="footer-bottom">
-            <span data-en="© 2026 Waei. All rights reserved.">© 2026 واعي. جميع الحقوق محفوظة.</span>
+            <span data-en="© 2026 Waei. All rights reserved">© 2026 واعي. جميع الحقوق محفوظة</span>
             <div class="footer-row">
                 <a href="/privacy" data-en="Privacy policy">سياسة الخصوصية</a>
                 <span class="footer-dot" aria-hidden="true">·</span>
@@ -115,7 +115,7 @@
         const box = document.getElementById("guideBox");
         const id = getQueryParam("id");
         if (!id) {
-            box.innerHTML = '<div class="error-state">' + tr('اختر حالة من <a href="/guide">دليل الطوارئ</a>.', 'Choose a case from the <a href="/guide">emergency guide</a>.') + "</div>";
+            box.innerHTML = '<div class="error-state">' + tr('اختر حالة من <a href="/guide">دليل الطوارئ</a>', 'Choose a case from the <a href="/guide">emergency guide</a>') + "</div>";
             return;
         }
 
@@ -156,8 +156,8 @@
             let train = "";
             if (g.awarenessServiceId) {
                 train = '<section class="card g-box g-train"><h2>' + tr("تدرّب عليها", "Practice it") + "</h2>"
-                    + "<p>" + tr("صوّر نفسك وأنت تطبق الخطوات على دمية، والذكاء الاصطناعي يقول لك وين أخطأت بالثانية.",
-                        "Film yourself doing the steps on a mannequin, and AI tells you where you went wrong, to the second.") + "</p>"
+                    + "<p>" + tr("صوّر نفسك وأنت تطبق الخطوات على دمية، والذكاء الاصطناعي يقول لك وين أخطأت بالثانية",
+                        "Film yourself doing the steps on a mannequin, and AI tells you where you went wrong, to the second") + "</p>"
                     + '<a href="/train?id=' + g.awarenessServiceId + '" class="btn btn-white" style="margin-top: 14px">'
                     + tr("ابدأ التدريب بالفيديو", "Start the video training") + "</a></section>";
             }

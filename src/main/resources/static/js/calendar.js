@@ -198,8 +198,8 @@
         const visible = filterEvents(events);
         if (visible.length === 0) {
             showEmpty(list, state.category === "ALL"
-                ? tr("ما فيه أيام توعوية قريبة.", "No upcoming awareness days.")
-                : tr("ما فيه أيام توعوية قريبة لهذا التصنيف.", "No upcoming awareness days in this category."));
+                ? tr("ما فيه أيام توعوية قريبة", "No upcoming awareness days")
+                : tr("ما فيه أيام توعوية قريبة لهذا التصنيف", "No upcoming awareness days in this category"));
             return;
         }
 
@@ -237,8 +237,8 @@
         const visible = filterEvents(events);
         if (visible.length === 0) {
             showEmpty(list, state.category === "ALL"
-                ? tr("ما فيه أيام توعوية لهذي السنة.", "No awareness days this year.")
-                : tr("ما فيه أيام توعوية لهذا التصنيف في هذي السنة.", "No awareness days in this category this year."));
+                ? tr("ما فيه أيام توعوية لهذي السنة", "No awareness days this year")
+                : tr("ما فيه أيام توعوية لهذا التصنيف في هذي السنة", "No awareness days in this category this year"));
             return;
         }
 
@@ -261,7 +261,7 @@
                 + '<h2 class="month-title">' + MONTHS[month] + "</h2>";
 
             if (byMonth[month].length === 0) {
-                html += '<p class="month-empty">' + tr("ما فيه أيام توعوية هذا الشهر.", "No awareness days this month.") + "</p>";
+                html += '<p class="month-empty">' + tr("ما فيه أيام توعوية هذا الشهر", "No awareness days this month") + "</p>";
             } else {
                 html += '<div class="month-events">';
                 for (const event of byMonth[month]) {

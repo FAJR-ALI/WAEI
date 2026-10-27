@@ -86,7 +86,7 @@ function guideCaseIconHtml(g, size) {
 const GUIDE_EN = {
     "توقف القلب": {
         title: "Cardiac arrest",
-        summary: "Someone collapsed, isn't responding and isn't breathing normally. Start CPR right away.",
+        summary: "Someone collapsed, isn't responding and isn't breathing normally. Start CPR right away",
         signs: ["Doesn't respond when you talk to them or tap their shoulder", "Not breathing, or only gasping", "Collapsed suddenly"],
         steps: ["Make sure the area is safe for you and for them",
             "Talk to them and tap their shoulder; if they don't respond, call 997 or ask someone to call",
@@ -100,7 +100,7 @@ const GUIDE_EN = {
     },
     "الاختناق عند البالغ": {
         title: "Choking (adult)",
-        summary: "Can't talk or cough, and is holding their throat.",
+        summary: "Can't talk or cough, and is holding their throat",
         signs: ["Holding their throat", "Can't talk or cough", "Wheezing or no sound at all", "Face turning blue"],
         steps: ["Ask: \"Are you choking?\" If they can cough forcefully, encourage them to keep coughing",
             "If they can't talk or cough, ask someone to call 997",
@@ -115,7 +115,7 @@ const GUIDE_EN = {
     },
     "الاختناق عند الرضيع": {
         title: "Choking (infant)",
-        summary: "An infant (under 1 year) isn't crying or breathing after swallowing something.",
+        summary: "An infant (under 1 year) isn't crying or breathing after swallowing something",
         signs: ["Not crying or coughing", "Trouble breathing or a wheezing sound", "Turning blue"],
         steps: ["Ask someone to call 997",
             "Lay the baby face down along your forearm, head lower than the body, supporting the head with your hand",
@@ -130,7 +130,7 @@ const GUIDE_EN = {
     },
     "الجلطة الدماغية": {
         title: "Stroke",
-        summary: "A drooping face, a weak arm, or sudden trouble speaking.",
+        summary: "A drooping face, a weak arm, or sudden trouble speaking",
         signs: ["Face drooping or an uneven smile", "Weakness or numbness in an arm or leg on one side",
             "Slurred speech or trouble understanding", "Sudden severe headache or dizziness"],
         steps: ["Call 997 right away; every minute counts", "Note the time the symptoms started",
@@ -141,7 +141,7 @@ const GUIDE_EN = {
     },
     "النزيف الشديد": {
         title: "Severe bleeding",
-        summary: "A lot of blood that won't stop. Press directly on the wound.",
+        summary: "A lot of blood that won't stop. Press directly on the wound",
         signs: ["Blood pouring or spurting out", "Bleeding doesn't stop after a few minutes", "Pale skin and dizziness"],
         steps: ["Call 997", "Put on gloves if available", "Press directly on the wound with a clean cloth",
             "If the cloth soaks through, add another on top and keep pressing",
@@ -151,7 +151,7 @@ const GUIDE_EN = {
     },
     "الحروق": {
         title: "Burns",
-        summary: "A burn from oil, hot water or fire. Cool it under running water.",
+        summary: "A burn from oil, hot water or fire. Cool it under running water",
         signs: ["Red, painful skin", "Blisters", "White or charred skin in deep burns"],
         steps: ["Move them away from the heat source",
             "Cool the burn under cool running water (not ice-cold) for 20 minutes",
@@ -163,7 +163,7 @@ const GUIDE_EN = {
     },
     "نوبة الصرع": {
         title: "Seizure",
-        summary: "Sudden convulsions and loss of consciousness. Protect the head and move dangerous objects away.",
+        summary: "Sudden convulsions and loss of consciousness. Protect the head and move dangerous objects away",
         signs: ["Convulsions and involuntary movements", "Loss of consciousness or a fixed stare", "Body stiffening"],
         steps: ["Stay calm and time the seizure", "Move dangerous objects away from them",
             "Put something soft under their head", "After the convulsions stop, place them on their side",
@@ -175,7 +175,7 @@ const GUIDE_EN = {
     },
     "هبوط السكر": {
         title: "Low blood sugar",
-        summary: "Shaking, sweating and dizziness in a person with diabetes. Give fast sugar if they can swallow.",
+        summary: "Shaking, sweating and dizziness in a person with diabetes. Give fast sugar if they can swallow",
         signs: ["Shaking and sweating", "Dizziness or extreme hunger", "Confusion or strange behavior", "Pale skin"],
         steps: ["If they are awake and can swallow: give juice, a sugary drink or sugar cubes",
             "Let them sit and rest", "If they don't improve after 15 minutes, give sugar again",
@@ -185,7 +185,7 @@ const GUIDE_EN = {
     },
     "ضربة الشمس": {
         title: "Heat stroke",
-        summary: "High body temperature and hot skin after exposure to the sun or heat.",
+        summary: "High body temperature and hot skin after exposure to the sun or heat",
         signs: ["Very high body temperature", "Hot, red skin", "Headache, dizziness and confusion", "May lose consciousness"],
         steps: ["Call 997", "Move them to a cool or shaded place", "Loosen tight clothing",
             "Cool them quickly: spray water and fan them, and put cold packs on the neck and armpits",
@@ -195,7 +195,7 @@ const GUIDE_EN = {
     },
     "حريق في المطبخ": {
         title: "Kitchen fire",
-        summary: "A pot of oil on fire. Never use water; cover it and turn off the heat.",
+        summary: "A pot of oil on fire. Never use water; cover it and turn off the heat",
         signs: ["Flames coming from a pot or pan", "Thick smoke from the kitchen"],
         steps: ["Turn off the heat under the pot if you can do it safely",
             "Cover the pot with a metal lid or a fire blanket",

@@ -50,7 +50,7 @@
     <div class="container stack" style="gap: 32px">
         <div style="display: flex; flex-direction: column; gap: 10px; max-width: 760px">
             <h1 style="font-size: 42px; line-height: 1.3" data-en="In-person courses with certified trainers">دورات حضورية مع مدربين معتمدين</h1>
-            <p style="font-size: 18px; line-height: 1.8; color: var(--muted)" data-en="For schools and companies: request a course for your team, with the trainer coming to you or online.">للمدارس والشركات: اطلب الدورة لفريقك، والمدرب يجي لكم أو تكون عن بعد.</p>
+            <p style="font-size: 18px; line-height: 1.8; color: var(--muted)" data-en="For schools and companies: request a course for your team, with the trainer coming to you or online">للمدارس والشركات: اطلب الدورة لفريقك، والمدرب يجي لكم أو تكون عن بعد</p>
         </div>
 
         <ol class="booking-steps" aria-label="خطوات الحجز" data-en-aria="Booking steps">
@@ -70,7 +70,7 @@
 
         <div id="programsList" class="grid" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr))"></div>
 
-        <p class="note-box" data-en="Requesting a course needs an organization account. Have one? &lt;a href=&quot;/login&quot; style=&quot;font-weight: 700&quot;&gt;Log in&lt;/a&gt;.">طلب الدورة يحتاج حساب جهة. عندك حساب؟ <a href="/login" style="font-weight: 700">سجّل دخولك</a>.</p>
+        <p class="note-box" data-en="Requesting a course needs an organization account. Have one? &lt;a href=&quot;/login&quot; style=&quot;font-weight: 700&quot;&gt;Log in&lt;/a&gt;">طلب الدورة يحتاج حساب جهة. عندك حساب؟ <a href="/login" style="font-weight: 700">سجّل دخولك</a></p>
     </div>
 </main>
 
@@ -85,8 +85,8 @@
                         <small>WAEI</small>
                     </span>
                 </a>
-                <p class="footer-tagline" data-en="Because awareness.. saves lives.">لأن الوعي.. ينقذ حياة.</p>
-                <p data-en="Free awareness trainings for individuals, and specialized training programs for organizations.">تدريبات توعوية مجانية للأفراد، وبرامج تدريبية متخصصة للجهات.</p>
+                <p class="footer-tagline" data-en="Because awareness.. saves lives">لأن الوعي.. ينقذ حياة</p>
+                <p data-en="Free awareness trainings for individuals, and specialized training programs for organizations">تدريبات توعوية مجانية للأفراد، وبرامج تدريبية متخصصة للجهات</p>
             </div>
 
             <nav class="footer-col" aria-label="روابط تهمك" data-en-aria="Useful links">
@@ -126,7 +126,7 @@
         </div>
 
         <div class="footer-bottom">
-            <span data-en="© 2026 Waei. All rights reserved.">© 2026 واعي. جميع الحقوق محفوظة.</span>
+            <span data-en="© 2026 Waei. All rights reserved">© 2026 واعي. جميع الحقوق محفوظة</span>
             <div class="footer-row">
                 <a href="/privacy" data-en="Privacy policy">سياسة الخصوصية</a>
                 <span class="footer-dot" aria-hidden="true">·</span>
@@ -163,7 +163,7 @@
             programs = allPrograms.filter(function (p) { return p.deliveryMode === selectedMode; });
         }
         if (programs.length === 0) {
-            showEmpty(list, tr("ما فيه دورات بهذي الطريقة حاليًا.", "No courses of this type right now."));
+            showEmpty(list, tr("ما فيه دورات بهذي الطريقة حاليًا", "No courses of this type right now"));
             return;
         }
         let html = "";

@@ -25,7 +25,7 @@
         .contact-field { display: flex; flex-direction: column; gap: 6px; }
         .contact-form textarea { min-height: 150px; resize: vertical; font-family: inherit; }
         .type-chips { display: flex; flex-wrap: wrap; gap: 8px; }
-        .contact-email { font-size: 18px; font-weight: 700; color: #FFFFFF; direction: ltr; unicode-bidi: embed; text-decoration: none; }
+        .contact-email { min-width: 0; font-size: 15px; font-weight: 700; color: #FFFFFF; direction: ltr; unicode-bidi: embed; text-decoration: none; overflow-wrap: normal; word-break: normal; text-align: center; }
         .contact-email:hover { color: #FFFFFF; text-decoration: underline; }
 
         /* Waei email card */
@@ -48,12 +48,13 @@
         .email-card h2 { font-size: 26px; color: #FFFFFF; margin: 8px 0 0; }
         .email-card p { margin: 0; font-size: 15px; line-height: 1.8; color: rgba(255, 255, 255, 0.8); }
         .email-row {
-            display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 10px; max-width: 100%;
-            padding: 8px 8px 8px 16px; border-radius: 14px; direction: ltr;
+            display: flex; flex-direction: column; align-items: stretch; gap: 10px; margin-top: 10px;
+            width: 100%; box-sizing: border-box;
+            padding: 12px; border-radius: 14px; direction: ltr;
             background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.2);
         }
         .copy-btn {
-            flex-shrink: 0; display: flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 10px;
+            flex-shrink: 0; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 12px; border-radius: 10px;
             border: none; background: #FFFFFF; color: var(--primary); font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
         }
         .copy-btn:hover { background: var(--tint); }
@@ -85,7 +86,7 @@
     <div class="container stack" style="gap: 28px">
         <div class="legal" style="gap: 10px">
             <h1 data-en="Contact the Waei team">تواصل مع فريق واعي</h1>
-            <p data-en="Whatever you want to tell us, write to us and the Waei team will get back to you.">مهما كان موضوع رسالتك، اكتب لنا وفريق واعي يتواصل معك.</p>
+            <p data-en="Whatever you want to tell us, write to us and the Waei team will get back to you">مهما كان موضوع رسالتك، اكتب لنا وفريق واعي يتواصل معك</p>
         </div>
 
         <div class="contact-layout">
@@ -121,9 +122,9 @@
                         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="3"></rect><path d="M22 7l-10 6L2 7"></path></svg>
                     </span>
                     <h2 data-en="Waei email">إيميل واعي</h2>
-                    <p data-en="You can also email us directly.">تقدر تراسلنا مباشرة على إيميلنا.</p>
+                    <p data-en="You can also email us directly">تقدر تراسلنا مباشرة على إيميلنا</p>
                     <div class="email-row">
-                        <a class="contact-email" id="contactEmailLink" href="mailto:contact@waei.sa">contact@waei.sa</a>
+                        <a class="contact-email" id="contactEmailLink" href="mailto:waeiplatformemail@gmail.com">waeiplatformemail@<wbr>gmail.com</a>
                         <button type="button" class="copy-btn" id="copyEmailBtn" data-en="Copy">نسخ</button>
                     </div>
                 </div>
@@ -143,8 +144,8 @@
                         <small>WAEI</small>
                     </span>
                 </a>
-                <p class="footer-tagline" data-en="Because awareness.. saves lives.">لأن الوعي.. ينقذ حياة.</p>
-                <p data-en="Free awareness trainings for individuals, and specialized training programs for organizations.">تدريبات توعوية مجانية للأفراد، وبرامج تدريبية متخصصة للجهات.</p>
+                <p class="footer-tagline" data-en="Because awareness.. saves lives">لأن الوعي.. ينقذ حياة</p>
+                <p data-en="Free awareness trainings for individuals, and specialized training programs for organizations">تدريبات توعوية مجانية للأفراد، وبرامج تدريبية متخصصة للجهات</p>
             </div>
 
             <nav class="footer-col" aria-label="روابط تهمك" data-en-aria="Useful links">
@@ -184,7 +185,7 @@
         </div>
 
         <div class="footer-bottom">
-            <span data-en="© 2026 Waei. All rights reserved.">© 2026 واعي. جميع الحقوق محفوظة.</span>
+            <span data-en="© 2026 Waei. All rights reserved">© 2026 واعي. جميع الحقوق محفوظة</span>
             <div class="footer-row">
                 <a href="/privacy" data-en="Privacy policy">سياسة الخصوصية</a>
                 <span class="footer-dot" aria-hidden="true">·</span>
@@ -197,7 +198,7 @@
 <script src="/js/api.js"></script>
 <script th:inline="none">
     // Temporary team email: change it here when the real one is ready
-    const WAEI_CONTACT_EMAIL = "contact@waei.sa";
+    const WAEI_CONTACT_EMAIL = "waeiplatformemail@gmail.com";
     const CONTACT_TYPES = {
         inquiry: tr("استفسار", "Inquiry"),
         complaint: tr("شكوى", "Complaint"),
@@ -239,7 +240,7 @@
         const message = document.getElementById("contactMessage").value.trim();
         const alertBox = document.getElementById("contactAlert");
         if (!name || !org || message.length < 5) {
-            alertBox.innerHTML = '<div class="alert alert-error">' + tr("اكتب اسمك واسم الجهة والرسالة.", "Please write your name, organization and message.") + "</div>";
+            alertBox.innerHTML = '<div class="alert alert-error">' + tr("اكتب اسمك واسم الجهة والرسالة", "Please write your name, organization and message") + "</div>";
             return;
         }
         alertBox.innerHTML = "";
@@ -251,7 +252,7 @@
         window.location.href = "mailto:" + WAEI_CONTACT_EMAIL
             + "?subject=" + encodeURIComponent(subject)
             + "&body=" + encodeURIComponent(body);
-        alertBox.innerHTML = '<div class="alert alert-ok">' + tr("فتحنا لك الإيميل، اضغط إرسال من تطبيق الإيميل.", "Your email app is open, press send there.") + "</div>";
+        alertBox.innerHTML = '<div class="alert alert-ok">' + tr("فتحنا لك الإيميل، اضغط إرسال من تطبيق الإيميل", "Your email app is open, press send there") + "</div>";
     });
 </script>
 </body>
