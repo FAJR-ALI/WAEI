@@ -559,25 +559,6 @@ Base URL: `http://localhost:8080` · Auth header: `Authorization: Bearer <JWT>` 
 
 Custom endpoints and business workflows I implemented or contributed to, excluding basic CRUD operations.
 
-### Organizations — 6 Endpoints
-
-| Method | Endpoint | Purpose |
-| --- | --- | --- |
-| GET | `/api/v1/organization/registrations` | Filter registration requests by verification status |
-| POST | `/api/v1/organization/register` | Register an organization with a document and send a approval email |
-| POST | `/api/v1/organization/{id}/resubmit` | Resubmit a rejected registration |
-| PUT | `/api/v1/organization/{id}/verify` | Approve an organization, activate its manager account, and send a verification email |
-| PUT | `/api/v1/organization/{id}/reject` | Reject a registration with a reason and send a rejection email |
-| GET | `/api/v1/organization/{id}/document` | Download the organization's registration document |
-
-
-### Accounts — 2 Endpoints
-
-| Method | Endpoint | Purpose |
-| --- | --- | --- |
-| GET | `/api/v1/account/get-by-organization/{organizationId}` | Get accounts belonging to a specific organization |
-| PUT | `/api/v1/account/status/{id}` | Change account status |
-
 ### Kids Mode and AI Activities — 7 Endpoints
 
 | Method | Endpoint | Purpose |
@@ -604,6 +585,27 @@ Custom endpoints and business workflows I implemented or contributed to, excludi
 | Method | Endpoint | Access | Purpose |
 | --- | --- | --- | --- |
 | POST | `/api/v1/training-reminders/send` | `X-Reminder-Key` header | Check confirmed training requests starting within 24 hours and send due reminders |
+
+
+### Organizations — 6 Endpoints
+
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| GET | `/api/v1/organization/registrations` | Filter registration requests by verification status |
+| POST | `/api/v1/organization/register` | Register an organization with a document and send a approval email |
+| POST | `/api/v1/organization/{id}/resubmit` | Resubmit a rejected registration |
+| PUT | `/api/v1/organization/{id}/verify` | Approve an organization, activate its manager account, and send a verification email |
+| PUT | `/api/v1/organization/{id}/reject` | Reject a registration with a reason and send a rejection email |
+| GET | `/api/v1/organization/{id}/document` | Download the organization's registration document |
+
+
+### Accounts — 2 Endpoints
+
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| GET | `/api/v1/account/get-by-organization/{organizationId}` | Get accounts belonging to a specific organization |
+| PUT | `/api/v1/account/status/{id}` | Change account status |
+
 
 The n8n workflow calls the reminder endpoint every five minutes. Spring Boot sends reminder emails to provider and beneficiary organization managers through JavaMailSender.
 
