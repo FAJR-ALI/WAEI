@@ -555,6 +555,59 @@ Base URL: `http://localhost:8080` · Auth header: `Authorization: Bearer <JWT>` 
 | Legal | `/contact`, `/privacy`, `/terms` |
 | Dashboards | `/dashboard/admin`, `/dashboard/beneficiary`, `/dashboard/provider` |
 
+## Fajr's ExtraEndpoints
+
+Custom endpoints and business workflows I implemented or contributed to, excluding basic CRUD operations.
+
+### Accounts — 2 Endpoints
+
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| GET | `/api/v1/account/get-by-organization/{organizationId}` | Get accounts belonging to a specific organization |
+| PUT | `/api/v1/account/status/{id}` | Change account status |
+
+### Organizations — 6 Endpoints
+
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| GET | `/api/v1/organization/registrations` | Filter registration requests by verification status |
+| POST | `/api/v1/organization/register` | Register an organization with a document and send a pending-approval email |
+| POST | `/api/v1/organization/{id}/resubmit` | Resubmit a rejected registration |
+| PUT | `/api/v1/organization/{id}/verify` | Approve an organization, activate its manager account, and send a verification email |
+| PUT | `/api/v1/organization/{id}/reject` | Reject a registration with a reason and send a rejection email |
+| GET | `/api/v1/organization/{id}/document` | Download the organization's registration document |
+
+### Kids Mode and AI Activities — 7 Endpoints
+
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| GET | `/api/v1/kids/stories/age/{ageGroup}` | Filter published stories by age group |
+| GET | `/api/v1/kids/stories/topic/{topic}` | Filter published stories by topic |
+| GET | `/api/v1/kids/stories/{id}/narration` | Generate story narration as WAV audio |
+| POST | `/api/v1/kids/stories/create` | Generate a personalized story using Gemini |
+| POST | `/api/v1/kids/voice` | Convert text to speech |
+| GET | `/api/v1/kids/detective/check/{item}` | Provide safety detective game feedback |
+| POST | `/api/v1/kids/drawing/review` | Review an uploaded drawing using AI |
+
+### Kids Story Management — 4 Endpoints
+
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| POST | `/api/v1/kids-story/generate` | Generate a story using AI |
+| GET | `/api/v1/kids-story/get-by-status/{status}` | Filter stories by moderation status |
+| PUT | `/api/v1/kids-story/approve/{id}` | Approve and publish a story |
+| PUT | `/api/v1/kids-story/reject/{id}` | Reject a story with a note |
+
+### Training Reminders — 1 Endpoint
+
+| Method | Endpoint | Access | Purpose |
+| --- | --- | --- | --- |
+| POST | `/api/v1/training-reminders/send` | `X-Reminder-Key` header | Check confirmed training requests starting within 24 hours and send due reminders |
+
+The n8n workflow calls the reminder endpoint every five minutes. Spring Boot sends reminder emails to provider and beneficiary organization managers through JavaMailSender.
+
+**Total: 20 endpoints, excluding basic CRUD operations.**
+
 ## Project Structure
 
 ```
