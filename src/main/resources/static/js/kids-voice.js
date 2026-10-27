@@ -38,13 +38,13 @@
         if (!button || button.disabled) return;
         const nodes = Array.from(document.querySelectorAll(button.dataset.kidsSpeak));
         if (nodes.some(node => node.getAttribute("aria-busy") === "true")) {
-            announce("انتظر حتى تجهز النتيجة ثم اضغط الاستماع.", "Wait for the result, then press listen.");
+            announce("انتظر حتى تجهز النتيجة ثم اضغط الاستماع", "Wait for the result, then press listen");
             return;
         }
         const text = nodes.filter(node => !node.closest(".hidden"))
             .map(node => (node.innerText || node.textContent || "").trim()).filter(Boolean).join(". ");
         if (!text || text.length > 2000) {
-            announce("اختر جزءًا أقصر فيه كلام للاستماع.", "Choose a shorter section with text to hear.");
+            announce("اختر جزءًا أقصر فيه كلام للاستماع", "Choose a shorter section with text to hear");
             return;
         }
         const lang = button.dataset.voiceLang || document.documentElement.lang || "ar";
@@ -54,16 +54,16 @@
             if (!audio.paused) {
                 audio.pause();
                 button.setAttribute("aria-pressed", "false");
-                announce("توقّف الصوت مؤقتًا. اضغط للاستكمال.", "Paused. Press again to resume.");
+                announce("توقّف الصوت مؤقتًا. اضغط للاستكمال", "Paused. Press again to resume");
             } else {
                 if (audio.ended) audio.currentTime = 0;
                 try { await audio.play(); button.setAttribute("aria-pressed", "true"); announce("", ""); }
-                catch (e) { announce("اضغط الاستماع مرة ثانية لتشغيل الصوت.", "Press listen again to play."); }
+                catch (e) { announce("اضغط الاستماع مرة ثانية لتشغيل الصوت", "Press listen again to play"); }
             }
             return;
         }
         if (activeButton === button && request) {
-            stop(); announce("تم إلغاء تجهيز الصوت.", "Audio preparation cancelled."); return;
+            stop(); announce("تم إلغاء تجهيز الصوت", "Audio preparation cancelled"); return;
         }
         stop();
         window.dispatchEvent(new Event("kids-voice-start"));
@@ -71,7 +71,7 @@
         activeButton = button;
         activeKey = key;
         button.setAttribute("aria-busy", "true");
-        announce("واعي يجهّز الصوت… اضغط نفس الزر للإلغاء.", "Waei is preparing audio… Press the same button to cancel.");
+        announce("واعي يجهّز الصوت… اضغط نفس الزر للإلغاء", "Waei is preparing audio… Press the same button to cancel");
         let timeout;
         try {
             let url = cache.get(key);
@@ -99,21 +99,21 @@
             }
             if (ticket !== version) return;
             audio = new Audio(url);
-            audio.addEventListener("ended", function () { resetButton(); announce("انتهت القراءة. تقدر تسمع مرة ثانية.", "Finished. You can listen again."); });
+            audio.addEventListener("ended", function () { resetButton(); announce("انتهت القراءة. تقدر تسمع مرة ثانية", "Finished. You can listen again"); });
             audio.addEventListener("error", function () {
                 cache.delete(key); URL.revokeObjectURL(url); stop();
-                announce("تعذّر تشغيل الصوت. اضغط الاستماع للمحاولة مجددًا.", "Playback failed. Press listen to retry.");
+                announce("تعذّر تشغيل الصوت. اضغط الاستماع للمحاولة مجددًا", "Playback failed. Press listen to retry");
             });
             try { await audio.play(); button.setAttribute("aria-pressed", "true"); announce("", ""); }
-            catch (e) { announce("الصوت جاهز. اضغط نفس الزر للاستماع.", "Audio is ready. Press the same button to listen."); }
+            catch (e) { announce("الصوت جاهز. اضغط نفس الزر للاستماع", "Audio is ready. Press the same button to listen"); }
         } catch (error) {
             if (ticket !== version) return;
-            if (error.status === 429) announce("وصلنا لحد استخدام الصوت. جرّب لاحقًا.", "The audio usage limit was reached. Please try later.");
-            else if (error.reason === "Speech provider denied access") announce("خدمة الصوت رفضت الوصول. يلزم التحقق من صلاحيات المشروع.", "Audio access was denied. Check the project permissions.");
-            else if (error.reason === "Speech model is unavailable") announce("نموذج الصوت غير متاح للمشروع حاليًا.", "The speech model is unavailable for this project.");
-            else if (error.reason === "Speech provider rejected the narration request") announce("خدمة الصوت رفضت صيغة طلب القراءة. يلزم مراجعة الطلب.", "The speech provider rejected the narration request format.");
-            else if (error.status === 503) announce("راوي الصوت غير مفعّل حاليًا.", "The voice reader is not configured.");
-            else announce("تعذّر تجهيز الصوت الآن. جرّب مرة ثانية.", "Audio could not be prepared. Please try again.");
+            if (error.status === 429) announce("وصلنا لحد استخدام الصوت. جرّب لاحقًا", "The audio usage limit was reached. Please try later");
+            else if (error.reason === "Speech provider denied access") announce("خدمة الصوت رفضت الوصول. يلزم التحقق من صلاحيات المشروع", "Audio access was denied. Check the project permissions");
+            else if (error.reason === "Speech model is unavailable") announce("نموذج الصوت غير متاح للمشروع حاليًا", "The speech model is unavailable for this project");
+            else if (error.reason === "Speech provider rejected the narration request") announce("خدمة الصوت رفضت صيغة طلب القراءة. يلزم مراجعة الطلب", "The speech provider rejected the narration request format");
+            else if (error.status === 503) announce("راوي الصوت غير مفعّل حاليًا", "The voice reader is not configured");
+            else announce("تعذّر تجهيز الصوت الآن. جرّب مرة ثانية", "Audio could not be prepared. Please try again");
             resetButton(); activeButton = null; activeKey = null;
         } finally {
             clearTimeout(timeout);

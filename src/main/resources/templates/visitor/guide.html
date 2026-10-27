@@ -37,7 +37,7 @@
     <div class="container">
         <span class="g-tag" data-en="Emergency guide">دليل الطوارئ</span>
         <h1 data-en="What do you do if…?">وش تسوي لو صار…؟</h1>
-        <p data-en="Every emergency in one place: the signs, the correct steps, and the mistakes to avoid. Reviewed by specialists from official sources.">كل حالات الطوارئ في مكان واحد: العلامات، الخطوات الصحيحة، والأخطاء اللي لازم تتجنبها. مراجعة من مختصين ومن مصادر رسمية.</p>
+        <p data-en="Every emergency in one place: the signs, the correct steps, and the mistakes to avoid. Reviewed by specialists from official sources">كل حالات الطوارئ في مكان واحد: العلامات، الخطوات الصحيحة، والأخطاء اللي لازم تتجنبها. مراجعة من مختصين ومن مصادر رسمية</p>
 
         <form id="aiForm" class="ai-search" role="search">
             <span class="ai-icon">
@@ -48,7 +48,7 @@
             <button type="submit" id="aiBtn" class="btn btn-primary" data-en="Search">دوّر</button>
         </form>
         <div class="ai-hint">
-            <span data-en="Describe what happened, and AI takes you to the right case in the guide.">اوصف الموقف بكلامك، والذكاء الاصطناعي يوديك للحالة الصحيحة من الدليل.</span>
+            <span data-en="Describe what happened, and AI takes you to the right case in the guide">اوصف الموقف بكلامك، والذكاء الاصطناعي يوديك للحالة الصحيحة من الدليل</span>
             <button type="button" class="ai-example" data-en="A child swallowed something">طفل بلع شي</button>
             <button type="button" class="ai-example" data-en="I burned my hand with oil">انحرقت يدي بالزيت</button>
             <button type="button" class="ai-example" data-en="Someone fell and isn't answering">أحد طاح وما يرد</button>
@@ -91,8 +91,8 @@
                         <small>WAEI</small>
                     </span>
                 </a>
-                <p class="footer-tagline" data-en="Because awareness.. saves lives.">لأن الوعي.. ينقذ حياة.</p>
-                <p data-en="Free awareness trainings for individuals, and specialized training programs for organizations.">تدريبات توعوية مجانية للأفراد، وبرامج تدريبية متخصصة للجهات.</p>
+                <p class="footer-tagline" data-en="Because awareness.. saves lives">لأن الوعي.. ينقذ حياة</p>
+                <p data-en="Free awareness trainings for individuals, and specialized training programs for organizations">تدريبات توعوية مجانية للأفراد، وبرامج تدريبية متخصصة للجهات</p>
             </div>
 
             <nav class="footer-col" aria-label="روابط تهمك" data-en-aria="Useful links">
@@ -132,7 +132,7 @@
         </div>
 
         <div class="footer-bottom">
-            <span data-en="© 2026 Waei. All rights reserved.">© 2026 واعي. جميع الحقوق محفوظة.</span>
+            <span data-en="© 2026 Waei. All rights reserved">© 2026 واعي. جميع الحقوق محفوظة</span>
             <div class="footer-row">
                 <a href="/privacy" data-en="Privacy policy">سياسة الخصوصية</a>
                 <span class="footer-dot" aria-hidden="true">·</span>
@@ -201,8 +201,8 @@
         });
 
         if (guides.length === 0) {
-            showEmpty(list, tr("ما لقينا حالة. جرّب البحث الذكي فوق.",
-                "No case found. Try the smart search above."));
+            showEmpty(list, tr("ما لقينا حالة. جرّب البحث الذكي فوق",
+                "No case found. Try the smart search above"));
             return;
         }
 
@@ -242,7 +242,7 @@
         const box = document.getElementById("aiResult");
         const button = document.getElementById("aiBtn");
         if (description.trim().length < 3) {
-            box.innerHTML = '<div class="alert alert-error">' + tr("اكتب وش صار بكلمتين على الأقل.", "Describe what happened in a few words.") + "</div>";
+            box.innerHTML = '<div class="alert alert-error">' + tr("اكتب وش صار بكلمتين على الأقل", "Describe what happened in a few words") + "</div>";
             return;
         }
         button.disabled = true;
@@ -266,7 +266,7 @@
             } else {
                 box.innerHTML = '<div class="ai-result no-match">'
                     + '<span style="flex: 1 1 360px; color: var(--bad); font-weight: 600">'
-                    + tr("ما لقينا حالة تطابق الوصف. جرّب توصف الموقف بكلمات ثانية أو تصفح الحالات تحت.", "We could not find a matching case. Try describing it differently or browse the cases below.")
+                    + tr("ما لقينا حالة تطابق الوصف. جرّب توصف الموقف بكلمات ثانية أو تصفح الحالات تحت", "We could not find a matching case. Try describing it differently or browse the cases below")
                     + "</span></div>";
             }
         } catch (e) {

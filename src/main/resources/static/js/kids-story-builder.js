@@ -39,11 +39,11 @@ builderForm.addEventListener("submit", async function (event) {
         document.getElementById("builderContent").textContent = story.content;
         document.getElementById("builderLesson").textContent = tr("تذكّر: ", "Remember: ") + story.lesson;
         builderResult.classList.remove("hidden");
-        builderStatus.textContent = tr("قصتك جاهزة! تقدر تقرأها أو تسمعها.", "Your story is ready! Read it or listen.");
+        builderStatus.textContent = tr("قصتك جاهزة! تقدر تقرأها أو تسمعها", "Your story is ready! Read it or listen");
     } catch (error) {
         builderStatus.textContent = error.status === 429
-            ? tr("وصلنا لحد الاستخدام. جرّب لاحقًا.", "The usage limit was reached. Please try later.")
-            : tr("ما قدرنا نجهّز قصة واضحة الآن. اختياراتك موجودة، جرّب مرة ثانية.", "We couldn't prepare a clear story. Your choices are still here; please try again.");
+            ? tr("وصلنا لحد الاستخدام. جرّب لاحقًا", "The usage limit was reached. Please try later")
+            : tr("ما قدرنا نجهّز قصة واضحة الآن. اختياراتك موجودة، جرّب مرة ثانية", "We couldn't prepare a clear story. Your choices are still here; please try again");
     } finally {
         clearTimeout(timeout); builderRequest = null;
         builderForm.querySelectorAll("select,button").forEach(el => el.disabled = false);

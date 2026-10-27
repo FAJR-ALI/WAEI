@@ -41,7 +41,7 @@
 <section class="k-main hidden" id="narratorPanel" aria-label="راوي القصص" data-en-aria="Story narrator">
     <div class="k-card">
         <h2 data-en="Listen with Waei">اسمع القصة مع واعي</h2>
-        <p data-en="An AI-generated voice reads this Arabic story.">صوت مولّد بالذكاء الاصطناعي يقرأ لك القصة العربية.</p>
+        <p data-en="An AI-generated voice reads this Arabic story">صوت مولّد بالذكاء الاصطناعي يقرأ لك القصة العربية</p>
         <div style="display: flex; flex-wrap: wrap; gap: 12px">
             <button type="button" class="k-btn k-btn-purple" id="narrateStory" data-en="Listen to the story">اسمع القصة</button>
             <button type="button" class="k-btn hidden" id="replayStory" data-en="Listen again">اسمع من البداية</button>
@@ -66,7 +66,7 @@
         const box = document.getElementById("storyBox");
         const id = getQueryParam("id");
         if (!id) {
-            box.innerHTML = '<div class="k-empty">' + tr('اختر قصة من <a href="/kids/stories">قصص الأبطال</a>.', 'Choose a story from <a href="/kids/stories">hero stories</a>.') + '</div>';
+            box.innerHTML = '<div class="k-empty">' + tr('اختر قصة من <a href="/kids/stories">قصص الأبطال</a>', 'Choose a story from <a href="/kids/stories">hero stories</a>') + '</div>';
             return;
         }
         try {
@@ -107,7 +107,7 @@
                 + '<a href="/kids/stories" class="k-btn k-btn-purple">' + tr("قصة ثانية", "Another story") + '</a>'
                 + '<a href="/kids/what-if" class="k-btn">' + tr("العب لعبة", "Play a game") + '</a>'
                 + "</div>"
-                + '<p class="k-note" style="text-align: center">' + tr("كتب القصة الذكاء الاصطناعي وراجعها مختص قبل النشر.", "This story was written by AI and reviewed by a specialist before publishing.") + '</p>';
+                + '<p class="k-note" style="text-align: center">' + tr("كتب القصة الذكاء الاصطناعي وراجعها مختص قبل النشر", "This story was written by AI and reviewed by a specialist before publishing") + '</p>';
         } catch (e) {
             box.innerHTML = '<div class="k-empty">' + tr('ما لقينا القصة. <a href="/kids/stories">ارجع للقصص</a>', 'Story not found. <a href="/kids/stories">Back to stories</a>') + '</div>';
         }

@@ -26,7 +26,7 @@
         <h1 style="font-size: 27px" data-en="Payment result">نتيجة الدفع</h1>
 
         <th:block th:if="${state == 'ok'}">
-            <p style="color: var(--muted); margin-top: 6px" data-en="Moyasar was checked and the status below is current.">تم التحقق من ميسر والحالة أدناه محدثة.</p>
+            <p style="color: var(--muted); margin-top: 6px" data-en="Moyasar was checked and the status below is current">تم التحقق من ميسر والحالة أدناه محدثة</p>
 
             <div class="detail-grid" style="margin-top: 18px">
                 <div class="detail-row">
@@ -50,22 +50,22 @@
             </div>
 
             <p style="color: var(--soft); font-size: 14px; margin-top: 16px" th:if="${payment.status == 'PENDING'}"
-               data-en="The payment is still being confirmed. The webhook will update it automatically.">
-                الدفعة لا تزال قيد التأكيد. سيتم تحديثها تلقائيًا من ميسر.
+               data-en="The payment is still being confirmed. The webhook will update it automatically">
+                الدفعة لا تزال قيد التأكيد. سيتم تحديثها تلقائيًا من ميسر
             </p>
         </th:block>
 
         <th:block th:if="${state == 'error'}">
-            <div class="alert alert-error" style="margin-top: 16px" th:text="${message}">تعذر تأكيد الدفع.</div>
-            <p style="color: var(--muted); margin-top: 14px" data-en="If you completed the payment, the webhook will update the request automatically. You can also confirm it later from the dashboard.">
-                إذا أكملت الدفع، سيتم تحديث الطلب تلقائيًا. يمكنك أيضًا تأكيد الحالة لاحقًا من لوحة التحكم.
+            <div class="alert alert-error" style="margin-top: 16px" th:text="${message}">تعذر تأكيد الدفع</div>
+            <p style="color: var(--muted); margin-top: 14px" data-en="If you completed the payment, the webhook will update the request automatically. You can also confirm it later from the dashboard">
+                إذا أكملت الدفع، سيتم تحديث الطلب تلقائيًا. يمكنك أيضًا تأكيد الحالة لاحقًا من لوحة التحكم
             </p>
         </th:block>
 
         <th:block th:if="${state == 'empty'}">
-            <p style="color: var(--muted); margin-top: 8px" data-en="No payment reference was provided in this link.">ما فيه مرجع دفع في هذا الرابط.</p>
-            <p style="color: var(--soft); font-size: 14px; margin-top: 8px" data-en="This page is the return address for the Moyasar checkout. It is opened automatically after a payment.">
-                هذه الصفحة هي عنوان العودة من صفحة الدفع في ميسر، وتُفتح تلقائيًا بعد الدفع.
+            <p style="color: var(--muted); margin-top: 8px" data-en="No payment reference was provided in this link">ما فيه مرجع دفع في هذا الرابط</p>
+            <p style="color: var(--soft); font-size: 14px; margin-top: 8px" data-en="This page is the return address for the Moyasar checkout. It is opened automatically after a payment">
+                هذه الصفحة هي عنوان العودة من صفحة الدفع في ميسر، وتُفتح تلقائيًا بعد الدفع
             </p>
         </th:block>
 
