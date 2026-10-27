@@ -66,7 +66,7 @@
                     </div>
                     <div class="toolbar">
                         <button type="button" class="btn btn-outline btn-sm" data-refresh data-en="Refresh">تحديث</button>
-                        <button type="button" class="btn btn-primary btn-sm" data-new-program data-en="Add program">أضف برنامجًا</button>
+                        <button type="button" class="btn btn-primary btn-sm" data-new-program data-en="Add program">إضافة برنامج</button>
                     </div>
                 </div>
 
@@ -127,7 +127,7 @@
                     </div>
                     <div class="toolbar">
                         <button type="button" class="btn btn-outline btn-sm" data-refresh data-en="Refresh">تحديث</button>
-                        <button type="button" class="btn btn-primary btn-sm" data-new-program data-en="Add program">أضف برنامجًا</button>
+                        <button type="button" class="btn btn-primary btn-sm" data-new-program data-en="Add program">إضافة برنامج</button>
                     </div>
                 </div>
                 <div id="programFormCard" class="panel program-form-card hidden">
@@ -191,15 +191,12 @@
                                     </span>
                                 </button>
                                 <button type="button" class="pf-mode" data-mode="ONLINE" role="radio">
-                                    <span class="pf-mode-icon"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2"></rect><path d="m16 10 5-3v10l-5-3"></path></svg></span>
+                                    <span class="pf-mode-icon pf-mode-icon-zoom"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2"></rect><path d="m16 10 5-3v10l-5-3"></path></svg></span>
                                     <span class="pf-mode-copy">
                                         <strong data-en="Online · Zoom">عن بعد · Zoom</strong>
                                         <small data-en="Automatic Zoom link">رابط Zoom تلقائي</small>
                                     </span>
                                 </button>
-                            </div>
-                            <div class="pf-note pf-note-mode">
-                                <p id="programModeNote"></p>
                             </div>
                         </div>
 
@@ -561,7 +558,7 @@
         syncProgramChoices();
     }
 
-    // Highlights the chosen category / mode and updates the helper notes
+    // Highlights the chosen category / mode
     function syncProgramChoices() {
         const category = document.getElementById("programCategory").value;
         document.querySelectorAll("#categoryTiles .pf-cat").forEach(function (tile) {
@@ -575,21 +572,27 @@
             card.classList.toggle("selected", on);
             card.setAttribute("aria-checked", String(on));
         });
-        document.getElementById("programModeNote").textContent = mode === "ONLINE"
-            ? tr("بعد ما تقبل الطلب، ينشأ رابط Zoom تلقائيًا ويوصل للجهة", "After you accept the request, a Zoom link is created automatically and shared with the organization")
-            : tr("بعد ما تقبل الطلب، تواصل مع الجهة لتأكيد المكان", "After you accept the request, contact the organization to confirm the location");
     }
 
     function showProgramForm() {
         WaeiDashboard.setPanel("programs");
         const card = document.getElementById("programFormCard");
         card.classList.remove("hidden");
+        toggleRefreshButtons(false);
         card.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
     function hideProgramForm() {
         document.getElementById("programFormCard").classList.add("hidden");
+        toggleRefreshButtons(true);
         editingProgramId = null;
+    }
+
+    // Hides the refresh buttons while the program form is open and brings them back after
+    function toggleRefreshButtons(show) {
+        document.querySelectorAll("[data-refresh]").forEach(function (button) {
+            button.classList.toggle("hidden", !show);
+        });
     }
 
     function renderPrograms() {
@@ -622,11 +625,11 @@
                 + '<td class="money">' + WaeiDashboard.formatMoney(program.price) + '<small>/ ' + tr("يوم", "day") + '</small></td>'
                 + '<td>' + (program.isActive
                     ? '<span class="badge badge-status badge-ok">' + tr("نشط", "Active") + '</span>'
-                    : '<span class="badge badge-status badge-muted">' + tr("موقوف", "Inactive") + '</span>') + '</td>'
+                    : '<span class="badge badge-status badge-muted">' + tr("غير نشط", "Inactive") + '</span>') + '</td>'
                 + '<td><div class="cell-actions">'
                 + '<button type="button" class="btn btn-outline btn-sm" data-edit-program="' + program.id + '">' + tr("تعديل", "Edit") + '</button>'
                 + '<button type="button" class="btn btn-ghost btn-sm" data-toggle-program="' + program.id + '">'
-                + (program.isActive ? tr("إيقاف", "Deactivate") : tr("تفعيل", "Activate")) + '</button>'
+                + (program.isActive ? tr("إيقاف", "Deactivate") : tr("تنشيط", "Activate")) + '</button>'
                 + '<button type="button" class="btn btn-danger btn-sm" data-delete-program="' + program.id + '">' + tr("حذف", "Delete") + '</button>'
                 + '</div></td></tr>';
         });
@@ -682,8 +685,8 @@
         if (!item.meetingJoinUrl || (item.status !== "CONFIRMED" && item.status !== "IN_PROGRESS")) {
             return "";
         }
-        return '<button type="button" class="btn btn-ok btn-sm" data-start-zoom="' + item.id + '">'
-            + tr("بدء Zoom", "Start Zoom") + '</button>';
+        return '<button type="button" class="btn btn-zoom btn-sm" data-start-zoom="' + item.id + '">'
+            + '<svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2"></rect><path d="m16 10 5-3v10l-5-3"></path></svg>' + tr("بدء Zoom", "Start Zoom") + '</button>';
     }
 
     function meetingCopyButton(item) {
@@ -1081,7 +1084,7 @@
         }
         const prompt = program.isActive
             ? ["إيقاف استقبال الطلبات لهذا البرنامج؟", "Stop accepting requests for this program?"]
-            : ["تفعيل البرنامج لاستقبال الطلبات؟", "Activate this program for new requests?"];
+            : ["تنشيط البرنامج لاستقبال الطلبات؟", "Activate this program for new requests?"];
         if (!WaeiDashboard.confirmAction(prompt[0], prompt[1])) {
             return;
         }
